@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
+    "start": "yarn dev",
     "build": "gatsby build",
     "dev": "gatsby develop",
     "clean": "gatsby clean"

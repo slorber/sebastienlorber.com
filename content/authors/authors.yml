@@ -1,17 +1,14 @@
-- name: Dennis Brotzky
+- name: Sébastien Lorber
   bio: |
-    Written by You. This is where your author bio lives. Share your work, your
-    joys and of course, your Twitter handle.
-  avatar: ./avatars/dennis-brotzky.jpg
+    Sébastien helps startups be highly productive with React and React Native.
+  avatar: ./avatars/sebastien-lorber.jpeg
   featured: true
   social:
     - name: github
-      url: https://github.com
+      url: https://github.com/slorber
     - name: twitter
-      url: https://github.com
-    - name: instagram
-      url: https://github.com
-    - name: dribbble
-      url: https://github.com
+      url: https://twitter.com/sebastienlorber
+    - name: stackoverflow
+      url: https://stackoverflow.com/users/82609/sebastien-lorber
     - name: linkedin
-      url: https://github.com
+      url: https://www.linkedin.com/in/sebastienlorber/
