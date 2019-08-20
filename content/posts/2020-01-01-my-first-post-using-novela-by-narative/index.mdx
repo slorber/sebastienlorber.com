@@ -1,130 +1,159 @@
 ---
-title: My first post using Novela by Narative
+title: Finally, I have a blog
 author: Sébastien Lorber
-date: 2019-04-31
+date: 2019-08-20
 hero: ./images/hero.jpg
-excerpt: With the growing community interest in Gatsby, we hope to create more resources that make it easier for anyone to grasp the power of this incredible tool.
+excerpt: Or the ultimate recipe to fail at starting your blog for years.
 ---
 
-My first post using `@narative/gatsby-theme-novela`. Novela is built by the team at [Narative](https://narative.co), and built for everyone that loves the web.
 
-## Headers
+> “I'm going to start blogging soon”
 
-# H1
+You may have seen me tweet this kind of message 2 years ago. Yet, no blog post was ever written.
 
-It is recommended to NOT use H1s as it is reserved for the article heading. Any H1 is set as an H2.
+I've been thinking about blogging for a long time, but only started being more serious about it 2 or 3 years ago. As I've been an early React adopter (early 2014) and have a few years of experience, I feel that I have useful and uncovered knowledge to share with the world. I'm not really confident to give conference talks (yet), and blogging seems to be the perfect medium to get started with public exposure.
 
-## H2
+---
 
-### H3
+Lately, I've also been a fan of [Learn In Public](https://www.swyx.io/writing/learn-in-public). When someone ask me a question, I'd rather try to answer publicly so it can help others. I also want to publish opiniated things, and get read and corrected others, so that my ideas and skills can improve other time, and maybe be helpful to others too.
+This is weird, but many times, I've read blog posts about stuff I already knew, and finally posted comments to correct the mistakes of the article (if any). I want people to do that for me too. I may not agree with them, but definitively want constructive feedback on my posts, and will eventually change my mind and edit the original article.
 
-#### H4
+![](./images/someone-is-wrong-on-internet.png)
 
-##### H5
 
-###### H6
+I already share my thoughts, ideas and tips on Twitter, and I've been helped/corrected so many times. This week, about Suspense mistakes by [Dan Abramov](https://twitter.com/dan_abramov/status/1163447499568439300), or about Typescript by [Mateusz Burzyński](https://twitter.com/AndaristRake/status/1161232633646460929)
 
-## Emphasis
 
-Emphasis, aka italics, with _asterisks_ or _underscores_.
 
-Strong emphasis, aka bold, with **asterisks** or **underscores**.
 
-Combined emphasis with **asterisks and _underscores_**.
+## How to fail at writing
 
-Strikethrough uses two tildes. ~~Scratch this.~~
+If you too want to start blogging, here's the perfect recipe to fail, like I did for many years:
 
-## Lists
+- Don't use an existing platform, and make something custom
+- Think about your blog's technical choices for 1 year
+- Use cool new technologies, many you never used before
+- Finally end up struggling to make them work together 2 years later
 
-1. First ordered list item
-2. Another item
-3. Actual numbers don't matter, just that it's a number
+---
 
-- Unordered list can use asterisks
+2 years ago, I wanted my blog/website to be a showcase of my skills, and use all the cool techs together.
 
-* Or minuses
+I also wanted to have a "static mobile app" with all my articles: not that it would actually be very useful, but mostly because it was cool.
 
-- Or pluses
+Here is the list of things I wanted:
+- Gatsby
+- Gatsby-image
+- MDX
+- React-Native-Web
+- Apollo
+- ReasonML or Typescript
+- LernaJS
+- Expo
+- Storybook
+- Dark mode
+- Post categories
+- Search engine
+- Translate each blog post in 2 languages with proper SEO
 
-## Links
+---
 
-[I'm an inline-style link](https://www.google.com)
+Long story short, here are a few problems I encountered:
+- How to make React-Native-Web work with Gatsby?
+- How to setup the Lerna monorepo to share RNW components between web and mobile, as RN/Metro does not follow symlinks?
+- What are the best practices for RNW? How to handle :hover, focus, links? Should I use Gatsby-link? Is it ok to mix html elements with RN elements?
+- Can React-Native-Web work well with ReasonML / Typescript? The TS typings do not really reflect support for RNW, but only RN.
+- Should I use the existing TS compiler, or the brand new TS babel plugin?
+- Can I share the same code to generate my gatsby pages and my static mobile app react-navigation navigator?
+- How to implement the dark mode in Gatsby so that on refresh the page does not blink from white to black?
+- Should I use Algolia or FuseJS/Lunr?
+- Should I generate static pagination / category pages, or make them dynamic?
+- How to handle blog post translations
+- Probably many things I forgot
 
-[I'm an inline-style link with title](https://www.google.com "Google's Homepage")
+---
 
-[I'm a reference-style link][arbitrary case-insensitive reference text]
+The result is 0 blog post was even written before. But it was not totally useless:
+- I started using Gatsby and it convinced my the JAMStack is the future
+- I felt in love with Typescript. Was previously doing my backends in Scala, and for the first time I'm confident using Node for my next backend.
+- I brought React-Native-Web support to Gatsby, with a few PRs and the [React-Native-Web plugin](https://github.com/slorber/gatsby-plugin-react-native-web) (I'll blog about it later)
+- It got me started using RNW and very excited about the React Flare project, which I think will be huge.
 
-[I'm a relative reference to a repository file](../blob/master/LICENSE)
 
-[You can use numbers for reference-style link definitions][1]
+## How to succeed at writing
 
-Or leave it empty and use the [link text itself].
+Obviously I'm probably not the best to give advices as it is my very first blog post. But if you read this, it's not a total failure either.
 
-URLs and URLs in angle brackets will automatically get turned into links.
-http://www.example.com or <http://www.example.com> and sometimes
-example.com (but not on Github, for example).
+This time, my strategy is to focus on the content first, and the technical details afterward.
 
-Some text to show that the reference links can follow later.
+I've been convinced for a long time that I don't want to blog behind a platform like Medium (see [Goodbye Medium](https://kentcdodds.com/blog/goodbye-medium) by Kent C. Dodds), and hosting a Gatsby site on Netlify is easy and free.
 
-[arbitrary case-insensitive reference text]: https://www.mozilla.org
-[1]: http://slashdot.org
-[link text itself]: http://www.reddit.com
+Recently, Gatsby released its [theme](https://www.gatsbyjs.org/docs/themes/what-are-gatsby-themes/) feature. Themes are like Gatsby configuration presets. It's like Create-React-App/react-scripts for Gatsby.
+You just drop the theme dependency, and everything is configured for you out of the box.
 
-## Images
+You don't actually need to digg deep into Gatsby plugin configuration anymore, as long as the theme supports the features you want. Even if it does not, choosing a popular theme is nice because you can expect it to be enhanced over time by the communit (or your own PRs), and add the missing features.
 
-<div className="Image__Small">
-  <img
-    src="./images/article-image-2.jpg"
-    title="Logo Title Text 1"
-    alt="Alt text"
-  />
-</div>
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+Gatsby organized recently the "Gatsby Theme Jam", a contest to invite developers to create gatsby themes. The released themes are [showcased here](https://themejam.gatsbyjs.org/showcase).
 
-## Code and Syntax Highlighting
+I've noticed several themes that can actually be good to start a blog. Here's a list of themes I considered:
+- https://geekscreed.com (clone of Ghost/Casper)
+- https://gatsby-casper-theme.netlify.com (another clone of Ghost/Casper)
+- https://amsterdam.netlify.com/
+- https://nehalem.netlify.com/
+- https://novela.narative.co/
 
-```javascript
-var s = "JavaScript syntax highlighting";
-alert(s);
-```
+Some designs may not be suited for a blog, but actually it's not so important because you can override it.
 
-```
-No language indicated, so no syntax highlighting.
-But let's throw in a <b>tag</b>.
-```
+![](./images/gatsby-theme-novela-hero.jpg)
 
-### JSX
+I actually choose Novela for a few reasons:
+- It is beautiful and polished by default, I can put it online as is and focus on the content
+- It has MDX, so I can do some cool code demos directly in my blog posts
+- It has not won the contest but has been highly acclaimed by the community, and I'm sure it will be maintained and enhanced over time
+
+So, in less than an hour, I took this theme and put it online AS IS to my Netlify production domain. I only updated the site metadatas so far.
+
+I replaced my legacy/weird online presentation page with a hello world, and a single Lorem Ipsum article, but at least I have something online and I can start writing without feeling paralyzed. This site is [open-source](https://github.com/slorber/sebastienlorber.com), as you can see there's very few configuration to handle.
+
+Having this Lorem Ipsum blog post online actually incitates me to write my first blog post sooner. As I'm writing, this site still have the default Narrative header logo and favicon, but I don't care for now.
+
+And here it is, 2 days later, I'm publishing this blog post
+
+I should be able to use code snippets like this one:
 
 ```jsx
 import React from "react";
-import { ThemeProvider } from "theme-ui";
-import theme from "./theme";
 
-export default props => (
-  <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
+export const TestMDXButton = () => (
+  <div style={{display: "flex",justifyContent: "center"}}>
+    <button
+      onClick={() => alert("it works")}
+      style={{border: "solid", borderRadius: 5, padding: 10}}
+    >
+      Click me!
+    </button>
+  </div>
 );
+
 ```
 
-## Blockquotes
+And I should be able to actually run them:
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing.
+import { TestMDXButton } from "./components"
 
-> Blockquotes are very handy in email to emulate reply text.
-> This line is part of the same quote.
+<TestMDXButton/>
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
 
-## Horizontal Rule
+With all those things provided to me for free, I can now focus on writing :)
 
-Horizontal Rule
 
-Three or more...
+## What's next
 
----
+As a freelancer, it's important for me to develop my personal branding, and actually be known enough to be found by customers. Writing is for me a good opportunity to do so and it is quite natural for me (I've already wrote a lot on [StackOverflow](https://stackoverflow.com/users/82609/sebastien-lorber?tab=answers).
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
+Other time, I've collected a list of about 50 blog titles I'd like to write. I'll cover various technologies in the React ecosystem, including React, React-Native, Expo, React-Native-Web, React-Navigation, Apollo, Typescript, Gatsby, Formik... and probably some broader topics as well.
 
----
+I will also open a newsletter soon, add some other pages to the site, and see how far I can go customizing this theme (eventually submitting a few PRs)
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
+But, the very next move will be to write some technical articles.
