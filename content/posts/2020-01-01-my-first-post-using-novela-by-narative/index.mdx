@@ -15,8 +15,8 @@ I've been thinking about blogging for a long time, but only started being more s
 
 ---
 
-Lately, I've also been a fan of [Learn In Public](https://www.swyx.io/writing/learn-in-public). When someone ask me a question, I'd rather try to answer publicly so it can help others. I also want to publish opiniated things, and get read and corrected others, so that my ideas and skills can improve other time, and maybe be helpful to others too.
-This is weird, but many times, I've read blog posts about stuff I already knew, and finally posted comments to correct the mistakes of the article (if any). I want people to do that for me too. I may not agree with them, but definitively want constructive feedback on my posts, and will eventually change my mind and edit the original article.
+Lately, I've also been a fan of [Learn In Public](https://www.swyx.io/writing/learn-in-public). When someone ask me a question, I'd rather try to answer publicly so it can help others. I also want to publish opiniated things, and get read and corrected by others, so that my ideas and skills can improve other time, and be helpful to others.
+This is weird, but many times, I've read blog posts about stuff I already knew, just to tell the author he is wrong about a tiny detail. I want people to do that for me too. I may not agree with them, but definitively want constructive feedback on my posts, and will eventually change my mind and edit the original article.
 
 ![](./images/someone-is-wrong-on-internet.png)
 
@@ -62,7 +62,7 @@ Long story short, here are a few problems I encountered:
 - How to make React-Native-Web work with Gatsby?
 - How to setup the Lerna monorepo to share RNW components between web and mobile, as RN/Metro does not follow symlinks?
 - What are the best practices for RNW? How to handle :hover, focus, links? Should I use Gatsby-link? Is it ok to mix html elements with RN elements?
-- Can React-Native-Web work well with ReasonML / Typescript? The TS typings do not really reflect support for RNW, but only RN.
+- Can React-Native-Web work well with ReasonML / Typescript? The TS typings do not really reflect support for RNW, but only RN
 - Should I use the existing TS compiler, or the brand new TS babel plugin?
 - Can I share the same code to generate my gatsby pages and my static mobile app react-navigation navigator?
 - How to implement the dark mode in Gatsby so that on refresh the page does not blink from white to black?
@@ -74,10 +74,10 @@ Long story short, here are a few problems I encountered:
 ---
 
 The result is 0 blog post was even written before. But it was not totally useless:
-- I started using Gatsby and it convinced my the JAMStack is the future
-- I felt in love with Typescript. Was previously doing my backends in Scala, and for the first time I'm confident using Node for my next backend.
-- I brought React-Native-Web support to Gatsby, with a few PRs and the [React-Native-Web plugin](https://github.com/slorber/gatsby-plugin-react-native-web) (I'll blog about it later)
-- It got me started using RNW and very excited about the React Flare project, which I think will be huge.
+- Gatsby convinced me about the JAMStack
+- I felt in love with Typescript
+- I brought [React-Native-Web support to Gatsby](https://github.com/slorber/gatsby-plugin-react-native-web) (I'll blog about it later)
+- It got me excited about the React Flare project, which I think will be huge
 
 
 ## How to succeed at writing
@@ -91,19 +91,18 @@ I've been convinced for a long time that I don't want to blog behind a platform 
 Recently, Gatsby released its [theme](https://www.gatsbyjs.org/docs/themes/what-are-gatsby-themes/) feature. Themes are like Gatsby configuration presets. It's like Create-React-App/react-scripts for Gatsby.
 You just drop the theme dependency, and everything is configured for you out of the box.
 
-You don't actually need to digg deep into Gatsby plugin configuration anymore, as long as the theme supports the features you want. Even if it does not, choosing a popular theme is nice because you can expect it to be enhanced over time by the communit (or your own PRs), and add the missing features.
+You don't actually need to digg deep into Gatsby plugin configuration anymore, as long as the theme supports the features you want. Even if it does not, choosing a popular theme is nice because you can expect it to be enhanced over time by the community (or your own PRs).
 
 
 Gatsby organized recently the "Gatsby Theme Jam", a contest to invite developers to create gatsby themes. The released themes are [showcased here](https://themejam.gatsbyjs.org/showcase).
 
-I've noticed several themes that can actually be good to start a blog. Here's a list of themes I considered:
+I've noticed several themes that can actually be nice to start a blog:
 - https://geekscreed.com (clone of Ghost/Casper)
 - https://gatsby-casper-theme.netlify.com (another clone of Ghost/Casper)
 - https://amsterdam.netlify.com/
 - https://nehalem.netlify.com/
 - https://novela.narative.co/
 
-Some designs may not be suited for a blog, but actually it's not so important because you can override it.
 
 ![](./images/gatsby-theme-novela-hero.jpg)
 
@@ -135,7 +134,6 @@ export const TestMDXButton = () => (
     </button>
   </div>
 );
-
 ```
 
 And I should be able to actually run them:
@@ -150,10 +148,11 @@ With all those things provided to me for free, I can now focus on writing :)
 
 ## What's next
 
-As a freelancer, it's important for me to develop my personal branding, and actually be known enough to be found by customers. Writing is for me a good opportunity to do so and it is quite natural for me (I've already wrote a lot on [StackOverflow](https://stackoverflow.com/users/82609/sebastien-lorber?tab=answers).
+As a freelancer, it's important for me to develop my personal branding, and be known enough to be found by customers. Writing is for me a good opportunity to do so, and is quite natural for me: I've already wrote a lot on [StackOverflow](https://stackoverflow.com/users/82609/sebastien-lorber?tab=answers).
 
-Other time, I've collected a list of about 50 blog titles I'd like to write. I'll cover various technologies in the React ecosystem, including React, React-Native, Expo, React-Native-Web, React-Navigation, Apollo, Typescript, Gatsby, Formik... and probably some broader topics as well.
+Over time, I've collected a list of about 50 blog titles I'd like to write. I'll cover various technologies in the React ecosystem, including React, React-Native, Expo, React-Native-Web, React-Navigation, Apollo, Typescript, Gatsby, Formik... and probably some broader topics as well.
 
 I will also open a newsletter soon, add some other pages to the site, and see how far I can go customizing this theme (eventually submitting a few PRs)
 
-But, the very next move will be to write some technical articles.
+But the next move will be to add a few MDX files to the ./content folder
+
