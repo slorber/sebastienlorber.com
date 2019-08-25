@@ -33,6 +33,7 @@ module.exports = {
     {
       resolve: "@narative/gatsby-theme-novela",
       options: {
+        authorsPage: true,
         contentPosts: "content/posts",
         contentAuthors: "content/authors",
         basePath: "/",
@@ -50,5 +51,15 @@ module.exports = {
         icon: `src/assets/favicon.png`,
       },
     },
+    {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: "UA-131003556-1",
+      },
+    },
+    {
+      resolve: `gatsby-plugin-sitemap`,
+    },
+    'gatsby-plugin-netlify',
   ],
 };
