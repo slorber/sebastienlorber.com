@@ -10,13 +10,17 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.16",
+    "@emotion/styled": "^10.0.15",
     "@narative/gatsby-theme-novela": "^0.4.1",
+    "emotion-theming": "^10.0.14",
     "gatsby": "^2.13.41",
     "gatsby-plugin-google-analytics": "^2.1.11",
     "gatsby-plugin-mailchimp": "^5.1.2",
     "gatsby-plugin-manifest": "^2.2.4",
     "gatsby-plugin-netlify": "^2.1.10",
     "gatsby-plugin-sitemap": "^2.2.9",
+    "prettier": "^1.18.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }
