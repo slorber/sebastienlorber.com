@@ -18,22 +18,22 @@ An image is worth a thousand words:
 
 If there is a non-null probability that your UI end up in such a state, your app is subject to concurrency issues.
 
-## How this may happen?
+## Why this happens?
 
-You might think that those issues can be ignored, because they do not happen often, and the case above does not seem so serious.
+Sometimes, the UI end up having multiple requests being loading in parallel, and we just assume that the list fired request will resolve last. Actually, it may resolve first, or may just fail, leading to a former pending request being the last one to resolve.
 
-I think those issues actually happen more often than you think in the wild, and can lead to serious issues, like an user buying the wrong product, or a doctor prescribing the wrong drug to a patient.
+It happens more often than you think. For some apps, it can lead to very serious problems, like **an user buying the wrong product**, or **a doctor prescribing the wrong drug to a patient**.
 
-Those issues generally arise when:
+A non-exhaustive list of reasons:
 
-- The network is slow, unpredictable, with variable request latencies...
+- The network is slow, bad, unpredictable, with variable request latencies...
 - The backend is under heavy load, throttling some requests, under a Denial of Service attack...
-- The user is clicking fast
+- The user is clicking fast, commuting, travelling, on the country side...
 - You are just unlucky
 
-Developers don't see them in development, where you likely have good network conditions, sometimes running the backend API on your own computer with close to 0ms latency.
+Developers don't see them in development, where the network conditions are generally good, sometimes running the backend API on your own computer, with close to 0ms latency.
 
-In this post, I'll try to demonstrate that those issues happen more than we think, with simple but realistic network simulations and runnable demos.
+In this post, I'll try to demonstrate that those issues do, with simple but realistic network simulations and runnable demos.
 
 I'll also explain how you can fix those issues in many different ways, without requiring a large refactor.
 
@@ -57,7 +57,7 @@ const StarwarsHero = ({ id }) => {
 };
 ```
 
-Eventually, it will also ensure to not set state after unmount, and avoid the React warning, using a ref, but it's not really the subject of this article.
+Eventually, it will also ensure to not set state after unmount, and avoid the React warning (not really the subject of this article):
 
 ```jsx
 const useIsMounted = () => {
@@ -84,9 +84,41 @@ const StarwarsHero = ({ id }) => {
 };
 ```
 
-You'll find also the same mistake using the React class API (in which it's also often forgotten to implement properly `componentDidUpdate` to refetch on id change).
+Or with the React class API:
 
-Here is a "Starwars Slider" demo running the code above:
+```jsx
+class StarwarsHero extends React.Component {
+  state = { data: null };
+
+  fetchData = id => {
+    fetchStarwarsHeroData(id).then(
+      result => isMounted.current && setData(result),
+      e => console.warn('fetch failure', e),
+    );
+  };
+
+  componentDidMount() {
+    this.fetchData(this.props.id);
+  }
+
+  componentDidUpdate(nextProps) {
+    if (nextProps.id !== this.props.id) {
+      this.fetchData(this.props.id);
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState = () => {}; // I bet you didn't know this trick ;)
+  }
+
+  render() {
+    const { data } = this.state;
+    return <div>{data ? data.name : <Spinner />}</div>;
+  }
+}
+```
+
+Here is a "Starwars Slider" demo running the code above. All 3 versions lead to the same result.
 
 import { StarwarsHeroBaseSlider } from './components';
 
@@ -94,6 +126,6 @@ import { StarwarsHeroBaseSlider } from './components';
 
 Here, even with your own network, you can already see something is wrong.
 
-Now let's see what happens when you are in a train with some tunnels.
+Now let's see what happens when you are in a train with a few tunnels.
 
 ## Simulating bad network conditions
