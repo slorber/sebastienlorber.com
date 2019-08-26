@@ -25,6 +25,7 @@ You might think that those issues can be ignored, because they do not happen oft
 I think those issues actually happen more often than you think in the wild, and can lead to serious issues, like an user buying the wrong product, or a doctor prescribing the wrong drug to a patient.
 
 Those issues generally arise when:
+
 - The network is slow, unpredictable, with variable request latencies...
 - The backend is under heavy load, throttling some requests, under a Denial of Service attack...
 - The user is clicking fast
@@ -36,7 +37,6 @@ In this post, I'll try to demonstrate that those issues happen more than we thin
 
 I'll also explain how you can fix those issues in many different ways, without requiring a large refactor.
 
-
 ## The incriminated code:
 
 You probably already read tutorials with the following code:
@@ -44,6 +44,7 @@ You probably already read tutorials with the following code:
 ```jsx
 const StarwarsHero = ({ id }) => {
   const [data, setData] = useState(null);
+
   useEffect(() => {
     setData(null);
     fetchStarwarsHeroData(id).then(
@@ -51,7 +52,8 @@ const StarwarsHero = ({ id }) => {
       e => console.warn('fetch failure', e),
     );
   }, [id]);
-  return <div>render data here</div>;
+
+  return <div>{data ? data.name : <Spinner />}</div>;
 };
 ```
 
@@ -69,6 +71,7 @@ const useIsMounted = () => {
 const StarwarsHero = ({ id }) => {
   const [data, setData] = useState(null);
   const isMounted = useIsMounted();
+
   useEffect(() => {
     setData(null);
     fetchStarwarsHeroData(id).then(
@@ -76,15 +79,14 @@ const StarwarsHero = ({ id }) => {
       e => console.warn('fetch failure', e),
     );
   }, [id]);
-  return <div>render data here</div>;
+
+  return <div>{data ? data.name : <Spinner />}</div>;
 };
 ```
 
 You'll find also the same mistake using the React class API (in which it's also often forgotten to implement properly `componentDidUpdate` to refetch on id change).
 
-
 Here is a "Starwars Slider" demo running the code above:
-
 
 import { StarwarsHeroBaseSlider } from './components';
 
@@ -94,9 +96,4 @@ Here, even with your own network, you can already see something is wrong.
 
 Now let's see what happens when you are in a train with some tunnels.
 
-
 ## Simulating bad network conditions
-
-
-
-
