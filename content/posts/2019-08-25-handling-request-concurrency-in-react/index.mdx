@@ -6,9 +6,9 @@ hero: ./images/hero.png
 excerpt: Or how to avoid rendering the wrong data
 ---
 
-Many blog articles talk about loading data in React apps, weither it's ad-hoc using `componentDidMount/update` or `useEffect`, or through Redux, Apollo...
+Many blog articles talk about loading data in React apps, weither it's ad-hoc using `componentDidMount/update` or `useEffect`, through Redux, Apollo or another lib...
 
-Yet, all those articles are **generally optimistic**, and never mention something important to consider: concurrency issues could happen, and you may end up rendering the wrong data.
+Yet, all those articles are **generally optimistic**, and never mention something important to consider: concurrency issues could happen, your UI may end up in an **inconsistant state**.
 
 This post is not about request concurrency issues in general, but only those related to loading data in React applications.
 
@@ -16,7 +16,9 @@ An image is worth a thousand words:
 
 ![](./images/trump-macron.png)
 
-If there is a non-null probability that your UI end up in such a state, then your app is subject to concurrency issues.
+If there is a non-null probability that your UI end up in such a state, your app is subject to concurrency issues.
+
+## How this may happen?
 
 You might think that those issues can be ignored, because they do not happen often, and the case above does not seem so serious.
 
@@ -35,7 +37,7 @@ In this post, I'll try to demonstrate that those issues happen more than we thin
 I'll also explain how you can fix those issues in many different ways, without requiring a large refactor.
 
 
-## The code that is wrong:
+## The incriminated code:
 
 You probably already read tutorials with the following code:
 
