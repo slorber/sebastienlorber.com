@@ -20,8 +20,10 @@
     "gatsby-plugin-manifest": "^2.2.4",
     "gatsby-plugin-netlify": "^2.1.10",
     "gatsby-plugin-sitemap": "^2.2.9",
+    "lodash": "^4.17.15",
     "prettier": "^1.18.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "use-constant": "^1.0.0"
   }
 }
