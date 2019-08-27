@@ -389,7 +389,7 @@ You can also use other RxJS operators if you know what you are doing, but many t
 
 ### Apollo
 
-Apollo lets you pass down GraphQL query variables. Whenever the Starwars hero id changes, a new request is fired to load the appropriate data. You can use the HOC, the render props or the hooks: Apollo will always guarantee that if you request `{id: 2}`, your UI will never return you the data for another Starwars hero.
+Apollo lets you pass down GraphQL query variables. Whenever the Starwars hero id changes, a new request is fired to load the appropriate data. You can use the HOC, the render props or the hooks, Apollo will always guarantee that if you request `id: 2`, your UI will never return you the data for another Starwars hero.
 
 ```jsx
 const data = useQuery(GET_STARWARS_HERO, {
