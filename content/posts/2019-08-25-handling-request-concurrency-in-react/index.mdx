@@ -214,9 +214,7 @@ As you can see, this code easily leads to weird, inconsistant UI states.
 
 ## How to avoid this problem
 
-Let's suppose 3 requests R1, R2 and R3 gets fired and are still pending. R3 was fired last.
-
-The solution is to only handle the response from R3, the last issued request.
+Let's suppose 3 requests R1, R2 and R3 gets fired in this order, and are still pending. The solution is to only handle the response from R3, the last issued request.
 
 There are 2 valid ways to do so:
 
@@ -325,7 +323,7 @@ useEffect(() => {
 
 ## Using libraries
 
-You might agree that doing all this manually is complex and error prone. Hopefully, some libraries solve this problem for you. Let's explore a non-exhaustive list of libraries generally used for loading data into React.
+Doing all this manually is complex and error prone. Hopefully, some libraries solve this problem for you. Let's explore a non-exhaustive list of libraries generally used for loading data into React.
 
 ### Redux
 
