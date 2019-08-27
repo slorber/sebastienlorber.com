@@ -352,9 +352,9 @@ function* loadStarwarsHeroSaga() {
 }
 ```
 
-Similarly, the `loadStarwarsHero` generator will be automatically "cancelled", which means the yields of previous calls will do nothing. Unfortunately the underlying API request will not really be cancelled (you still need an abort signal for that), but Redux-saga will ensure that the success/error actions will only be dispatched to Redux for the last requested Starwars hero.
+The `loadStarwarsHero` generator will be automatically "cancelled". Optionnally, you might disengage from this feature and use `take` or `takeEvery` instead, for which you'll have to handle concurrency issues yourself.
 
-Optionnally, you might disengage from this feature and use `take` or `takeEvery` instead, for which you'll have to handle concurrency issues yourself.
+Unfortunately the underlying API request will not really be cancelled (you need an AbortSignal for that), but Redux-saga will ensure that the success/error actions will only be dispatched to Redux for the last requested Starwars hero. For in-flight request cancellation, follow [this issue](https://github.com/redux-saga/redux-saga/issues/1917)
 
 #### Redux-observable
 
@@ -385,7 +385,7 @@ const loadStarwarsHeroEpic = action$ =>
   );
 ```
 
-You can also use other RxJS operators if you know what you are doing, but many tutorials will use `switchMap`, as it's a safer default.
+You can also use other RxJS operators like `mergeMap` if you know what you are doing, but many tutorials will use `switchMap`, as it's a safer default. Like Redux-saga, it won't cancel the underlying request in-flight, but there are [solutions](https://github.com/ReactiveX/rxjs/issues/3122) to add this behavior.
 
 ### Apollo
 
