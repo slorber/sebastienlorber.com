@@ -16,10 +16,13 @@ const fetchStarwarsHeroData = async (id, options) => {
 const SliderArrowButton = styled.button(
   {
     borderStyle: 'solid',
-    borderRadius: 20,
-    padding: 10,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     margin: 10,
     alignSelf: 'center',
+    justifyContent: 'center',
+    fontSize: 30,
   },
   props => ({
     color: props.theme.colors.articleText,
@@ -111,7 +114,7 @@ export const StarwarsHeroSliderDefault = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center' }}>
+    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
     </div>
   );
@@ -132,7 +135,7 @@ export const StarwarsHeroSliderDelay = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center' }}>
+    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
     </div>
   );
@@ -153,7 +156,7 @@ export const StarwarsHeroSliderThrow = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center' }}>
+    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
     </div>
   );
@@ -175,7 +178,7 @@ export const StarwarsHeroSliderDelayThrow = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center' }}>
+    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
     </div>
   );
@@ -212,7 +215,7 @@ export const StarwarsHeroSliderIgnoring = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center' }}>
+    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
     </div>
   );
@@ -253,7 +256,7 @@ export const StarwarsHeroSliderAborting = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center' }}>
+    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
     </div>
   );

@@ -42,9 +42,7 @@ A non-exhaustive list of reasons:
 
 Developers don't see them in development, where the network conditions are generally good, sometimes running the backend API on your own computer, with close to 0ms latency.
 
-In this post, I'll try to demonstrate that those issues do, with simple but realistic network simulations and runnable demos.
-
-I'll also explain how you can fix those issues in many different ways, without requiring a large refactor.
+In this post, I'll try to demonstrate that those issues do, with simple but realistic network simulations and runnable demos. I'll also explain how you can fix those issues in many different ways, without requiring a large refactor.
 
 ## The incriminated code:
 
@@ -127,13 +125,11 @@ class StarwarsHero extends React.Component {
 }
 ```
 
-Here is a "Starwars Slider" demo running the code above. All 3 versions lead to the same result.
+Here is a Starwars Hero slider. All 3 versions above lead to this same result. Note debouncing would not protect you at all, it just reduces the chances of being unlucky.
 
 <StarwarsHeroSliderDefault />
 
 When clicking fast on the arrows, even with your own good home network, you can already see something is wrong.
-
-**Note:** debouncing does not protect you at all, it just reduces the chances.
 
 Now let's see what happens when you are in a train with a few tunnels.
 
@@ -161,7 +157,7 @@ const throwRandomly = () => {
 
 ### Adding network delays
 
-This one is pretty realistic. You might be on a slow network, or the backend
+This one is pretty realistic. You might be on a slow network, or the backend may take time to answer.
 
 ```jsx
 useEffect(() => {
@@ -197,7 +193,7 @@ useEffect(() => {
 
 ### Adding network delays + failures
 
-This one is the most realistic: requests are delayed randomly and some of them might fail.
+This time you are on a train in the countryside, and there are a few tunnels: requests are delayed randomly and some of them might fail.
 
 ```jsx
 useEffect(() => {
@@ -212,7 +208,7 @@ useEffect(() => {
 }, [id]);
 ```
 
-As you can see, this code leads to weird, inconsistant UI states.
+As you can see, this code easily leads to weird, inconsistant UI states.
 
 <StarwarsHeroSliderThrow />
 
@@ -270,14 +266,13 @@ Some might be tempted to use the `id` to do the filtering, but it's not a good i
 
 ### Cancelling former api calls
 
-If you can, it is better to cancel former api calls than ignoring them, as you'll end up consuming less resources.
-
-Hopefully, I'm using `fetch`, which support cancellation through its `AbortSignal` option:
+If you can, it is better to cancel former api calls than ignoring them, as you'll end up consuming less resources. Hopefully, I'm using `fetch`, which support cancellation through its `AbortSignal` option:
 
 ```jsx
 const abortController = new AbortController();
 
-// fire the request, with an abort signal, which will permit premature abortion
+// fire the request, with an abort signal,
+// which will permit premature abortion
 fetch(`https://swapi.co/api/people/${id}/`, {
   signal: abortController.signal,
 });
@@ -286,18 +281,20 @@ fetch(`https://swapi.co/api/people/${id}/`, {
 abortController.abort();
 ```
 
-An abort signal is like a little event emitter, you can trigger it (through the `AbortController`), and every request started with this signal will be aborted and won't resolve.
+An abort signal is like a little event emitter, you can trigger it (through the `AbortController`), and every request started with this signal will be notified and cancelled.
 
 Let's see how to use this feature to solve concurrency issues:
 
 ```jsx
-// Store abort controller which will permit to abort the last issued request
+// Store abort controller which will permit to abort
+// the last issued request
 const lastAbortController = useRef();
 
 useEffect(() => {
   setData(null);
 
-  // When a new request is going to be issued, the first thing to do is cancel the previous request
+  // When a new request is going to be issued,
+  // the first thing to do is cancel the previous request
   if (lastAbortController.current) {
     lastAbortController.current.abort();
   }
@@ -306,12 +303,14 @@ useEffect(() => {
   const currentAbortController = new AbortController();
   lastAbortController.current = currentAbortController;
 
-  // Issue the new request, that may eventually be aborted by a subsequent request
+  // Issue the new request, that may eventually be aborted
+  // by a subsequent request
   const currentPromise = fetchStarwarsHeroData(id, {
     signal: currentAbortController.signal,
   }).then(data => {
     // You might notice I had to remove the bad network simulation code:
-    // this is because it's not possible to abort this part of the code with the abort signal
+    // this is because it's not possible to abort
+    // this part of the code with the abort signal
     return data;
   });
 
@@ -326,26 +325,20 @@ useEffect(() => {
 
 ## Using libraries
 
-You might agree that doing all this manually is complex and error prone.
+You might agree that doing all this manually is complex and error prone. Hopefully, some libraries solve this problem for you. Let's explore a non-exhaustive list of libraries generally used for loading data into React.
 
-Hopefully, some libraries solve this problem for you.
+### Redux
 
-Let's explore a non-exhaustive list of libraries generally used for loading data into React.
+There are multiple ways to load data into a Redux store. Generally, if you are using Redux-saga or Redux-observable, you are fine. For Redux-thunk, Redux-promise and other middlewares, you might check the "vanilla React/Promise" solutions in next sections.
 
-## Redux
-
-There are multiple ways to load data into a Redux store.
-
-Generally, if you are using Redux-saga or Redux-observable, you are fine.
-
-For Redux-thunk, Redux-promise and other middlewares, you might check the "vanilla React/Promise" solutions in next sections.
-
-### Redux-saga
+#### Redux-saga
 
 You might notice there are multiple `take` methods on the Redux-saga API, but generally you'll find many examples using [`takeLatest`](https://redux-saga.js.org/docs/api/). This is because `takeLatest` will protect you against those concurrency issues.
 
 ```
-takeLatest: Spawns a saga on each action dispatched to the Store that matches pattern. And automatically cancels any previous saga task started previously if it's still running.
+Spawns a saga on each action dispatched to the Store
+that matches pattern. And automatically cancels any previous saga
+task started previously if it's still running.
 ```
 
 ```jsx
@@ -365,9 +358,17 @@ Similarly, the `loadStarwarsHero` generator will be automatically "cancelled", w
 
 Optionnally, you might disengage from this feature and use `take` or `takeEvery` instead, for which you'll have to handle concurrency issues yourself.
 
-### Redux-observable
+#### Redux-observable
 
 Similarly to Redux-saga, Redux-observable has a solution. Actually, the solution is more related to RxJS and it's called [`switchMap`](https://www.learnrxjs.io/operators/transformation/switchmap.html):
+
+```
+The main difference between switchMap and other flattening operators
+is the cancelling effect. On each emission the previous inner observable
+(the result of the function you supplied) is cancelled and
+the new observable is subscribed. You can remember this
+by the phrase switch to a new observable.
+```
 
 ```jsx
 const loadStarwarsHeroEpic = action$ =>
@@ -386,17 +387,11 @@ const loadStarwarsHeroEpic = action$ =>
   );
 ```
 
-```
-The main difference between switchMap and other flattening operators is the cancelling effect. On each emission the previous inner observable (the result of the function you supplied) is cancelled and the new observable is subscribed. You can remember this by the phrase switch to a new observable.
-```
-
 You can also use other RxJS operators if you know what you are doing, but many tutorials will use `switchMap`, as it's a safer default.
 
-## Apollo
+### Apollo
 
-Apollo lets you pass down GraphQL query variables. Whenever the Starwars hero id changes, a new request is fired to load the appropriate data.
-
-You can use the HOC, the render props or the hooks: Apollo will always guarantee that if you request `{id: 2}`, your UI will never return you the data for another Starwars hero.
+Apollo lets you pass down GraphQL query variables. Whenever the Starwars hero id changes, a new request is fired to load the appropriate data. You can use the HOC, the render props or the hooks: Apollo will always guarantee that if you request `{id: 2}`, your UI will never return you the data for another Starwars hero.
 
 ```jsx
 const data = useQuery(GET_STARWARS_HERO, {
@@ -407,7 +402,7 @@ const data = useQuery(GET_STARWARS_HERO, {
 assert(data.id === id);
 ```
 
-## Vanilla React
+### Vanilla React
 
 There are many libraries to load data into React components, without needing a global state management solution.
 
@@ -447,42 +442,43 @@ There are many other library options, for which I won't be able to tell you if t
 
 **Note:**: it's possible to use `StarwarsHero key={id} key={id}/>` as a simple React workaround, to ensure the component instance stanges everytime the id changes. This will effectively protect you (and some time unmounting/remounting is useful), but will also give more work to React.
 
-## Vanilla promises and Javascript
+### Vanilla promises and Javascript
 
 If you are dealing with vanilla promises and Javascript, here are simple tools you can use to prevent those issues.
 
 Those tools can also be useful to handle concurrency if you are using thunks or promises with Redux.
 
-### Cancellable promises
+**Note**: some of these tools are actually low-level implementation details of [react-async-hook](https://github.com/slorber/react-async-hook).
 
-React has an old blog post [isMounted() is an antipattern](https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html) on which you'll learn how to make a promise cancellable to avoid the setState after unmount warning.
+#### Cancellable promises
 
-The promise is not really `cancellable` (the underlying api call won't be cancelled), but you can choose to ignore or reject the response of a promise.
+React has an old blog post [isMounted() is an antipattern](https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html) on which you'll learn how to make a promise cancellable to avoid the setState after unmount warning. The promise is not really `cancellable` (the underlying api call won't be cancelled), but you can choose to ignore or reject the response of a promise.
 
 I made a library [awesome-imperative-promise](https://github.com/slorber/awesome-imperative-promise) to make this process easier:
 
 ```jsx
 import { createImperativePromise } from 'awesome-imperative-promise';
 
-const wrappedPromise = fetch('url');
+const id = 1;
 
-// Wrap an existing promise and expose some additional imperative methods
-// The existingPromise paramter is optional and the returned promise with resolve/reject when the existing promise do
-const { promise, resolve, reject, cancel } = createImperativePromise(
-  wrappedPromise,
-);
+const { promise, resolve, reject, cancel } = createImperativePromise(fetchStarwarsHero(id);
 
-// will make the returned promise resolved (not the wrapped one)
-resolve('some value');
+// will make the returned promise resolved manually
+resolve({
+  id,
+  name: "R2D2"
+});
 
-// will make the returned promise reject (not the wrapped one)
-reject(new Error(':s'));
+// will make the returned promise rejected manually
+reject(new Error("can't load Starwars hero"));
 
 // will ensure the returned promise never resolves or reject
 cancel();
 ```
 
-### Automatically ignoring last call
+**Note**: all those methods have to be called before the underlying API request resolves or reject. If the promise is already resolved, there's no way to "unresolve" it.
+
+#### Automatically ignoring last call
 
 [awesome-only-resolves-last-promise](https://github.com/slorber/awesome-only-resolves-last-promise) is another cool library to ensure we only handle the result of the last async call:
 
@@ -499,7 +495,7 @@ const promise3 = fetchStarwarsHeroLast(3);
 // promise3 will resolve in 100ms
 ```
 
-## What about Suspense?
+### What about Suspense?
 
 It should prevent those issues, but let's wait for the official release :)
 
