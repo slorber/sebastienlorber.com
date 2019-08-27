@@ -99,7 +99,7 @@ class StarwarsHero extends React.Component {
 
   fetchData = id => {
     fetchStarwarsHeroData(id).then(
-      result => isMounted.current && setData(result),
+      result => setState({ data: result }),
       e => console.warn('fetch failure', e),
     );
   };
@@ -432,7 +432,7 @@ const StarwarsHero = ({ id }) => {
 Other options protecting you:
 
 - [react-async](https://github.com/ghengeveld/react-async): quite similar and a bit more featured (render props)
-- [react-refetch](https://github.com/heroku/react-refetch): older, based on hooks
+- [react-refetch](https://github.com/heroku/react-refetch): older project, based on HOCs
 
 There are many other library options, for which I won't be able to tell you if they are protecting you: take a look at the implementation.
 
