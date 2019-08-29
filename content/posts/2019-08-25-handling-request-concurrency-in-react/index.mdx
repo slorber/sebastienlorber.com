@@ -1,5 +1,5 @@
 ---
-title: Handling API request concurrency issues in React
+title: Handling API request race conditions in React
 author: Sébastien Lorber
 date: 2019-08-25
 hero: ./images/hero.png
@@ -15,17 +15,15 @@ import {
   StarwarsHeroSliderAborting,
 } from './components';
 
-Many blog articles talk about loading data in React apps, weither it's ad-hoc using `componentDidMount/update` or `useEffect`, through Redux, Apollo or another lib...
+Many blog articles talk about loading api/async data in a React apps, with `componentDidMount`, `useEffect`, or through Redux, Apollo...
 
-Yet, all those articles are **generally optimistic**, and never mention something important to consider: concurrency issues could happen, and your UI may end up in an **inconsistant state**.
-
-This post is not about request concurrency issues in general, but only those related to loading async data in React applications.
+Yet, all those articles are **generally optimistic**, and never mention something important to consider: race conditions could happen, and your UI may end up in an **inconsistant state**.
 
 An image is worth a thousand words:
 
 ![](./images/trump-macron.png)
 
-If there is a non-null probability that your UI end up in such a state, your app is subject to concurrency issues.
+If there is a non-null probability that your UI end up in such a state, your app is subject to race conditions.
 
 ## Why this happens?
 
@@ -281,7 +279,7 @@ abortController.abort();
 
 An abort signal is like a little event emitter, you can trigger it (through the `AbortController`), and every request started with this signal will be notified and cancelled.
 
-Let's see how to use this feature to solve concurrency issues:
+Let's see how to use this feature to solve race conditions:
 
 ```jsx
 // Store abort controller which will permit to abort
@@ -331,10 +329,10 @@ There are multiple ways to load data into a Redux store. Generally, if you are u
 
 #### Redux-saga
 
-You might notice there are multiple `take` methods on the Redux-saga API, but generally you'll find many examples using [`takeLatest`](https://redux-saga.js.org/docs/api/). This is because `takeLatest` will protect you against those concurrency issues.
+You might notice there are multiple `take` methods on the Redux-saga API, but generally you'll find many examples using [`takeLatest`](https://redux-saga.js.org/docs/api/). This is because `takeLatest` will protect you against those race conditions.
 
 ```
-Spawns a saga on each action dispatched to the Store
+Forks a saga on each action dispatched to the Store
 that matches pattern. And automatically cancels any previous saga
 task started previously if it's still running.
 ```
@@ -352,9 +350,9 @@ function* loadStarwarsHeroSaga() {
 }
 ```
 
-The `loadStarwarsHero` generator will be automatically "cancelled". Optionnally, you might disengage from this feature and use `take` or `takeEvery` instead, for which you'll have to handle concurrency issues yourself.
+The previous `loadStarwarsHero` generator executions will be "cancelled". Unfortunately the underlying API request will not really be cancelled (you need an `AbortSignal` for that), but Redux-saga will ensure that the success/error actions will only be dispatched to Redux for the last requested Starwars hero. For in-flight request cancellation, follow [this issue](https://github.com/redux-saga/redux-saga/issues/1917)
 
-Unfortunately the underlying API request will not really be cancelled (you need an AbortSignal for that), but Redux-saga will ensure that the success/error actions will only be dispatched to Redux for the last requested Starwars hero. For in-flight request cancellation, follow [this issue](https://github.com/redux-saga/redux-saga/issues/1917)
+Optionnally, you might opt-out from this protection and use `take` or `takeEvery`.
 
 #### Redux-observable
 
@@ -404,7 +402,7 @@ assert(data.id === id);
 
 There are many libraries to load data into React components, without needing a global state management solution.
 
-I created [react-async-hook](https://github.com/slorber/react-async-hook): a very simple and tiny hooks library to load async data into React components. It has very good native Typescript support, and protects you against concurrency issues by using the techniques discussed above.
+I created [react-async-hook](https://github.com/slorber/react-async-hook): a very simple and tiny hooks library to load async data into React components. It has very good native Typescript support, and protects you against race conditions by using the techniques discussed above.
 
 ```jsx
 import { useAsync } from 'react-async-hook';
@@ -444,7 +442,7 @@ There are many other library options, for which I won't be able to tell you if t
 
 If you are dealing with vanilla promises and Javascript, here are simple tools you can use to prevent those issues.
 
-Those tools can also be useful to handle concurrency if you are using thunks or promises with Redux.
+Those tools can also be useful to handle race conditions if you are using thunks or promises with Redux.
 
 **Note**: some of these tools are actually low-level implementation details of [react-async-hook](https://github.com/slorber/react-async-hook).
 
@@ -499,9 +497,9 @@ It should prevent those issues, but let's wait for the official release :)
 
 ## Conclusion
 
-For your next React data loading usecase, I hope you will consider handling concurrency issues properly.
+For your next React data loading usecase, I hope you will consider handling race conditions properly.
 
-I can also recommend to add some little random delays to your API requests in development environment: potential concurrency issues will be more easily noticed (and you'll also experience the site under more realistic conditions, see the spinners etc...)
+I can also recommend to hardcode some little delays to your API requests in development environment. Potential race conditions and bad loading experiences will be more easy to notice. I think it's safer to make this delay mandatory, instead of expecting each developer to turn on the slow network option in devtools.
 
 I hope you've found this post interesting and you learned something, it was my first technical blog post ever :)
 
