@@ -6,8 +6,7 @@ hero: ./images/hero.jpg
 excerpt: Or the ultimate recipe to fail at starting your blog for years.
 ---
 
-import { TestMDXButton } from "./components"
-
+import { TestMDXButton } from './components';
 
 > “I'm going to start blogging soon”
 
@@ -22,11 +21,7 @@ This is weird, but many times, I've read blog posts about stuff I already knew, 
 
 ![](./images/someone-is-wrong-on-internet.png)
 
-
 I already share my thoughts, ideas and tips on Twitter, and I've been helped/corrected so many times. This week, about Suspense mistakes by [Dan Abramov](https://twitter.com/dan_abramov/status/1163447499568439300), or about Typescript by [Mateusz Burzyński](https://twitter.com/AndaristRake/status/1161232633646460929)
-
-
-
 
 ## How to fail at writing
 
@@ -44,6 +39,7 @@ If you too want to start blogging, here's the perfect recipe to fail, like I did
 I also wanted to have a "static mobile app" with all my articles: not that it would actually be very useful, but mostly because it was cool.
 
 Here is the list of things I wanted:
+
 - Gatsby
 - Gatsby-image
 - MDX
@@ -61,6 +57,7 @@ Here is the list of things I wanted:
 ---
 
 Long story short, here are a few problems I encountered:
+
 - How to make React-Native-Web work with Gatsby?
 - How to setup the Lerna monorepo to share RNW components between web and mobile, as RN/Metro does not follow symlinks?
 - What are the best practices for RNW? How to handle :hover, focus, links? Should I use Gatsby-link? Is it ok to mix html elements with RN elements?
@@ -76,11 +73,11 @@ Long story short, here are a few problems I encountered:
 ---
 
 The result is 0 blog post was even written before. But it was not totally useless:
+
 - Gatsby convinced me about the JAMStack
 - I felt in love with Typescript
 - I brought [React-Native-Web support to Gatsby](https://github.com/slorber/gatsby-plugin-react-native-web) (I'll blog about it later)
 - It got me excited about the React Flare project, which I think will be huge
-
 
 ## How to succeed at writing
 
@@ -95,20 +92,20 @@ You just drop the theme dependency, and everything is configured for you out of 
 
 You don't actually need to digg deep into Gatsby plugin configuration anymore, as long as the theme supports the features you want. Even if it does not, choosing a popular theme is nice because you can expect it to be enhanced over time by the community (or your own PRs).
 
-
 Gatsby organized recently the "Gatsby Theme Jam", a contest to invite developers to create gatsby themes. The released themes are [showcased here](https://themejam.gatsbyjs.org/showcase).
 
 I've noticed several themes that can actually be nice to start a blog:
+
 - https://geekscreed.com (clone of Ghost/Casper)
 - https://gatsby-casper-theme.netlify.com (another clone of Ghost/Casper)
 - https://amsterdam.netlify.com/
 - https://nehalem.netlify.com/
 - https://novela.narative.co/
 
-
 ![](./images/gatsby-theme-novela-hero.jpg)
 
 I actually choose Novela for a few reasons:
+
 - It is beautiful and polished by default, I can put it online as is and focus on the content
 - It has MDX, so I can do some cool code demos directly in my blog posts
 - It has not won the contest but has been highly acclaimed by the community, and I'm sure it will be maintained and enhanced over time
@@ -124,13 +121,19 @@ And here it is, 2 days later, I'm publishing this blog post
 I should be able to use code snippets like this one:
 
 ```jsx
-import React from "react";
+import React from 'react';
 
 export const TestMDXButton = () => (
-  <div style={{display: "flex",justifyContent: "center"}}>
+  <div
+    style={{ display: 'flex', justifyContent: 'center' }}
+  >
     <button
-      onClick={() => alert("it works")}
-      style={{border: "solid", borderRadius: 5, padding: 10}}
+      onClick={() => alert('it works')}
+      style={{
+        border: 'solid',
+        borderRadius: 5,
+        padding: 10,
+      }}
     >
       Click me!
     </button>
@@ -139,11 +142,10 @@ export const TestMDXButton = () => (
 ```
 
 And I should be able to actually run them:
-<TestMDXButton/>
 
+<TestMDXButton />
 
 With all those things provided to me for free, I can now focus on writing :)
-
 
 ## What's next
 

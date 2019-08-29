@@ -7,7 +7,8 @@
     "start": "yarn dev",
     "build": "gatsby build",
     "dev": "gatsby develop",
-    "clean": "gatsby clean"
+    "clean": "gatsby clean",
+    "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'"
   },
   "dependencies": {
     "@emotion/core": "^10.0.16",

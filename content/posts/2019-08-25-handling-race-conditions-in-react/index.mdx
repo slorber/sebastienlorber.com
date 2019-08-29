@@ -114,7 +114,9 @@ import { sample } from 'lodash';
 // Will return a promise delayed by a random amount, picked in the delay array
 const delayRandomly = () => {
   const timeout = sample([0, 200, 500, 700, 1000, 3000]);
-  return new Promise(resolve => setTimeout(resolve, timeout));
+  return new Promise(resolve =>
+    setTimeout(resolve, timeout),
+  );
 };
 
 // Will throw randomly with a 1/4 chance ratio
@@ -139,7 +141,10 @@ useEffect(() => {
       await delayRandomly();
       return data;
     })
-    .then(result => setData(result), e => console.warn('fetch failure', e));
+    .then(
+      result => setData(result),
+      e => console.warn('fetch failure', e),
+    );
 }, [id]);
 ```
 
@@ -159,7 +164,10 @@ useEffect(() => {
       throwRandomly();
       return data;
     })
-    .then(result => setData(result), e => console.warn('fetch failure', e));
+    .then(
+      result => setData(result),
+      e => console.warn('fetch failure', e),
+    );
 }, [id]);
 ```
 
@@ -188,11 +196,13 @@ useEffect(() => {
   setData(null);
 
   // fire the api request
-  const currentPromise = fetchStarwarsHeroData(id).then(async data => {
-    await delayRandomly();
-    throwRandomly();
-    return data;
-  });
+  const currentPromise = fetchStarwarsHeroData(id).then(
+    async data => {
+      await delayRandomly();
+      throwRandomly();
+      return data;
+    },
+  );
 
   // store the promise to the ref
   lastPromise.current = currentPromise;
@@ -297,14 +307,25 @@ task started previously if it's still running.
 
 ```jsx
 function* loadStarwarsHeroSaga() {
-  yield* takeLatest('LOAD_STARWARS_HERO', function* loadStarwarsHero(action) {
-    try {
-      const hero = yield fetch(`http://data.com/${action.payload.id}`);
-      yield put({ type: 'LOAD_STARWARS_HERO_SUCCESS', hero });
-    } catch (err) {
-      yield put({ type: 'LOAD_STARWARS_HERO_FAILURE', err });
-    }
-  });
+  yield* takeLatest(
+    'LOAD_STARWARS_HERO',
+    function* loadStarwarsHero(action) {
+      try {
+        const hero = yield fetch(
+          `http://data.com/${action.payload.id}`,
+        );
+        yield put({
+          type: 'LOAD_STARWARS_HERO_SUCCESS',
+          hero,
+        });
+      } catch (err) {
+        yield put({
+          type: 'LOAD_STARWARS_HERO_FAILURE',
+          err,
+        });
+      }
+    },
+  );
 }
 ```
 
@@ -366,14 +387,18 @@ I created [react-async-hook](https://github.com/slorber/react-async-hook): a ver
 import { useAsync } from 'react-async-hook';
 
 const fetchStarwarsHero = async id =>
-  (await fetch(`https://swapi.co/api/people/${id}/`)).json();
+  (await fetch(
+    `https://swapi.co/api/people/${id}/`,
+  )).json();
 
 const StarwarsHero = ({ id }) => {
   const asyncHero = useAsync(fetchStarwarsHero, [id]);
   return (
     <div>
       {asyncHero.loading && <div>Loading</div>}
-      {asyncHero.error && <div>Error: {asyncHero.error.message}</div>}
+      {asyncHero.error && (
+        <div>Error: {asyncHero.error.message}</div>
+      )}
       {asyncHero.result && (
         <div>
           <div>Success!</div>
@@ -439,7 +464,9 @@ cancel();
 ```jsx
 import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
 
-const fetchStarwarsHeroLast = onlyResolvesLast(fetchStarwarsHero);
+const fetchStarwarsHeroLast = onlyResolvesLast(
+  fetchStarwarsHero,
+);
 
 const promise1 = fetchStarwarsHeroLast(1);
 const promise2 = fetchStarwarsHeroLast(2);

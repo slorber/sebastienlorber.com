@@ -141,8 +141,6 @@ export const StarwarsHeroSliderDelay = () => {
   );
 };
 
-
-
 export const StarwarsHeroSliderDelayThrow = () => {
   const [id, { previous, next }] = useStarwarsSliderState();
   const [data, setData] = useState(null);
