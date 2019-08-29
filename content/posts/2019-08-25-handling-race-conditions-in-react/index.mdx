@@ -9,13 +9,12 @@ excerpt: Or how to avoid rendering the wrong data
 import {
   StarwarsHeroSliderDefault,
   StarwarsHeroSliderDelay,
-  StarwarsHeroSliderThrow,
   StarwarsHeroSliderDelayThrow,
   StarwarsHeroSliderIgnoring,
   StarwarsHeroSliderAborting,
 } from './components';
 
-Many blog articles talk about loading api/async data in a React apps, with `componentDidMount`, `useEffect`, or through Redux, Apollo...
+Many blog articles talk about loading api/async data in a React apps, with `componentDidMount`, `useEffect`, Redux, Apollo...
 
 Yet, all those articles are **generally optimistic**, and never mention something important to consider: race conditions could happen, and your UI may end up in an **inconsistant state**.
 
@@ -23,24 +22,28 @@ An image is worth a thousand words:
 
 ![](./images/trump-macron.png)
 
-If there is a non-null probability that your UI end up in such a state, your app is subject to race conditions.
+You search for **Macron**, then change your mind and search for **Trump**, and you end up with a mismatch between **what you want (Trump)** and **what you get (Macron)**.
+
+If there is a non-null probability that your UI could end up in such a state, your app is subject to race conditions.
 
 ## Why this happens?
 
-Sometimes, the UI end up having multiple requests being loading in parallel, and we just assume that the list fired request will resolve last. Actually, it may resolve first, or may just fail, leading to a former pending request being the last one to resolve.
+Sometimes, multiple requests are fired in parallel (competing to render the same view), and we just assume the last request will resolve last. Actually, the last request may resolve first, or just fail, leading to the first request resolving last.
 
-It happens more often than you think. For some apps, it can lead to very serious problems, like **an user buying the wrong product**, or **a doctor prescribing the wrong drug to a patient**.
+It happens more often than you think. For some apps, it can lead to very serious problems, like **a user buying the wrong product**, or **a doctor prescribing the wrong drug to a patient**.
 
 A non-exhaustive list of reasons:
 
 - The network is slow, bad, unpredictable, with variable request latencies...
-- The backend is under heavy load, throttling some requests, under a Denial of Service attack...
+- The backend is under heavy load, throttling some requests, under a Denial-of-Service attack...
 - The user is clicking fast, commuting, travelling, on the country side...
 - You are just unlucky
 
 Developers don't see them in development, where the network conditions are generally good, sometimes running the backend API on your own computer, with close to 0ms latency.
 
-In this post, I'll try to demonstrate that those issues do, with simple but realistic network simulations and runnable demos. I'll also explain how you can fix those issues in many different ways, without requiring a large refactor.
+In this post, I'll show you what those issues do, using realistic network simulations and runnable demos. I'll also explain how you can fix those issues, depending on the libraries you already use.
+
+**Disclaimer**: to keep the focus on race conditions, the following code samples will not prevent the React warning if you `setState` after unmounting.
 
 ## The incriminated code:
 
@@ -52,6 +55,7 @@ const StarwarsHero = ({ id }) => {
 
   useEffect(() => {
     setData(null);
+
     fetchStarwarsHeroData(id).then(
       result => setData(result),
       e => console.warn('fetch failure', e),
@@ -62,34 +66,7 @@ const StarwarsHero = ({ id }) => {
 };
 ```
 
-Eventually, it will also ensure to not set state after unmount, and avoid the React warning (not really the subject of this article):
-
-```jsx
-const useIsMounted = () => {
-  const isMounted = React.useRef(true);
-  useEffect(() => {
-    return () => (isMounted.current = false);
-  });
-  return isMounted;
-};
-
-const StarwarsHero = ({ id }) => {
-  const [data, setData] = useState(null);
-  const isMounted = useIsMounted();
-
-  useEffect(() => {
-    setData(null);
-    fetchStarwarsHeroData(id).then(
-      result => isMounted.current && setData(result),
-      e => console.warn('fetch failure', e),
-    );
-  }, [id]);
-
-  return <div>{data ? data.name : <Spinner />}</div>;
-};
-```
-
-Or with the React class API:
+Or with the class API:
 
 ```jsx
 class StarwarsHero extends React.Component {
@@ -112,10 +89,6 @@ class StarwarsHero extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.setState = () => {}; // I bet you didn't know this trick ;)
-  }
-
   render() {
     const { data } = this.state;
     return <div>{data ? data.name : <Spinner />}</div>;
@@ -123,11 +96,11 @@ class StarwarsHero extends React.Component {
 }
 ```
 
-Here is a Starwars Hero slider. All 3 versions above lead to this same result. Note debouncing would not protect you at all, it just reduces the chances of being unlucky.
+Here is a Starwars Hero slider. All 2 versions above lead to this same result.
 
 <StarwarsHeroSliderDefault />
 
-When clicking fast on the arrows, even with your own good home network, you can already see something is wrong.
+When clicking fast on the arrows, even with your own good home network, you can already see something is wrong. Please don't think debouncing protects you: it just reduces the chances of being unlucky.
 
 Now let's see what happens when you are in a train with a few tunnels.
 
@@ -160,6 +133,7 @@ This one is pretty realistic. You might be on a slow network, or the backend may
 ```jsx
 useEffect(() => {
   setData(null);
+
   fetchStarwarsHeroData(id)
     .then(async data => {
       await delayRandomly();
@@ -171,24 +145,6 @@ useEffect(() => {
 
 <StarwarsHeroSliderDelay />
 
-### Adding network failures
-
-This one may not be so realistic, because generally network failures occur a delay.
-
-```jsx
-useEffect(() => {
-  setData(null);
-  fetchStarwarsHeroData(id)
-    .then(data => {
-      throwRandomly();
-      return data;
-    })
-    .then(result => setData(result), e => console.warn('fetch failure', e));
-}, [id]);
-```
-
-<StarwarsHeroSliderThrow />
-
 ### Adding network delays + failures
 
 This time you are on a train in the countryside, and there are a few tunnels: requests are delayed randomly and some of them might fail.
@@ -196,6 +152,7 @@ This time you are on a train in the countryside, and there are a few tunnels: re
 ```jsx
 useEffect(() => {
   setData(null);
+
   fetchStarwarsHeroData(id)
     .then(async data => {
       await delayRandomly();
@@ -258,11 +215,11 @@ useEffect(() => {
 
 <StarwarsHeroSliderIgnoring />
 
-Some might be tempted to use the `id` to do the filtering, but it's not a good idea: if the user clicks `next` and then `previous`, we might end up with 2 distinct requests for the same hero. Generally this is not a problem (as the 2 requests will often return the exact same data), but using promise identity is a more generic and portable solution.
+Some might be tempted to use the `id` to do this filtering, but it's not a good idea: if the user clicks `next` and then `previous`, we might end up with 2 distinct requests for the same hero. Generally this is not a problem (as the 2 requests will often return the exact same data), but using promise identity is a more generic and portable solution.
 
 ### Cancelling former api calls
 
-If you can, it is better to cancel former api calls than ignoring them, as you'll end up consuming less resources. Hopefully, I'm using `fetch`, which support cancellation through its `AbortSignal` option:
+It is better to cancel former api requests in-flight: the browser can avoid parsing the response and prevent some useless CPU/Network usage. `fetch` support cancellation thanks to `AbortSignal`:
 
 ```jsx
 const abortController = new AbortController();
@@ -273,7 +230,8 @@ fetch(`https://swapi.co/api/people/${id}/`, {
   signal: abortController.signal,
 });
 
-// abort the issued request
+// abort the request in-flight
+// the request will be marked as "cancelled" in devtools
 abortController.abort();
 ```
 
@@ -436,7 +394,7 @@ There are many other library options, for which I won't be able to tell you if t
 
 **Note**: it's possible `react-async-hook` and `react-async` will merge in the next months.
 
-**Note:**: it's possible to use `StarwarsHero key={id} key={id}/>` as a simple React workaround, to ensure the component instance stanges everytime the id changes. This will effectively protect you (and some time unmounting/remounting is useful), but will also give more work to React.
+**Note:**: it's possible to use `StarwarsHero key={id} key={id}/>` as a simple React workaround, to ensure the component instance stanges everytime the id changes. This will effectively protect you (and sometime unmounting/remounting is useful), but gives more work to React.
 
 ### Vanilla promises and Javascript
 
@@ -504,3 +462,7 @@ I can also recommend to hardcode some little delays to your API requests in deve
 I hope you've found this post interesting and you learned something, it was my first technical blog post ever :)
 
 For more content like this, [subscribe to my newsletter](https://tinyletter.com/slorber) and follow me on [Twitter](https://twitter.com/sebastienlorber)
+
+---
+
+Thanks for my reviewers: [swyx](https://twitter.com/swyx), [Mateusz Burzyński](https://twitter.com/AndaristRake), [Andrei Calazans](https://twitter.com/Andrei_Calazans), [Adrian Carolli](https://twitter.com/icookandcode), [Clément Oriol](https://twitter.com/oriolclement), [Thibaud Duthoit](https://github.com/tidusia)

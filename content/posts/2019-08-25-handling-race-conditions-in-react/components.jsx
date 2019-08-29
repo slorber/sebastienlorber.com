@@ -141,26 +141,7 @@ export const StarwarsHeroSliderDelay = () => {
   );
 };
 
-export const StarwarsHeroSliderThrow = () => {
-  const [id, { previous, next }] = useStarwarsSliderState();
-  const [data, setData] = useState(null);
 
-  useEffect(() => {
-    setData(null);
-    fetchStarwarsHeroData(id)
-      .then(data => {
-        throwRandomly();
-        return data;
-      })
-      .then(result => setData(result), e => console.warn('fetch failure', e));
-  }, [id]);
-
-  return (
-    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
-      <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </div>
-  );
-};
 
 export const StarwarsHeroSliderDelayThrow = () => {
   const [id, { previous, next }] = useStarwarsSliderState();
