@@ -37,6 +37,13 @@ module.exports = {
         contentPosts: "content/posts",
         contentAuthors: "content/authors",
         basePath: "/",
+        mailchimp: true,
+      },
+    },
+    {
+      resolve: "gatsby-plugin-mailchimp",
+      options: {
+        endpoint: "https://gmail.us4.list-manage.com/subscribe/post?u=5150dccbaa8d2e62d2aa5a921&amp;id=adf9b01764",
       },
     },
     {

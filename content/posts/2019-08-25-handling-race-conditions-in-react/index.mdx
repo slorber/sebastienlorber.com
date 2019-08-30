@@ -1,0 +1,500 @@
+---
+title: Handling API request race conditions in React
+author: Sébastien Lorber
+date: 2019-08-25
+hero: ./images/hero.png
+excerpt: Or how to avoid rendering the wrong data
+---
+
+import {
+  StarwarsHeroSliderDefault,
+  StarwarsHeroSliderDelay,
+  StarwarsHeroSliderDelayThrow,
+  StarwarsHeroSliderIgnoring,
+  StarwarsHeroSliderAborting,
+} from './components';
+
+Many blog articles talk about loading api/async data in a React apps, with `componentDidMount`, `useEffect`, Redux, Apollo...
+
+Yet, all those articles are **generally optimistic**, and never mention something important to consider: race conditions could happen, and your UI may end up in an **inconsistant state**.
+
+An image is worth a thousand words:
+
+![](./images/trump-macron.png)
+
+You search for **Macron**, then change your mind and search for **Trump**, and you end up with a mismatch between **what you want (Trump)** and **what you get (Macron)**.
+
+If there is a non-null probability that your UI could end up in such a state, your app is subject to race conditions.
+
+## Why this happens?
+
+Sometimes, multiple requests are fired in parallel (competing to render the same view), and we just assume the last request will resolve last. Actually, the last request may resolve first, or just fail, leading to the first request resolving last.
+
+It happens more often than you think. For some apps, it can lead to very serious problems, like **a user buying the wrong product**, or **a doctor prescribing the wrong drug to a patient**.
+
+A non-exhaustive list of reasons:
+
+- The network is slow, bad, unpredictable, with variable request latencies...
+- The backend is under heavy load, throttling some requests, under a Denial-of-Service attack...
+- The user is clicking fast, commuting, travelling, on the country side...
+- You are just unlucky
+
+Developers don't see them in development, where the network conditions are generally good, sometimes running the backend API on your own computer, with close to 0ms latency.
+
+In this post, I'll show you what those issues do, using realistic network simulations and runnable demos. I'll also explain how you can fix those issues, depending on the libraries you already use.
+
+**Disclaimer**: to keep the focus on race conditions, the following code samples will not prevent the React warning if you `setState` after unmounting.
+
+## The incriminated code:
+
+You probably already read tutorials with the following code:
+
+```jsx
+const StarwarsHero = ({ id }) => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    setData(null);
+
+    fetchStarwarsHeroData(id).then(
+      result => setData(result),
+      e => console.warn('fetch failure', e),
+    );
+  }, [id]);
+
+  return <div>{data ? data.name : <Spinner />}</div>;
+};
+```
+
+Or with the class API:
+
+```jsx
+class StarwarsHero extends React.Component {
+  state = { data: null };
+
+  fetchData = id => {
+    fetchStarwarsHeroData(id).then(
+      result => setState({ data: result }),
+      e => console.warn('fetch failure', e),
+    );
+  };
+
+  componentDidMount() {
+    this.fetchData(this.props.id);
+  }
+
+  componentDidUpdate(nextProps) {
+    if (nextProps.id !== this.props.id) {
+      this.fetchData(this.props.id);
+    }
+  }
+
+  render() {
+    const { data } = this.state;
+    return <div>{data ? data.name : <Spinner />}</div>;
+  }
+}
+```
+
+Here is a Starwars Hero slider. All 2 versions above lead to this same result.
+
+<StarwarsHeroSliderDefault />
+
+When clicking very fast on the arrows, even with your own good home network and very fast API, you can already see something is wrong. Please don't think debouncing protects you: it just reduces the chances of being unlucky.
+
+Now let's see what happens when you are in a train with a few tunnels.
+
+## Simulating bad network conditions
+
+Let's build some utils to simulate bad network conditions:
+
+```jsx
+import { sample } from 'lodash';
+
+// Will return a promise delayed by a random amount, picked in the delay array
+const delayRandomly = () => {
+  const timeout = sample([0, 200, 500, 700, 1000, 3000]);
+  return new Promise(resolve =>
+    setTimeout(resolve, timeout),
+  );
+};
+
+// Will throw randomly with a 1/4 chance ratio
+const throwRandomly = () => {
+  const shouldThrow = sample([true, false, false, false]);
+  if (shouldThrow) {
+    throw new Error('simulated async failure');
+  }
+};
+```
+
+### Adding network delays
+
+This one is pretty realistic. You might be on a slow network, or the backend may take time to answer.
+
+```jsx
+useEffect(() => {
+  setData(null);
+
+  fetchStarwarsHeroData(id)
+    .then(async data => {
+      await delayRandomly();
+      return data;
+    })
+    .then(
+      result => setData(result),
+      e => console.warn('fetch failure', e),
+    );
+}, [id]);
+```
+
+<StarwarsHeroSliderDelay />
+
+### Adding network delays + failures
+
+This time you are on a train in the countryside, and there are a few tunnels: requests are delayed randomly and some of them might fail.
+
+```jsx
+useEffect(() => {
+  setData(null);
+
+  fetchStarwarsHeroData(id)
+    .then(async data => {
+      await delayRandomly();
+      throwRandomly();
+      return data;
+    })
+    .then(
+      result => setData(result),
+      e => console.warn('fetch failure', e),
+    );
+}, [id]);
+```
+
+As you can see, this code easily leads to weird, inconsistant UI states.
+
+<StarwarsHeroSliderDelayThrow />
+
+## How to avoid this problem
+
+Let's suppose 3 requests R1, R2 and R3 gets fired in this order, and are still pending. The solution is to only handle the response from R3, the last issued request.
+
+There are 2 valid ways to do so:
+
+- Ignoring responses from former api calls
+- Cancelling former api calls
+
+### Ignoring responses from former api calls
+
+Here is one possible implementation.
+
+```jsx
+// A ref to store the last issued pending request
+const lastPromise = useRef();
+
+useEffect(() => {
+  setData(null);
+
+  // fire the api request
+  const currentPromise = fetchStarwarsHeroData(id).then(
+    async data => {
+      await delayRandomly();
+      throwRandomly();
+      return data;
+    },
+  );
+
+  // store the promise to the ref
+  lastPromise.current = currentPromise;
+
+  // handle the result with filtering
+  currentPromise.then(
+    result => {
+      if (currentPromise === lastPromise.current) {
+        setData(result);
+      }
+    },
+    e => {
+      if (currentPromise === lastPromise.current) {
+        console.warn('fetch failure', e);
+      }
+    },
+  );
+}, [id]);
+```
+
+<StarwarsHeroSliderIgnoring />
+
+Some might be tempted to use the `id` to do this filtering, but it's not a good idea: if the user clicks `next` and then `previous`, we might end up with 2 distinct requests for the same hero. Generally this is not a problem (as the 2 requests will often return the exact same data), but using promise identity is a more generic and portable solution.
+
+### Cancelling former api calls
+
+It is better to cancel former api requests in-flight: the browser can avoid parsing the response and prevent some useless CPU/Network usage. `fetch` support cancellation thanks to `AbortSignal`:
+
+```jsx
+const abortController = new AbortController();
+
+// fire the request, with an abort signal,
+// which will permit premature abortion
+fetch(`https://swapi.co/api/people/${id}/`, {
+  signal: abortController.signal,
+});
+
+// abort the request in-flight
+// the request will be marked as "cancelled" in devtools
+abortController.abort();
+```
+
+An abort signal is like a little event emitter, you can trigger it (through the `AbortController`), and every request started with this signal will be notified and cancelled.
+
+Let's see how to use this feature to solve race conditions:
+
+```jsx
+// Store abort controller which will permit to abort
+// the last issued request
+const lastAbortController = useRef();
+
+useEffect(() => {
+  setData(null);
+
+  // When a new request is going to be issued,
+  // the first thing to do is cancel the previous request
+  if (lastAbortController.current) {
+    lastAbortController.current.abort();
+  }
+
+  // Create new AbortController for the new request and store it in the ref
+  const currentAbortController = new AbortController();
+  lastAbortController.current = currentAbortController;
+
+  // Issue the new request, that may eventually be aborted
+  // by a subsequent request
+  const currentPromise = fetchStarwarsHeroData(id, {
+    signal: currentAbortController.signal,
+  }).then(data => {
+    // You might notice I had to remove the bad network simulation code:
+    // this is because it's not possible to abort
+    // this part of the code with the abort signal
+    return data;
+  });
+
+  currentPromise.then(
+    result => setData(result),
+    e => console.warn('fetch failure', e),
+  );
+}, [id]);
+```
+
+<StarwarsHeroSliderAborting />
+
+**Note**: in practice, it's important to consider using both techniques at the same time. If you do `fetch().then(res => res.json()).then(doSomething)`, at the time where you send the abort signal, you might already be in the `then()` code, for which you'll have to code yourself the abortion feature.
+
+## Using libraries
+
+Doing all this manually is complex and error prone. Hopefully, some libraries solve this problem for you. Let's explore a non-exhaustive list of libraries generally used for loading data into React.
+
+### Redux
+
+There are multiple ways to load data into a Redux store. Generally, if you are using Redux-saga or Redux-observable, you are fine. For Redux-thunk, Redux-promise and other middlewares, you might check the "vanilla React/Promise" solutions in next sections.
+
+#### Redux-saga
+
+You might notice there are multiple `take` methods on the Redux-saga API, but generally you'll find many examples using [`takeLatest`](https://redux-saga.js.org/docs/api/). This is because `takeLatest` will protect you against those race conditions.
+
+```
+Forks a saga on each action dispatched to the Store
+that matches pattern. And automatically cancels any previous saga
+task started previously if it's still running.
+```
+
+```jsx
+function* loadStarwarsHeroSaga() {
+  yield* takeLatest(
+    'LOAD_STARWARS_HERO',
+    function* loadStarwarsHero(action) {
+      try {
+        const hero = yield fetch(
+          `http://data.com/${action.payload.id}`,
+        );
+        yield put({
+          type: 'LOAD_STARWARS_HERO_SUCCESS',
+          hero,
+        });
+      } catch (err) {
+        yield put({
+          type: 'LOAD_STARWARS_HERO_FAILURE',
+          err,
+        });
+      }
+    },
+  );
+}
+```
+
+The previous `loadStarwarsHero` generator executions will be "cancelled". Unfortunately the underlying API request will not really be cancelled (you need an `AbortSignal` for that), but Redux-saga will ensure that the success/error actions will only be dispatched to Redux for the last requested Starwars hero. For in-flight request cancellation, follow [this issue](https://github.com/redux-saga/redux-saga/issues/1917)
+
+You can also opt-out from this protection and use `take` or `takeEvery`.
+
+#### Redux-observable
+
+Similarly, Redux-observable (actually RxJS) has a solution: [`switchMap`](https://www.learnrxjs.io/operators/transformation/switchmap.html):
+
+```
+The main difference between switchMap and other flattening operators
+is the cancelling effect. On each emission the previous inner observable
+(the result of the function you supplied) is cancelled and
+the new observable is subscribed. You can remember this
+by the phrase switch to a new observable.
+```
+
+```jsx
+const loadStarwarsHeroEpic = action$ =>
+  action$.ofType('LOAD_STARWARS_HERO').switchMap(action =>
+    Observable.ajax(`http://data.com/${action.payload.id}`)
+      .map(hero => ({
+        type: 'LOAD_STARWARS_HERO_SUCCESS',
+        hero,
+      }))
+      .catch(err =>
+        Observable.of({
+          type: 'LOAD_STARWARS_HERO_FAILURE',
+          err,
+        }),
+      ),
+  );
+```
+
+You can also use other RxJS operators like `mergeMap` if you know what you are doing, but many tutorials will use `switchMap`, as it's a safer default. Like Redux-saga, it won't cancel the underlying request in-flight, but there are [solutions](https://github.com/ReactiveX/rxjs/issues/3122) to add this behavior.
+
+### Apollo
+
+Apollo lets you pass down GraphQL query variables. Whenever the Starwars hero id changes, a new request is fired to load the appropriate data. You can use the HOC, the render props or the hooks, Apollo will always guarantee that if you request `id: 2`, your UI will never return you the data for another Starwars hero.
+
+```jsx
+const data = useQuery(GET_STARWARS_HERO, {
+  variables: { id },
+});
+
+if (data) {
+  // This is always true, hopefully!
+  assert(data.id === id);
+}
+```
+
+### Vanilla React
+
+There are many libraries to load data into React components, without needing a global state management solution.
+
+I created [react-async-hook](https://github.com/slorber/react-async-hook): a very simple and tiny hooks library to load async data into React components. It has very good native Typescript support, and protects you against race conditions by using the techniques discussed above.
+
+```jsx
+import { useAsync } from 'react-async-hook';
+
+const fetchStarwarsHero = async id =>
+  (await fetch(
+    `https://swapi.co/api/people/${id}/`,
+  )).json();
+
+const StarwarsHero = ({ id }) => {
+  const asyncHero = useAsync(fetchStarwarsHero, [id]);
+  return (
+    <div>
+      {asyncHero.loading && <div>Loading</div>}
+      {asyncHero.error && (
+        <div>Error: {asyncHero.error.message}</div>
+      )}
+      {asyncHero.result && (
+        <div>
+          <div>Success!</div>
+          <div>Name: {asyncHero.result.name}</div>
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+Other options protecting you:
+
+- [react-async](https://github.com/ghengeveld/react-async): quite similar, also with render props api
+- [react-refetch](https://github.com/heroku/react-refetch): older project, based on HOCs
+
+There are many other library options, for which I won't be able to tell you if they are protecting you: take a look at the implementation.
+
+**Note**: it's possible `react-async-hook` and `react-async` will merge in the next months.
+
+**Note:**: it's possible to use `StarwarsHero key={id} key={id}/>` as a simple React workaround, to ensure the component remounts everytime the id changes. This will protect you (and sometime a useful feature), but gives more work to React.
+
+### Vanilla promises and Javascript
+
+If you are dealing with vanilla promises and Javascript, here are simple tools you can use to prevent those issues.
+
+Those tools can also be useful to handle race conditions if you are using thunks or promises with Redux.
+
+**Note**: some of these tools are actually low-level implementation details of [react-async-hook](https://github.com/slorber/react-async-hook).
+
+#### Cancellable promises
+
+React has an old blog post [isMounted() is an antipattern](https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html) on which you'll learn how to make a promise cancellable to avoid the setState after unmount warning. The promise is not really `cancellable` (the underlying api call won't be cancelled), but you can choose to ignore or reject the response of a promise.
+
+I made a library [awesome-imperative-promise](https://github.com/slorber/awesome-imperative-promise) to make this process easier:
+
+```jsx
+import { createImperativePromise } from 'awesome-imperative-promise';
+
+const id = 1;
+
+const { promise, resolve, reject, cancel } = createImperativePromise(fetchStarwarsHero(id);
+
+// will make the returned promise resolved manually
+resolve({
+  id,
+  name: "R2D2"
+});
+
+// will make the returned promise rejected manually
+reject(new Error("can't load Starwars hero"));
+
+// will ensure the returned promise never resolves or reject
+cancel();
+```
+
+**Note**: all those methods have to be called before the underlying API request resolves or reject. If the promise is already resolved, there's no way to "unresolve" it.
+
+#### Automatically ignoring last call
+
+[awesome-only-resolves-last-promise](https://github.com/slorber/awesome-only-resolves-last-promise) is a library to ensure we only handle the result of the last async call:
+
+```jsx
+import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
+
+const fetchStarwarsHeroLast = onlyResolvesLast(
+  fetchStarwarsHero,
+);
+
+const promise1 = fetchStarwarsHeroLast(1);
+const promise2 = fetchStarwarsHeroLast(2);
+const promise3 = fetchStarwarsHeroLast(3);
+
+// promise1: won't resolve
+// promise2: won't resolve
+// promise3: WILL resolve
+```
+
+### What about Suspense?
+
+It should prevent those issues, but let's wait for the official release :)
+
+## Conclusion
+
+For your next React data loading usecase, I hope you will consider handling race conditions properly.
+
+I can also recommend to hardcode some little delays to your API requests in development environment. Potential race conditions and bad loading experiences will be more easy to notice. I think it's safer to make this delay mandatory, instead of expecting each developer to turn on the slow network option in devtools.
+
+I hope you've found this post interesting and you learned something, it was my first technical blog post ever :)
+
+---
+
+For more content like this, subscribe to [my mailing list](https://mailchi.mp/4ea4df0b54f7/sebastienlorber) and follow me on [Twitter](https://twitter.com/sebastienlorber).
+
+Thanks for my reviewers: [Shawn Wang](https://twitter.com/swyx), [Mateusz Burzyński](https://twitter.com/AndaristRake), [Andrei Calazans](https://twitter.com/Andrei_Calazans), [Adrian Carolli](https://twitter.com/icookandcode), [Clément Oriol](https://twitter.com/oriolclement), [Thibaud Duthoit](https://github.com/tidusia), [Bernard Pratz](https://twitter.com/guyzmo)

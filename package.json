@@ -7,16 +7,24 @@
     "start": "yarn dev",
     "build": "gatsby build",
     "dev": "gatsby develop",
-    "clean": "gatsby clean"
+    "clean": "gatsby clean",
+    "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'"
   },
   "dependencies": {
-    "@narative/gatsby-theme-novela": "^0.*",
+    "@emotion/core": "^10.0.16",
+    "@emotion/styled": "^10.0.15",
+    "@narative/gatsby-theme-novela": "^0.4.6",
+    "emotion-theming": "^10.0.14",
     "gatsby": "^2.13.41",
     "gatsby-plugin-google-analytics": "^2.1.11",
+    "gatsby-plugin-mailchimp": "^5.1.2",
     "gatsby-plugin-manifest": "^2.2.4",
     "gatsby-plugin-netlify": "^2.1.10",
     "gatsby-plugin-sitemap": "^2.2.9",
+    "lodash": "^4.17.15",
+    "prettier": "^1.18.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "use-constant": "^1.0.0"
   }
 }
