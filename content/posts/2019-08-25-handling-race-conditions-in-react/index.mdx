@@ -100,7 +100,7 @@ Here is a Starwars Hero slider. All 2 versions above lead to this same result.
 
 <StarwarsHeroSliderDefault />
 
-When clicking fast on the arrows, even with your own good home network, you can already see something is wrong. Please don't think debouncing protects you: it just reduces the chances of being unlucky.
+When clicking very fast on the arrows, even with your own good home network and very fast API, you can already see something is wrong. Please don't think debouncing protects you: it just reduces the chances of being unlucky.
 
 Now let's see what happens when you are in a train with a few tunnels.
 
@@ -333,11 +333,11 @@ function* loadStarwarsHeroSaga() {
 
 The previous `loadStarwarsHero` generator executions will be "cancelled". Unfortunately the underlying API request will not really be cancelled (you need an `AbortSignal` for that), but Redux-saga will ensure that the success/error actions will only be dispatched to Redux for the last requested Starwars hero. For in-flight request cancellation, follow [this issue](https://github.com/redux-saga/redux-saga/issues/1917)
 
-Optionnally, you might opt-out from this protection and use `take` or `takeEvery`.
+You can also opt-out from this protection and use `take` or `takeEvery`.
 
 #### Redux-observable
 
-Similarly to Redux-saga, Redux-observable has a solution. Actually, the solution is more related to RxJS and it's called [`switchMap`](https://www.learnrxjs.io/operators/transformation/switchmap.html):
+Similarly, Redux-observable (actually RxJS) has a solution: [`switchMap`](https://www.learnrxjs.io/operators/transformation/switchmap.html):
 
 ```
 The main difference between switchMap and other flattening operators
@@ -375,8 +375,10 @@ const data = useQuery(GET_STARWARS_HERO, {
   variables: { id },
 });
 
-// This is always true, hopefully!
-assert(data.id === id);
+if (data) {
+  // This is always true, hopefully!
+  assert(data.id === id);
+}
 ```
 
 ### Vanilla React
@@ -414,14 +416,14 @@ const StarwarsHero = ({ id }) => {
 
 Other options protecting you:
 
-- [react-async](https://github.com/ghengeveld/react-async): quite similar and a bit more featured (render props)
+- [react-async](https://github.com/ghengeveld/react-async): quite similar, also with render props api
 - [react-refetch](https://github.com/heroku/react-refetch): older project, based on HOCs
 
 There are many other library options, for which I won't be able to tell you if they are protecting you: take a look at the implementation.
 
 **Note**: it's possible `react-async-hook` and `react-async` will merge in the next months.
 
-**Note:**: it's possible to use `StarwarsHero key={id} key={id}/>` as a simple React workaround, to ensure the component instance stanges everytime the id changes. This will effectively protect you (and sometime unmounting/remounting is useful), but gives more work to React.
+**Note:**: it's possible to use `StarwarsHero key={id} key={id}/>` as a simple React workaround, to ensure the component remounts everytime the id changes. This will protect you (and sometime a useful feature), but gives more work to React.
 
 ### Vanilla promises and Javascript
 
@@ -461,7 +463,7 @@ cancel();
 
 #### Automatically ignoring last call
 
-[awesome-only-resolves-last-promise](https://github.com/slorber/awesome-only-resolves-last-promise) is another cool library to ensure we only handle the result of the last async call:
+[awesome-only-resolves-last-promise](https://github.com/slorber/awesome-only-resolves-last-promise) is a library to ensure we only handle the result of the last async call:
 
 ```jsx
 import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
@@ -474,8 +476,9 @@ const promise1 = fetchStarwarsHeroLast(1);
 const promise2 = fetchStarwarsHeroLast(2);
 const promise3 = fetchStarwarsHeroLast(3);
 
-// promise1 and promise2 will never resolve/reject
-// promise3 will resolve in 100ms
+// promise1: won't resolve
+// promise2: won't resolve
+// promise3: WILL resolve
 ```
 
 ### What about Suspense?
