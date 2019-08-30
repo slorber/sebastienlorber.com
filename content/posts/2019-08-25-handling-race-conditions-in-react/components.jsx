@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { sample } from 'lodash';
 
+/*
 const fetchStarwarsHeroData = async (id, options) => {
   const result = await fetch(`https://swapi.co/api/people/${id}/`, options);
   if (result.status !== 200) {
@@ -11,6 +12,86 @@ const fetchStarwarsHeroData = async (id, options) => {
     ...data,
     id,
   }));
+};
+*/
+
+console.debug('---------------------------------------------------');
+console.debug('---------------------------------------------------');
+console.warn('-- Sebastien here:');
+console.warn(
+  '-- If you are looking at the console logs and network, take into consideration I had to replace the swapi.co public API beacause it was throttling the demos. I tried to emulate a real SW api by hosting a static json file on netlift, and reimplementing some kind of weird in-flight request abortion',
+);
+console.warn(
+  "-- So it's normal if you see some unexpected things in the network tab like a single route always returning the same response: an array of all SW heros",
+);
+console.debug('---------------------------------------------------');
+console.debug('---------------------------------------------------');
+
+const delayPromise = timeout =>
+  new Promise(resolve => setTimeout(resolve, timeout));
+
+/*
+// TODO fake SW api because the official one is often not reliable :/
+// using a fake static json file on netlify to emulate the real api...
+const fetchStarwarsHeroData = async (id, options) => {
+  // Fake a bit some network delay, because the api is "static" and self hosted, it's noo fast...
+  await delayPromise(sample([0, 100, 300, 500, 700, 1000]));
+
+  // Shitty workaround to make abortion work despite the fake delay...
+  const isAbortedBeforeFetch = !!(
+    options &&
+    options.signal &&
+    options.signal.aborted
+  );
+  const abortController = new AbortController();
+  if ( options && options.signal ) {
+    options.signal.addEventListener("abort",() => {
+      console.debug("abortion listener");
+      abortController.abort();
+    })
+  }
+
+  const promise = fetch(`starwarsPeople.json?id=${id}`, {
+    signal: abortController.signal,
+  });
+
+  if (isAbortedBeforeFetch) {
+    console.debug('aborting!');
+    abortController.abort();
+  }
+
+  const result = await promise;
+  if (result.status !== 200) {
+    throw new Error('bad status = ' + result.status);
+  }
+  const data = await result.json();
+  const item = data.find(hero => hero.pk === id);
+  if (!item) {
+    throw new Error('starwars hero not found for id =' + id);
+  }
+  return {
+    id,
+    ...item.fields,
+  };
+};
+ */
+
+// TODO fake SW api because the official one is often not reliable :/
+// using a fake static json file on netlify to emulate the real api...
+const fetchStarwarsHeroData = async (id, options) => {
+  const result = await fetch(`starwarsPeople.json?id=${id}`, options);
+  if (result.status !== 200) {
+    throw new Error('bad status = ' + result.status);
+  }
+  const data = await result.json();
+  const item = data.find(hero => hero.pk === id);
+  if (!item) {
+    throw new Error('starwars hero not found for id =' + id);
+  }
+  return {
+    id,
+    ...item.fields,
+  };
 };
 
 const SliderArrowButton = styled.button(
@@ -57,7 +138,15 @@ const SlideContent = ({ id, data }) => (
     <div css={{ marginTop: 10 }}>
       <div>Fetched:</div>
       <div>Id: {data ? data.id : '...'}</div>
-      <div>Name: {data ? data.name : '...'}</div>
+      <div
+        css={{
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+        }}
+      >
+        Name: {data ? data.name : '...'}
+      </div>
       <div>Height: {data ? data.height : '...'}</div>
       <div>Mass: {data ? data.mass : '...'}</div>
     </div>
@@ -90,8 +179,7 @@ const StarwarsSlider = ({ id, data, previous, next }) => {
 };
 
 const delayRandomly = () => {
-  const timeout = sample([0, 200, 500, 700, 1000, 3000]);
-  return new Promise(resolve => setTimeout(resolve, timeout));
+  return delayPromise(sample([0, 200, 500, 700, 1000, 3000]));
 };
 
 const throwRandomly = () => {
