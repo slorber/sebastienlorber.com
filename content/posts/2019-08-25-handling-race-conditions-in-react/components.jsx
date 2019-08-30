@@ -16,10 +16,10 @@ const fetchStarwarsHeroData = async (id, options) => {
 const SliderArrowButton = styled.button(
   {
     borderStyle: 'solid',
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 25,
-    margin: 10,
+    margin: 5,
     alignSelf: 'center',
     justifyContent: 'center',
     fontSize: 30,
@@ -32,11 +32,11 @@ const SliderArrowButton = styled.button(
 
 const SliderContent = styled.div(
   {
-    width: 300,
+    width: 200,
     borderStyle: 'solid',
     borderRadius: 20,
     padding: 10,
-    margin: 10,
+    margin: 5,
     overflow: 'hidden',
   },
   props => ({
