@@ -287,6 +287,8 @@ useEffect(() => {
 
 <StarwarsHeroSliderAborting />
 
+**Note**: in practice, it's important to consider using both techniques at the same time. If you do `fetch().then(res => res.json()).then(doSomething)`, at the time where you send the abort signal, you might already be in the `then()` code, for which you'll have to code yourself the abortion feature.
+
 ## Using libraries
 
 Doing all this manually is complex and error prone. Hopefully, some libraries solve this problem for you. Let's explore a non-exhaustive list of libraries generally used for loading data into React.
