@@ -311,11 +311,9 @@ task started previously if it's still running.
 function* loadStarwarsHeroSaga() {
   yield* takeLatest(
     'LOAD_STARWARS_HERO',
-    function* loadStarwarsHero(action) {
+    function* loadStarwarsHero({ payload }) {
       try {
-        const hero = yield fetch(
-          `http://data.com/${action.payload.id}`,
-        );
+        const hero = yield call(fetchStarwarsHero, [payload.id]);
         yield put({
           type: 'LOAD_STARWARS_HERO_SUCCESS',
           hero,
@@ -423,7 +421,7 @@ There are many other library options, for which I won't be able to tell you if t
 
 **Note**: it's possible `react-async-hook` and `react-async` will merge in the next months.
 
-**Note:**: it's possible to use `StarwarsHero key={id} key={id}/>` as a simple React workaround, to ensure the component remounts everytime the id changes. This will protect you (and sometime a useful feature), but gives more work to React.
+**Note:**: it's possible to use `StarwarsHero key={id} id={id}/>` as a simple React workaround, to ensure the component remounts everytime the id changes. This will protect you (and sometime a useful feature), but gives more work to React.
 
 ### Vanilla promises and Javascript
 
