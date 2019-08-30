@@ -183,7 +183,7 @@ const delayRandomly = () => {
 };
 
 const throwRandomly = () => {
-  const shouldThrow = sample([true, false, false]);
+  const shouldThrow = sample([true, false, false, false, false]);
   if (shouldThrow) {
     throw new Error('simulated async failure');
   }
