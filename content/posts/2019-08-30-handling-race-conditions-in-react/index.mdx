@@ -180,7 +180,7 @@ As you can see, this code easily leads to weird, inconsistant UI states.
 
 Let's suppose 3 requests R1, R2 and R3 gets fired in this order, and are still pending. The solution is to only handle the response from R3, the last issued request.
 
-There are a few vways to do so:
+There are a few ways to do so:
 
 - Ignoring responses from former api calls
 - Cancelling former api calls
@@ -304,7 +304,7 @@ fetch('/', { signal: abortController.signal }).then(
 );
 ```
 
-If we abort the request during the fetch, the browser will be notified and do something about it. But if the abortion happens while the browser is running the `then()` callback, it has no way to handle the abortion of this part of the code, and you have to write this logic on your own. If the abortion happens during the fake delay we added, it will not cancel that delay and stop the flow.
+If we abort the request during the fetch, the browser will be notified and do something about it. But if the abortion happens while the browser is running the `then()` callback, it has no way to handle the abortion of this part of the code, and you have to write this logic on your own. If the abortion happens during the fake delay we added, it won't cancel that delay and stop the flow.
 
 ```jsx
 fetch('/', { signal: abortController.signal }).then(
