@@ -413,7 +413,7 @@ function* loadStarwarsHeroSaga() {
 }
 ```
 
-The previous `loadStarwarsHero` generator executions will be "cancelled". Unfortunately the underlying API request will not really be cancelled (you need an `AbortSignal` for that), but Redux-saga will ensure that the success/error actions will only be dispatched to Redux for the last requested Starwars hero. For in-flight request cancellation, follow [this issue](https://github.com/redux-saga/redux-saga/issues/1917)
+The previous `loadStarwarsHero` generator executions will be "cancelled". Unfortunately the underlying API request will not really be cancelled (you need an `AbortSignal` for that), but Redux-saga will ensure that the success/error actions will only be dispatched to Redux for the last requested Starwars hero. For in-flight request cancellation, follow [this issue](https://github.com/redux-saga/redux-saga/issues/1917).
 
 You can also opt-out from this protection and use `take` or `takeEvery`.
 
