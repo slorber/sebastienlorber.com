@@ -43,7 +43,7 @@ const Subscription: React.FunctionComponent<{}> = () => {
       <SubscriptionContainer>
         <Content>
           <Headings.h3>
-            Join my email list and get notified about new content
+            Join my email list
           </Headings.h3>
           <Text>
             I blog about the wide React ecosystem (React, ReactNative, Expo,
