@@ -12,6 +12,7 @@ import {
   StarwarsHeroSliderDelayThrow,
   StarwarsHeroSliderIgnoring,
   StarwarsHeroSliderAborting,
+  StarwarsHeroSliderAbortingSafe,
 } from './components';
 
 Many blog articles talk about loading api/async data in a React apps, with `componentDidMount`, `useEffect`, Redux, Apollo...
@@ -130,7 +131,7 @@ const throwRandomly = () => {
 
 ### Adding network delays
 
-This one is pretty realistic. You might be on a slow network, or the backend may take time to answer.
+You might be on a slow network, or the backend may take time to answer.
 
 ```jsx
 useEffect(() => {
@@ -152,7 +153,7 @@ useEffect(() => {
 
 ### Adding network delays + failures
 
-This time you are on a train in the countryside, and there are a few tunnels: requests are delayed randomly and some of them might fail.
+You are on a train in the countryside, and there are a few tunnels: requests are delayed randomly and some of them might fail.
 
 ```jsx
 useEffect(() => {
@@ -179,10 +180,11 @@ As you can see, this code easily leads to weird, inconsistant UI states.
 
 Let's suppose 3 requests R1, R2 and R3 gets fired in this order, and are still pending. The solution is to only handle the response from R3, the last issued request.
 
-There are 2 valid ways to do so:
+There are a few vways to do so:
 
 - Ignoring responses from former api calls
 - Cancelling former api calls
+- Cancelling and ignoring
 
 ### Ignoring responses from former api calls
 
@@ -271,10 +273,9 @@ useEffect(() => {
   // by a subsequent request
   const currentPromise = fetchStarwarsHeroData(id, {
     signal: currentAbortController.signal,
-  }).then(data => {
-    // You might notice I had to remove the bad network simulation code:
-    // this is because it's not possible to abort
-    // this part of the code with the abort signal
+  }).then(async data => {
+    await delayRandomly();
+    throwRandomly();
     return data;
   });
 
@@ -287,7 +288,88 @@ useEffect(() => {
 
 <StarwarsHeroSliderAborting />
 
-**Note**: in practice, it's important to consider using both techniques at the same time. If you do `fetch().then(res => res.json()).then(doSomething)`, at the time where you send the abort signal, you might already be in the `then()` code, for which you'll have to code yourself the abortion feature.
+This code looks good at first, but actually we are still not safe.
+
+Let's consider the following code:
+
+```jsx
+const abortController = new AbortController();
+
+fetch('/', { signal: abortController.signal }).then(
+  async response => {
+    await delayRandomly();
+    throwRandomly();
+    return response.json();
+  },
+);
+```
+
+If we abort the request during the fetch, the browser will be notified and do something about it. But if the abortion happens while the browser is running the `then()` callback, it has no way to handle the abortion of this part of the code, and you have to write this logic on your own. If the abortion happens during the fake delay we added, it will not cancel that delay and stop the flow.
+
+```jsx
+fetch('/', { signal: abortController.signal }).then(
+  async response => {
+    await delayRandomly();
+    throwRandomly();
+    const data = await response.json();
+
+    // Here you can decide to handle the abortion the way you want.
+    // Throwing or never resolving are valid options
+    if (abortController.signal.aborted) {
+      return new Promise();
+    }
+
+    return data;
+  },
+);
+```
+
+Let's get back to our problem. Here's the final, safe version, aborting the request in-flight, but also using the abortion to eventually filter the results. Also let's use the hooks cleanup function, as I was suggested [on Twitter](https://twitter.com/BenMcMahen/status/1167529036295233536), which makes the code a bit simpler.
+
+```jsx
+useEffect(() => {
+  setData(null);
+
+  // Create the current request's abort controller
+  const abortController = new AbortController();
+
+  // Issue the request
+  fetchStarwarsHeroData(id, {
+    signal: abortController.signal,
+  })
+    // Simulate some delay/errors
+    .then(async data => {
+      await delayRandomly();
+      throwRandomly();
+      return data;
+    })
+    // Set the result, if not aborted
+    .then(
+      result => {
+        // IMPORTANT: we still need to filter the results here,
+        // in case abortion happens during the delay.
+        // In real apps, abortion could happen when you are parsing the json,
+        // with code like "fetch().then(res => res.json())"
+        // but also any other async then() you execute after the fetch
+        if (abortController.signal.aborted) {
+          return;
+        }
+        setData(result);
+      },
+      e => console.warn('fetch failure', e),
+    );
+
+  // Trigger the abortion in useEffect's cleanup function
+  return () => {
+    abortController.abort();
+  };
+}, [id]);
+```
+
+<StarwarsHeroSliderAbortingSafe/>
+
+And now only we are safe.
+
 
 ## Using libraries
 
@@ -313,7 +395,9 @@ function* loadStarwarsHeroSaga() {
     'LOAD_STARWARS_HERO',
     function* loadStarwarsHero({ payload }) {
       try {
-        const hero = yield call(fetchStarwarsHero, [payload.id]);
+        const hero = yield call(fetchStarwarsHero, [
+          payload.id,
+        ]);
         yield put({
           type: 'LOAD_STARWARS_HERO_SUCCESS',
           hero,

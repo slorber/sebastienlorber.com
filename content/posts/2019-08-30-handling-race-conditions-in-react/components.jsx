@@ -15,6 +15,7 @@ const fetchStarwarsHeroData = async (id, options) => {
 };
 */
 
+/*
 console.debug('---------------------------------------------------');
 console.debug('---------------------------------------------------');
 console.warn('-- Sebastien here:');
@@ -26,6 +27,7 @@ console.warn(
 );
 console.debug('---------------------------------------------------');
 console.debug('---------------------------------------------------');
+ */
 
 const delayPromise = timeout =>
   new Promise(resolve => setTimeout(resolve, timeout));
@@ -310,9 +312,9 @@ export const StarwarsHeroSliderAborting = () => {
     // Issue the new request, that may eventually be aborted by a subsequent request
     const currentPromise = fetchStarwarsHeroData(id, {
       signal: currentAbortController.signal,
-    }).then(data => {
-      // You might notice I had to remove the bad network simulation code:
-      // this is because it's not possible to abort this part of the code with the abort signal
+    }).then(async data => {
+      await delayRandomly();
+      throwRandomly();
       return data;
     });
 
@@ -320,6 +322,56 @@ export const StarwarsHeroSliderAborting = () => {
       result => setData(result),
       e => console.warn('fetch failure', e),
     );
+  }, [id]);
+
+  return (
+    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+      <StarwarsSlider id={id} data={data} previous={previous} next={next} />
+    </div>
+  );
+};
+
+export const StarwarsHeroSliderAbortingSafe = () => {
+  const [id, { previous, next }] = useStarwarsSliderState();
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    setData(null);
+
+    // Create the current request's abort controller
+    const abortController = new AbortController();
+
+    // Issue the request
+    fetchStarwarsHeroData(id, {
+      signal: abortController.signal,
+    })
+      // Simulate some delay/errors
+      .then(async data => {
+        await delayRandomly();
+        throwRandomly();
+        return data;
+      })
+      // Set the result, if not aborted
+      .then(
+        result => {
+          // IMPORTANT: we still need to filter the results here,
+          // in case abortion happens during the delay.
+          // In real apps, abortion could happen when you are parsing the json,
+          // with code like "fetch().then(res => res.json())"
+          // but also any other async then() you execute after the fetch
+          if (abortController.signal.aborted) {
+            return;
+          }
+          setData(result);
+        },
+        e => console.warn('fetch failure', e),
+      );
+
+    // Trigger the abortion in useEffect's cleanup function
+    return () => {
+      abortController.abort();
+    };
   }, [id]);
 
   return (
