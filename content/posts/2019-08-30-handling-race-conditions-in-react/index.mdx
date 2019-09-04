@@ -84,8 +84,8 @@ class StarwarsHero extends React.Component {
     this.fetchData(this.props.id);
   }
 
-  componentDidUpdate(nextProps) {
-    if (nextProps.id !== this.props.id) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.id !== this.props.id) {
       this.fetchData(this.props.id);
     }
   }
