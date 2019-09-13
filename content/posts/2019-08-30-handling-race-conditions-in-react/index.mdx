@@ -316,7 +316,7 @@ fetch('/', { signal: abortController.signal }).then(
     // Here you can decide to handle the abortion the way you want.
     // Throwing or never resolving are valid options
     if (abortController.signal.aborted) {
-      return new Promise();
+      return new Promise(() => {});
     }
 
     return data;
