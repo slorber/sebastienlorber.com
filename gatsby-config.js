@@ -28,6 +28,8 @@ module.exports = {
     ],
   },
   plugins: [
+    `gatsby-plugin-react-native-web`,
+    'gatsby-plugin-resolve-src',
     {
       resolve: '@narative/gatsby-theme-novela',
       options: {
