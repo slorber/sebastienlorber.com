@@ -38,6 +38,10 @@ module.exports = {
         contentAuthors: "content/authors",
         basePath: "/",
         mailchimp: true,
+        sources: {
+          local: true,
+          contentful: false
+        }
       },
     },
     {
