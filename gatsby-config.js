@@ -17,12 +17,10 @@ module.exports = {
         name: `github`,
         url: `https://github.com/slorber`,
       },
-      /*
       {
         name: `stackoverflow`,
         url: `https://stackoverflow.com/users/82609/sebastien-lorber`,
       },
-       */
       {
         name: `linkedin`,
         url: `https://www.linkedin.com/in/sebastienlorber/`,
@@ -31,23 +29,24 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: "@narative/gatsby-theme-novela",
+      resolve: '@narative/gatsby-theme-novela',
       options: {
         authorsPage: true,
-        contentPosts: "content/posts",
-        contentAuthors: "content/authors",
-        basePath: "/",
+        contentPosts: 'content/posts',
+        contentAuthors: 'content/authors',
+        basePath: '/',
         mailchimp: true,
         sources: {
           local: true,
-          contentful: false
-        }
+          contentful: false,
+        },
       },
     },
     {
-      resolve: "gatsby-plugin-mailchimp",
+      resolve: 'gatsby-plugin-mailchimp',
       options: {
-        endpoint: "https://gmail.us4.list-manage.com/subscribe/post?u=5150dccbaa8d2e62d2aa5a921&amp;id=adf9b01764",
+        endpoint:
+          'https://gmail.us4.list-manage.com/subscribe/post?u=5150dccbaa8d2e62d2aa5a921&amp;id=adf9b01764',
       },
     },
     {
@@ -56,8 +55,8 @@ module.exports = {
         name: `Sébastien Lorber`,
         short_name: `Sébastien Lorber`,
         start_url: `/`,
-        background_color: `#fff`,
-        theme_color: `#fff`,
+        background_color: `#000000`,
+        theme_color: `#000000`,
         display: `standalone`,
         icon: `src/assets/favicon.png`,
       },
@@ -65,7 +64,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
-        trackingId: "UA-131003556-1",
+        trackingId: 'UA-131003556-1',
       },
     },
     {

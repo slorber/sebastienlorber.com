@@ -4,11 +4,7 @@
   avatar: ./avatars/sebastien-lorber.jpeg
   featured: true
   social:
-    - name: github
-      url: https://github.com/slorber
-    - name: twitter
-      url: https://twitter.com/sebastienlorber
-    #- name: stackoverflow
-    #  url: https://stackoverflow.com/users/82609/sebastien-lorber
-    - name: linkedin
-      url: https://www.linkedin.com/in/sebastienlorber/
+    - url: https://github.com/slorber
+    - url: https://twitter.com/sebastienlorber
+    - url: https://stackoverflow.com/users/82609/sebastien-lorber
+    - url: https://www.linkedin.com/in/sebastienlorber/
