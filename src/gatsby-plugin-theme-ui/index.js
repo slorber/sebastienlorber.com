@@ -5,7 +5,7 @@ import novelaTheme from '@narative/gatsby-theme-novela/src/gatsby-plugin-theme-u
 
 const theme = {
   ...novelaTheme,
-  initialColorMode: `dark`,
+  // initialColorMode: `dark`,
   colors: {
     ...novelaTheme.colors,
     //primary: '#000',
@@ -16,6 +16,6 @@ const theme = {
   },
 };
 
-console.debug({theme});
+// console.debug({theme});
 
 export default theme;
