@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { Camera } from 'expo-camera';
+import Switch from 'expo-dark-mode-switch';
 import * as Permissions from 'expo-permissions';
 import MobilePhoneView from 'components/MobilePhoneView';
 import AppButton from 'components/designSystem/AppButton';
 import AppRevealView from 'components/designSystem/AppRevealView';
+
+
+
+export const ExpoSwitchDemo = () => {
+  const [value, setValue] = React.useState(true);
+  return (
+    <MobilePhoneView>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Switch value={value} onChange={value => setValue(value)} />
+      </View>
+    </MobilePhoneView>
+  );
+};
 
 export const ExpoCameraDemo = () => {
   const [showCamera, setShowCamera] = useState(false);
