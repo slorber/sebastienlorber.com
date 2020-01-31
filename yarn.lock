@@ -2276,14 +2276,14 @@
     "@types/history" "*"
     "@types/react" "*"
 
-"@types/react-native@^0.61.7":
-  version "0.61.7"
-  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.61.7.tgz#e0315b5f627d61470c7f58d7298e732aab90b2c5"
-  integrity sha512-LUhIiZUfGA0+2+/+KeHDpHfBmVYZdw1vwikYF2yTap5duuXtw3SUYn6kiPyBwFf++PmhWJeGeId94vAYbptvaw==
+"@types/react-native@^0.61.9":
+  version "0.61.9"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.61.9.tgz#db7be9a0be63aadaaec36f1261eeb83cfe3e23d7"
+  integrity sha512-9eVeMPAvekLVNKq0G7v83mFKCdflB7v1Yiaup1J3Fd7oEInuLWv7sC3vssQ7wTekdxlFMHYroOrqVlNRqXuq0g==
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
+"@types/react@*", "@types/react@~16.9.0":
   version "16.9.19"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.19.tgz#c842aa83ea490007d29938146ff2e4d9e4360c40"
   integrity sha512-LJV97//H+zqKWMms0kvxaKYJDG05U2TtQB3chRLF8MPNs+MQh/H1aGlyDUxjaHvu08EAGerdX2z4LTBc7ns77A==
@@ -14609,6 +14609,13 @@ react-native-safe-area-view@^0.14.6:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
+react-native-screens@2.0.0-alpha.12:
+  version "2.0.0-alpha.12"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.12.tgz#35a6ef3b472958e9d35f0ca9e582d0d158f8e379"
+  integrity sha512-x9M7FEdcm97bVDp3pi//nhduJHLFMrmDQs0fq299yx3kHdgHbrmhsa8jgW4HvDQhjyPE0FWADY/GrXFuPRj80w==
+  dependencies:
+    debounce "^1.2.0"
+
 react-native-svg@^11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-11.0.1.tgz#e92e7e9f9cb2604333fd5014fd4edcf62fea6496"
@@ -17237,6 +17244,11 @@ typeface-merriweather@^0.0.72:
   version "0.0.72"
   resolved "https://registry.yarnpkg.com/typeface-merriweather/-/typeface-merriweather-0.0.72.tgz#2b990f5293252052d51d170c82d3892319ff0555"
   integrity sha512-gO0+fcZ1fTyKUsYY1ltYOOTI6FmBGeEdyIfeQg9NL8aInndk0feiJJVJsKHm/DiyYrnQEezraAQhz/KQoqMGtw==
+
+typescript@^3.7.5:
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
+  integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
 
 ua-parser-js@^0.7.18, ua-parser-js@^0.7.19:
   version "0.7.21"
