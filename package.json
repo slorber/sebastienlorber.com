@@ -11,9 +11,6 @@
     "clean": "gatsby clean",
     "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'"
   },
-  "resolutions": {
-    "@babel/core": "7.8.3"
-  },
   "dependencies": {
     "@emotion/styled": "^10.0.27",
     "@narative/gatsby-theme-novela": "0.13.2",
