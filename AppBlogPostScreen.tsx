@@ -1,19 +1,19 @@
-import React, { lazy, Component, Suspense } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { AppBlogPost } from './AppBlogPostList';
 
 const ScreenWidth = Dimensions.get('window').width;
 
-const AppBlogPostScreen = ({ mdxBlogPostRequire }) => {
-  const MDXBlogPostComp = mdxBlogPostRequire.default;
-  const frontmatter = mdxBlogPostRequire._frontmatter;
-  const insets = useSafeArea();
+const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
+  const MDXBlogPostComp = blogPost.default;
+  const frontmatter = blogPost._frontmatter;
   return (
-    <ScrollView style={{ flex: 1, marginTop: insets.top }}>
+    <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
       <View
         style={{
           marginTop: 20,
+          paddingHorizontal: 20,
           width: '100%',
           alignItems: 'center',
           justifyContent: 'center',

@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 
 const MobilePhoneView = ({ children }) => (
-  <View style={{ alignItems: 'center' }}>
+  <View style={{ marginVertical: 20, alignItems: 'center' }}>
     <View
       style={{
         position: 'relative',
