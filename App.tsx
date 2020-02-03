@@ -1,26 +1,19 @@
 import React from 'react';
-import { View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { MDXProvider } from '@mdx-js/react';
+import { Logs } from 'expo';
 
-import AppMDXComponents from './AppMDXComponents';
-import AppNavigator from './AppNavigator';
+// https://github.com/expo/expo/issues/2623#issuecomment-441364587
+if (__DEV__) {
+  const isRemoteDebuggingEnabled = typeof atob !== 'undefined';
+  if (isRemoteDebuggingEnabled) {
+    Logs.disableExpoCliLogging();
+  } else {
+    Logs.enableExpoCliLogging();
+  }
+}
 
-const App = () => {
-  return (
-    <SafeAreaProvider>
-      <MDXProvider components={AppMDXComponents}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: '#fff',
-          }}
-        >
-          <AppNavigator />
-        </View>
-      </MDXProvider>
-    </SafeAreaProvider>
-  );
+console.disableYellowBox = true;
+
+export default () => {
+  const AppStarter = require('./AppStarter').default;
+  return <AppStarter />;
 };
-
-export default App;

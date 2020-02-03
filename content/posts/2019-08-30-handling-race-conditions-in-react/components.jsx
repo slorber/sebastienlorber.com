@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import styled from '@emotion/styled';
+import { Text, View, TouchableOpacity, Platform } from 'react-native';
 import { sample } from 'lodash';
 
+// TODO extract this constant somewhere
+const BaseUrl = Platform.OS !== "web" ? "https://sebastienlorber.com/": "";
 /*
 const fetchStarwarsHeroData = async (id, options) => {
   const result = await fetch(`https://swapi.co/api/people/${id}/`, options);
@@ -81,7 +83,9 @@ const fetchStarwarsHeroData = async (id, options) => {
 // TODO fake SW api because the official one is often not reliable :/
 // using a fake static json file on netlify to emulate the real api...
 const fetchStarwarsHeroData = async (id, options) => {
-  const result = await fetch(`starwarsPeople.json?id=${id}`, options);
+  const url = BaseUrl + `starwarsPeople.json?id=${id}`;
+  console.debug("url",url);
+  const result = await fetch(url, options);
   if (result.status !== 200) {
     throw new Error('bad status = ' + result.status);
   }
@@ -96,63 +100,95 @@ const fetchStarwarsHeroData = async (id, options) => {
   };
 };
 
-const SliderArrowButton = styled.button(
-  {
-    borderStyle: 'solid',
-    width: 40,
-    height: 40,
-    borderRadius: 25,
-    margin: 5,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    fontSize: 30,
-  },
-  props => ({
-    color: props.theme.colors.articleText,
-    borderColor: props.theme.colors.articleText,
-  }),
-);
+const SliderArrowButton = ({ onPress, isNext }) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View
+        style={{
+          borderWidth: 1,
+          borderStyle: 'solid',
+          width: 40,
+          height: 40,
+          borderRadius: 25,
+          margin: 5,
+          alignSelf: 'center',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 30,
+          color: 'black',
+          borderColor: 'black',
+        }}
+      >
+        <Text>{isNext ? '>' : '<'}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
-const SliderContent = styled.div(
-  {
-    width: 200,
-    borderStyle: 'solid',
-    borderRadius: 20,
-    padding: 10,
-    margin: 5,
-    overflow: 'hidden',
-  },
-  props => ({
-    color: props.theme.colors.articleText,
-    borderColor: props.theme.colors.articleText,
-  }),
-);
+const SliderContent = ({ children }) => {
+  return (
+    <View
+      style={{
+        width: 200,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderRadius: 20,
+        padding: 10,
+        margin: 5,
+        overflow: 'hidden',
+        color: 'black',
+        borderColor: 'black',
+      }}
+    >
+      {children}
+    </View>
+  );
+};
 
-const SliderContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'row',
-  padding: 10,
-});
+const SliderContainer = ({ children }) => {
+  return (
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        padding: 10,
+      }}
+    >
+      {children}
+    </View>
+  );
+};
 
 const SlideContent = ({ id, data }) => (
-  <div>
-    <div>Id={id}</div>
-    <div css={{ marginTop: 10 }}>
-      <div>Fetched:</div>
-      <div>Id: {data ? data.id : '...'}</div>
-      <div
-        css={{
+  <View>
+    <View>
+      <Text>Id={id}</Text>
+    </View>
+    <View style={{ marginTop: 10 }}>
+      <View>
+        <Text>Fetched:</Text>
+      </View>
+      <View>
+        <Text>Id: {data ? data.id : '...'}</Text>
+      </View>
+      <View
+        style={{
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
         }}
       >
-        Name: {data ? data.name : '...'}
-      </div>
-      <div>Height: {data ? data.height : '...'}</div>
-      <div>Mass: {data ? data.mass : '...'}</div>
-    </div>
-  </div>
+        <Text>Name: {data ? data.name : '...'}</Text>
+      </View>
+
+      <View>
+        <Text>Height: {data ? data.height : '...'}</Text>
+      </View>
+      <View>
+        <Text>Mass: {data ? data.mass : '...'}</Text>
+      </View>
+    </View>
+  </View>
 );
 
 const useStarwarsSliderState = () => {
@@ -171,11 +207,11 @@ const useStarwarsSliderState = () => {
 const StarwarsSlider = ({ id, data, previous, next }) => {
   return (
     <SliderContainer>
-      <SliderArrowButton onClick={() => previous()}>{'<'}</SliderArrowButton>
+      <SliderArrowButton isNext={false} onPress={() => previous()} />
       <SliderContent>
         <SlideContent id={id} data={data} />
       </SliderContent>
-      <SliderArrowButton onClick={() => next()}>{'>'}</SliderArrowButton>
+      <SliderArrowButton isNext={true} onPress={() => next()} />
     </SliderContainer>
   );
 };
@@ -204,9 +240,11 @@ export const StarwarsHeroSliderDefault = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+    <View
+      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
+    >
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </div>
+    </View>
   );
 };
 
@@ -221,13 +259,18 @@ export const StarwarsHeroSliderDelay = () => {
         await delayRandomly();
         return data;
       })
-      .then(result => setData(result), e => console.warn('fetch failure', e));
+      .then(
+        result => setData(result),
+        e => console.warn('fetch failure', e),
+      );
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+    <View
+      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
+    >
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </div>
+    </View>
   );
 };
 
@@ -243,13 +286,18 @@ export const StarwarsHeroSliderDelayThrow = () => {
         throwRandomly();
         return data;
       })
-      .then(result => setData(result), e => console.warn('fetch failure', e));
+      .then(
+        result => setData(result),
+        e => console.warn('fetch failure', e),
+      );
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+    <View
+      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
+    >
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </div>
+    </View>
   );
 };
 
@@ -284,9 +332,11 @@ export const StarwarsHeroSliderIgnoring = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+    <View
+      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
+    >
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </div>
+    </View>
   );
 };
 
@@ -325,9 +375,11 @@ export const StarwarsHeroSliderAborting = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+    <View
+      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
+    >
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </div>
+    </View>
   );
 };
 
@@ -375,8 +427,8 @@ export const StarwarsHeroSliderAbortingSafe = () => {
   }, [id]);
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+    <View style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </div>
+    </View>
   );
 };
