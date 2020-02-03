@@ -2,6 +2,7 @@
   "expo": {
     "name": "Sebastien Lorber",
     "slug": "sebastien-lorber",
+    "owner": "slorber",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
