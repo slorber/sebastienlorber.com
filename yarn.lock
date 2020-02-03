@@ -14723,6 +14723,13 @@ react-native-animation-hooks@^1.0.1:
   resolved "https://registry.yarnpkg.com/react-native-animation-hooks/-/react-native-animation-hooks-1.0.1.tgz#fcda58867d708084cc63c6fcd001f5375a40f45b"
   integrity sha512-s1o71m9sPpEYwFpHTdBouO50jzvyxIVB4MmNwfVGgPWkdL02zKOzyXcNuPJmoCuLIstUj5TBEwtnGk1WMFJx5A==
 
+react-native-auto-height-image@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-auto-height-image/-/react-native-auto-height-image-3.0.0.tgz#2df6dbbcad5d873acf4f63e5187a8a0fd546b134"
+  integrity sha512-Tt1VU7bFm3qxzwl/jwfVlo1R4dUuVDKvWYFqOROrXRAhjkuKIACC4UdfVhUv6RJJJbWhBrxHP0SPVe458MIbZg==
+  dependencies:
+    prop-types "^15.7.2"
+
 "react-native-gesture-handler@https://github.com/software-mansion/react-native-gesture-handler.git#95bfb4df7ce9b1e222d50ead99eee7e27cd79043":
   version "1.5.3"
   resolved "https://github.com/software-mansion/react-native-gesture-handler.git#95bfb4df7ce9b1e222d50ead99eee7e27cd79043"
@@ -14741,6 +14748,11 @@ react-native-paper@^3.5.1:
     "@callstack/react-theme-provider" "^3.0.5"
     color "^3.1.2"
     react-native-safe-area-view "^0.14.6"
+
+react-native-safe-area-context@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-0.6.4.tgz#624bd50cebc9f47853f179373501511931d2a0c3"
+  integrity sha512-xj8Mv8ZHfc8RquBgVYt+4+nOJaexTblLsQJpyx4Dh4qFUG+3QtbNlfOF7/ITj/qY5LNdlfafKoDsVgFz0WIU1w==
 
 react-native-safe-area-view@^0.14.6:
   version "0.14.8"

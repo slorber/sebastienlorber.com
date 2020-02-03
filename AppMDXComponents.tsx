@@ -1,9 +1,10 @@
 // Copy of https://gist.github.com/danieldunderfelt/1982786761cf4156b732b3a128a8050f
 
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import { Linking } from 'react-native';
 import { StyleSheet } from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 function openUrl(url) {
   if (url) {
@@ -12,8 +13,16 @@ function openUrl(url) {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    width: '100%',
+  },
   root: {},
   view: {},
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   codeBlock: {
     borderWidth: 1,
     borderColor: '#CCCCCC',
@@ -57,13 +66,14 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   hr: {
-    backgroundColor: '#000000',
+    backgroundColor: 'grey',
     height: 1,
+    marginVertical: 10,
   },
   blockquote: {
+    flexDirection: 'row',
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    margin: 20,
+    marginVertical: 20,
     backgroundColor: '#CCCCCC',
   },
   inlineCode: {
@@ -74,15 +84,19 @@ const styles = StyleSheet.create({
   },
   list: {},
   listItem: {
-    flex: 1,
-    flexWrap: 'wrap',
-    // backgroundColor: 'green',
+    //marginVertical: 5,
+    overflow: "hidden",
   },
-  listUnordered: {},
+  listUnordered: {
+    marginTop: 5,
+    marginBottom: 15
+  },
 
   listUnorderedItem: {
+    marginVertical: 3,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    // flexWrap: "wrap",
   },
 
   listUnorderedItemIcon: {
@@ -152,14 +166,14 @@ const styles = StyleSheet.create({
   pre: {},
   link: {},
   image: {
-    flex: 1,
-    width: 300,
+    width: 200,
+    height: 200,
   },
 });
 
 const AppMDXComponents = {
   div: ({ children }) => <View style={styles.div}>{children}</View>,
-  wrapper: ({ children }) => <View style={styles.div}>{children}</View>,
+  wrapper: ({ children }) => <View style={styles.wrapper}>{children}</View>,
   textgroup: ({ children }) => {
     return <Text style={styles.text}>{children}</Text>;
   },
@@ -219,11 +233,18 @@ const AppMDXComponents = {
       <Text style={[styles.heading, styles.heading6]}>{children}</Text>
     </View>
   ),
-  p: ({ parentName, children }) => (
-    <View style={styles.paragraph}>
-      <Text>{children}</Text>
-    </View>
-  ),
+  p: ({ parentName, children }) => {
+    // TODO probably unsafe
+    const isText =
+      children instanceof String || (children.length && children.length > 1);
+
+    const viewStyle = parentName === 'blockquote' ? {} : styles.paragraph;
+    return (
+      <View style={viewStyle}>
+        {isText ? <Text>{children}</Text> : children}
+      </View>
+    );
+  },
   blockquote: ({ children }) => (
     <View style={styles.blockquote}>{children}</View>
   ),
@@ -243,9 +264,11 @@ const AppMDXComponents = {
   li: ({ children }) => {
     return (
       <View style={styles.listUnorderedItem}>
-        <Text style={styles.listUnorderedItemIcon}>{'\u00B7'}</Text>
         <View style={[styles.listItem]}>
-          <Text>{children}</Text>
+          <Text>
+            <Text style={{ paddingLeft: 10, paddingRight: 10, fontWeight: "bold" }}>{' \u00B7 '}</Text>
+            {children}
+          </Text>
         </View>
       </View>
     );
@@ -267,7 +290,14 @@ const AppMDXComponents = {
   },
   br: ({ children }) => <Text>{'\n'}</Text>,
   img: ({ src, children }) => {
-    return <Image style={styles.image} source={{ uri: src }} />;
+    return (
+      <View style={styles.imageContainer}>
+        <AutoHeightImage
+          width={Dimensions.get('window').width * 0.8}
+          source={src}
+        />
+      </View>
+    );
   },
 };
 

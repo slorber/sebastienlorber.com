@@ -1,21 +1,25 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import AppNavigator from './AppNavigator';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MDXProvider } from '@mdx-js/react';
+
+import AppNavigator from './AppNavigator';
 import AppMDXComponents from './AppMDXComponents';
 
 const App = () => {
   return (
-    <MDXProvider components={AppMDXComponents}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: '#fff',
-        }}
-      >
-        <AppNavigator />
-      </View>
-    </MDXProvider>
+    <SafeAreaProvider>
+      <MDXProvider components={AppMDXComponents}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#fff',
+          }}
+        >
+          <AppNavigator />
+        </View>
+      </MDXProvider>
+    </SafeAreaProvider>
   );
 };
 
