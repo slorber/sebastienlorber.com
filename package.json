@@ -6,7 +6,7 @@
   "scripts": {
     "start": "yarn gatsby develop",
     "expo:start": "yarn expo:mdx && expo start",
-    "expo:mdx": "node expo-generate-mdx-as-jsx.js",
+    "expo:mdx": "node expo-generate-mdx-as-jsx.js && prettier --write '{src,content}/**/*.mdx.jsx'",
     "build": "gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
