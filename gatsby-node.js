@@ -2,7 +2,7 @@ exports.createPages = ({ graphql, actions }) => {
   const { createRedirect } = actions;
   createRedirect({
     fromPath: '/newsletter',
-    toPath: 'http://tinyletter.com/slorber',
+    toPath: 'https://www.getrevue.co/profile/sebastien-lorber',
     isPermanent: true,
   });
 };
