@@ -1,0 +1,25 @@
+---
+title: Running Expo inside a Gatsby blog post
+author: Sébastien Lorber
+date: 2020-01-27
+hero: ./images/hero.png
+excerpt: Or how to avoid rendering the wrong data
+---
+
+import { ExpoCameraDemo, ExpoSwitchDemo} from './components';
+
+## Example using expo-camera + expo-permission
+<ExpoCameraDemo />
+
+## Example using expo-dark-mode-switch
+<ExpoSwitchDemo />
+
+---
+
+If you like it, spread the word with a [Retweet]()
+
+Browser demos code or correct my post typos [on the blog repo]()
+
+For more content like this, subscribe to [my mailing list](https://mailchi.mp/4ea4df0b54f7/sebastienlorber) and follow me on [Twitter](https://twitter.com/sebastienlorber).
+
+Thanks for my reviewers:
