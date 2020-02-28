@@ -11,6 +11,5 @@ exports.createPages = ({ graphql, actions }) => {
     isPermanent: false,
     toPath: 'http://tinyletter.com/slorber',
     isPermanent: true,
-
   });
 };
