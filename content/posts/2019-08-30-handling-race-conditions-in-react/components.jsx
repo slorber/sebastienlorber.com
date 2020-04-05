@@ -5,9 +5,7 @@ import { sample } from 'lodash';
 import MobilePhoneView from 'components/MobilePhoneView';
 
 const DemoContainer = ({ children }) => (
-  <MobilePhoneView width={350}>
-    {children}
-  </MobilePhoneView>
+  <MobilePhoneView>{children}</MobilePhoneView>
 );
 
 // TODO extract this constant somewhere
@@ -133,40 +131,6 @@ const SliderArrowButton = ({ onPress, isNext }) => {
   );
 };
 
-const SliderContent = ({ children }) => {
-  return (
-    <View
-      style={{
-        width: 200,
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderRadius: 20,
-        padding: 10,
-        margin: 5,
-        overflow: 'hidden',
-        color: 'black',
-        borderColor: 'black',
-      }}
-    >
-      {children}
-    </View>
-  );
-};
-
-const SliderContainer = ({ children }) => {
-  return (
-    <View
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        padding: 10,
-      }}
-    >
-      {children}
-    </View>
-  );
-};
-
 const SlideContent = ({ id, data }) => (
   <View>
     <View>
@@ -214,13 +178,38 @@ const useStarwarsSliderState = () => {
 
 const StarwarsSlider = ({ id, data, previous, next }) => {
   return (
-    <SliderContainer>
-      <SliderArrowButton isNext={false} onPress={() => previous()} />
-      <SliderContent>
-        <SlideContent id={id} data={data} />
-      </SliderContent>
-      <SliderArrowButton isNext={true} onPress={() => next()} />
-    </SliderContainer>
+    <View
+      style={{
+        display: 'flex',
+      }}
+    >
+      <View
+        style={{
+          width: '100%',
+          padding: 20,
+        }}
+      >
+        <View
+          style={{
+            width: '100%',
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderRadius: 20,
+            padding: 10,
+            overflow: 'hidden',
+            color: 'black',
+            borderColor: 'black',
+            alignItems: 'flex-start',
+          }}
+        >
+          <SlideContent id={id} data={data} />
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+        <SliderArrowButton isNext={false} onPress={() => previous()} />
+        <SliderArrowButton isNext={true} onPress={() => next()} />
+      </View>
+    </View>
   );
 };
 
