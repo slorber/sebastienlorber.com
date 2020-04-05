@@ -2,8 +2,16 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View, TouchableOpacity, Platform } from 'react-native';
 import { sample } from 'lodash';
 
+import MobilePhoneView from 'components/MobilePhoneView';
+
+const DemoContainer = ({ children }) => (
+  <MobilePhoneView width={350}>
+    {children}
+  </MobilePhoneView>
+);
+
 // TODO extract this constant somewhere
-const BaseUrl = Platform.OS !== "web" ? "https://sebastienlorber.com/": "";
+const BaseUrl = Platform.OS !== 'web' ? 'https://sebastienlorber.com/' : '';
 /*
 const fetchStarwarsHeroData = async (id, options) => {
   const result = await fetch(`https://swapi.co/api/people/${id}/`, options);
@@ -84,7 +92,7 @@ const fetchStarwarsHeroData = async (id, options) => {
 // using a fake static json file on netlify to emulate the real api...
 const fetchStarwarsHeroData = async (id, options) => {
   const url = BaseUrl + `starwarsPeople.json?id=${id}`;
-  console.debug("url",url);
+  console.debug('url', url);
   const result = await fetch(url, options);
   if (result.status !== 200) {
     throw new Error('bad status = ' + result.status);
@@ -240,11 +248,9 @@ export const StarwarsHeroSliderDefault = () => {
   }, [id]);
 
   return (
-    <View
-      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
-    >
+    <DemoContainer>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </View>
+    </DemoContainer>
   );
 };
 
@@ -266,11 +272,9 @@ export const StarwarsHeroSliderDelay = () => {
   }, [id]);
 
   return (
-    <View
-      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
-    >
+    <DemoContainer>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </View>
+    </DemoContainer>
   );
 };
 
@@ -293,11 +297,9 @@ export const StarwarsHeroSliderDelayThrow = () => {
   }, [id]);
 
   return (
-    <View
-      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
-    >
+    <DemoContainer>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </View>
+    </DemoContainer>
   );
 };
 
@@ -332,11 +334,9 @@ export const StarwarsHeroSliderIgnoring = () => {
   }, [id]);
 
   return (
-    <View
-      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
-    >
+    <DemoContainer>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </View>
+    </DemoContainer>
   );
 };
 
@@ -375,11 +375,9 @@ export const StarwarsHeroSliderAborting = () => {
   }, [id]);
 
   return (
-    <View
-      style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}
-    >
+    <DemoContainer>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </View>
+    </DemoContainer>
   );
 };
 
@@ -427,8 +425,8 @@ export const StarwarsHeroSliderAbortingSafe = () => {
   }, [id]);
 
   return (
-    <View style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+    <DemoContainer>
       <StarwarsSlider id={id} data={data} previous={previous} next={next} />
-    </View>
+    </DemoContainer>
   );
 };
