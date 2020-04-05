@@ -10,7 +10,8 @@
     "build": "gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'"
+    "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@emotion/styled": "^10.0.27",
@@ -64,6 +65,8 @@
     "babel-preset-expo": "~8.0.0",
     "glob": "^7.1.6",
     "gray-matter": "^4.0.2",
+    "patch-package": "^6.2.2",
+    "postinstall-postinstall": "^2.1.0",
     "typescript": "^3.7.5"
   }
 }

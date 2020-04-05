@@ -14,6 +14,5 @@ type AppBlogPost = {
 
 export default [
   require('./content/posts/2019-08-20-my-first-post-using-novela-by-narative/index.mdx.jsx'),
-  require('./content/posts/2019-08-30-handling-race-conditions-in-react/index.mdx.jsx'),
-  require('./content/posts/2020-01-27-running-expo-inside-a-gatsby-blog-post/index.mdx.jsx')
+  require('./content/posts/2019-08-30-handling-race-conditions-in-react/index.mdx.jsx')
 ] as AppBlogPost[]

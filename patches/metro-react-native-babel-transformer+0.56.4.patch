@@ -1,0 +1,22 @@
+diff --git a/node_modules/metro-react-native-babel-transformer/src/index.js b/node_modules/metro-react-native-babel-transformer/src/index.js
+index 4f97ce0..20e3b71 100644
+--- a/node_modules/metro-react-native-babel-transformer/src/index.js
++++ b/node_modules/metro-react-native-babel-transformer/src/index.js
+@@ -118,11 +118,17 @@ const getBabelRC = (function() {
+     }
+ 
+     if (projectBabelRCPath) {
++
++      if (!fs.existsSync(projectBabelRCPath)) {
++        projectBabelRCPath = path.resolve(projectRoot, "expo.babel.config.js");
++      }
++
+       // .babelrc.js
+       if (!fs.existsSync(projectBabelRCPath)) {
+         projectBabelRCPath = path.resolve(projectRoot, ".babelrc.js");
+       } // babel.config.js
+ 
++
+       if (!fs.existsSync(projectBabelRCPath)) {
+         projectBabelRCPath = path.resolve(projectRoot, "babel.config.js");
+       } // If we found a babel config file, extend our config off of it
