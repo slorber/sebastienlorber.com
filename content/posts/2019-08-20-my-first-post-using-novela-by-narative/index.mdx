@@ -122,22 +122,12 @@ I should be able to use code snippets like this one:
 
 ```jsx
 import React from 'react';
+import AppButton from 'components/designSystem/AppButton';
 
 export const TestMDXButton = () => (
-  <div
-    style={{ display: 'flex', justifyContent: 'center' }}
-  >
-    <button
-      onClick={() => alert('it works')}
-      style={{
-        border: 'solid',
-        borderRadius: 5,
-        padding: 10,
-      }}
-    >
-      Click me!
-    </button>
-  </div>
+  <AppButton onPress={() => alert('button pressed')}>
+    Press me!
+  </AppButton>
 );
 ```
 

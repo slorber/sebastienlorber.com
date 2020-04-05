@@ -1,16 +1,16 @@
 import React from 'react';
 import { View } from 'react-native';
 
-const MobilePhoneView = ({ children }) => (
-  <View style={{ alignItems: 'center' }}>
+const MobilePhoneView = ({ width = 280, height = 535, children }) => (
+  <View style={{ marginVertical: 20, alignItems: 'center' }}>
     <View
       style={{
         position: 'relative',
         backgroundColor: '#000000',
         borderWidth: 3,
         borderColor: 'grey',
-        width: 280,
-        height: 535,
+        width: width,
+        height: height,
         borderRadius: 25,
         alignItems: 'center',
         justifyContent: 'center',
@@ -21,12 +21,20 @@ const MobilePhoneView = ({ children }) => (
           position: 'relative',
           overflow: 'hidden',
           backgroundColor: '#ffffff',
-          width: 265,
-          height: 520,
+          width: width - 15,
+          height: height - 15,
           borderRadius: 18,
         }}
       >
-        <View style={{ width: '100%', height: '100%' }}>{children}</View>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            paddingTop: 25, // TODO safe area prop?
+          }}
+        >
+          {children}
+        </View>
         <View
           style={{
             position: 'absolute',

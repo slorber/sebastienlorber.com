@@ -1,19 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Logs } from 'expo';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
-  );
+// https://github.com/expo/expo/issues/2623#issuecomment-441364587
+if (__DEV__) {
+  const isRemoteDebuggingEnabled = typeof atob !== 'undefined';
+  if (isRemoteDebuggingEnabled) {
+    Logs.disableExpoCliLogging();
+  } else {
+    Logs.enableExpoCliLogging();
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+console.disableYellowBox = true;
+
+export default () => {
+  const AppStarter = require('./AppStarter').default;
+  return <AppStarter />;
+};
