@@ -1,0 +1,30 @@
+diff --git a/node_modules/@expo/webpack-config/webpack/loaders/createBabelLoader.js b/node_modules/@expo/webpack-config/webpack/loaders/createBabelLoader.js
+index 6b7b50e..6905168 100644
+--- a/node_modules/@expo/webpack-config/webpack/loaders/createBabelLoader.js
++++ b/node_modules/@expo/webpack-config/webpack/loaders/createBabelLoader.js
+@@ -125,13 +125,24 @@ function createBabelLoader(_a = {}) {
+     const customUseOptions = customUse.options || {};
+     const isProduction = mode === 'production';
+     const projectRoot = inputProjectRoot || paths_1.getPossibleProjectRoot();
++
++
++
++    const expoCustomCfgPath = path_1.default.join(projectRoot, 'expo.babel.config.js');
++    const expoCustomCfgExists = fs_extra_1.default.existsSync(expoCustomCfgPath);
++
+     let presetOptions = {
+         // Explicitly use babel.config.js instead of .babelrc
+         babelrc: false,
+         // Attempt to use local babel.config.js file for compiling project.
+-        configFile: true,
++        configFile: expoCustomCfgExists ? expoCustomCfgPath : true,
+     };
++    console.log("presetOptions",JSON.stringify(presetOptions,null,2));
++
++
++
+     if (!fs_extra_1.default.existsSync(path_1.default.join(projectRoot, 'babel.config.js')) &&
++        !expoCustomCfgExists &&
+         !fs_extra_1.default.existsSync(path_1.default.join(projectRoot, '.babelrc'))) {
+         if (config_1.projectHasModule('babel-preset-expo', projectRoot, {})) {
+             presetOptions = {

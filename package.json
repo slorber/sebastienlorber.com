@@ -3,6 +3,9 @@
   "name": "site",
   "version": "1.0.0",
   "license": "MIT",
+  "resolutions": {
+    "@expo/webpack-config": "0.11.19"
+  },
   "scripts": {
     "start": "yarn gatsby develop",
     "expo:start": "yarn expo:mdx && expo start",
