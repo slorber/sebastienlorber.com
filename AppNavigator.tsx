@@ -16,10 +16,10 @@ const HomeBlogPostCard = ({
 }) => (
   <Card onPress={onPress} style={{ width: '80%', marginVertical: 20 }}>
     <Card.Title
-      title={blogPost._frontmatter.title}
-      subtitle={blogPost._frontmatter.excerpt}
+      title={blogPost.frontmatter.title}
+      subtitle={blogPost.frontmatter.excerpt}
     />
-    <Card.Cover source={blogPost._frontmatter.hero} />
+    <Card.Cover source={blogPost.frontmatter.hero} />
   </Card>
 );
 

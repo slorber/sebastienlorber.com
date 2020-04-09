@@ -9,12 +9,17 @@
   "scripts": {
     "start": "yarn gatsby develop",
     "expo:start": "yarn expo:mdx && expo start",
-    "expo:mdx": "node expo-generate-mdx-as-jsx.js && prettier --write '{src,content}/**/*.mdx.jsx'",
+    "expo:publish": "yarn expo:mdx && expo publish",
+    "expo:start:web": "yarn expo:mdx && expo start:web",
+    "expo:build:web": "yarn expo:mdx && expo buid:web",
+    "expo:mdx": "yarn expo:mdx:generate && yarn expo:mdx:format",
+    "expo:mdx:generate": "node expo-generate-mdx-as-jsx.js",
+    "expo:mdx:format": "prettier --write '{src,content}/**/*.mdx.jsx'",
     "build": "gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package && yarn expo:mdx"
   },
   "dependencies": {
     "@emotion/styled": "^10.0.27",

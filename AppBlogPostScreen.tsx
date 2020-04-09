@@ -6,8 +6,7 @@ import { AppBlogPost } from './AppBlogPostList';
 const ScreenWidth = Dimensions.get('window').width;
 
 const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
-  const MDXBlogPostComp = blogPost.default;
-  const frontmatter = blogPost._frontmatter;
+  const { default: MDXBlogPostComp, frontmatter } = blogPost;
   return (
     <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
       <View
