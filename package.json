@@ -11,7 +11,7 @@
     "expo:start": "yarn expo:mdx && expo start",
     "expo:publish": "yarn expo:mdx && expo publish",
     "expo:start:web": "yarn expo:mdx && expo start:web",
-    "expo:build:web": "yarn expo:mdx && expo buid:web",
+    "expo:build:web": "yarn expo:mdx && expo build:web",
     "expo:mdx": "yarn expo:mdx:generate && yarn expo:mdx:format",
     "expo:mdx:generate": "node expo-generate-mdx-as-jsx.js",
     "expo:mdx:format": "prettier --write '{src,content}/**/*.mdx.jsx'",
