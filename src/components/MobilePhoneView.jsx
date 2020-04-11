@@ -1,7 +1,13 @@
 import React from 'react';
 import { View } from 'react-native';
 
-const MobilePhoneView = ({ width = 280, height = 535, children }) => (
+const MobilePhoneView = ({
+  safeAreaPaddingTop = 25, // TODO use rn-safearea instead?
+  width = 280,
+  height = 535,
+  style,
+  children,
+}) => (
   <View style={{ marginVertical: 20, alignItems: 'center' }}>
     <View
       style={{
@@ -27,11 +33,14 @@ const MobilePhoneView = ({ width = 280, height = 535, children }) => (
         }}
       >
         <View
-          style={{
-            width: '100%',
-            height: '100%',
-            paddingTop: 25, // TODO safe area prop?
-          }}
+          style={[
+            {
+              width: '100%',
+              height: '100%',
+              paddingTop: safeAreaPaddingTop,
+            },
+            style,
+          ]}
         >
           {children}
         </View>
