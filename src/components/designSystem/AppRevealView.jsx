@@ -44,7 +44,7 @@ const AppRevealView = ({
 
   const placeholderOpacity = useAnimation({
     type: 'timing',
-    duration: 500,
+    duration: 700,
     toValue: reveal ? 0 : 1,
     useNativeDriver: true,
   });

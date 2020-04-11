@@ -10,9 +10,7 @@ import AppRevealView from 'components/designSystem/AppRevealView';
 export const ExpoSwitchDemo = () => {
   const [value, setValue] = React.useState(true);
   return (
-    <MobilePhoneView
-      style={{ alignItems: 'center', justifyContent: 'center' }}
-    >
+    <MobilePhoneView style={{ alignItems: 'center', justifyContent: 'center' }}>
       <Switch value={value} onChange={value => setValue(value)} />
     </MobilePhoneView>
   );
@@ -21,12 +19,10 @@ export const ExpoSwitchDemo = () => {
 export const ExpoCameraDemo = () => {
   const [showCamera, setShowCamera] = useState(false);
   return (
-    <MobilePhoneView
-      safeAreaPaddingTop={0}
-    >
+    <MobilePhoneView safeAreaPaddingTop={0}>
       {showCamera ? (
-        <AppRevealView delay={2000}>
-          <Camera />
+        <AppRevealView delay={1000}>
+          <Camera style={{ flex: 1, width: '100%' }} />
         </AppRevealView>
       ) : (
         <View style={{ flex: 1, justifyContent: 'center' }}>
