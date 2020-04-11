@@ -6,6 +6,9 @@ import AppBlogPostList, { AppBlogPost } from './AppBlogPostList';
 import { Card } from 'react-native-paper';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import AppBlogPostScreen from './AppBlogPostScreen';
+import { sortBy } from 'lodash';
+
+const SortedBlogPosts = sortBy(AppBlogPostList,blogPost => blogPost.frontmatter.date).reverse();
 
 const HomeBlogPostCard = ({
   blogPost,
@@ -38,7 +41,7 @@ const HomeScreen = () => {
         paddingVertical: 20,
       }}
     >
-      {AppBlogPostList.map((blogPost, i) => (
+      {SortedBlogPosts.map((blogPost, i) => (
         <HomeBlogPostCard
           blogPost={blogPost}
           key={i}
