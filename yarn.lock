@@ -8275,6 +8275,21 @@ expo-asset@~8.1.3:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-av@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/expo-av/-/expo-av-8.1.0.tgz#376e2a821168cd83e997c6dd84350fab6b293f10"
+  integrity sha512-owWxOCyK+dPyT3pF4rDOf2W8Sn8LSEvfw1HvU9xM0wzH7xF0bw3Zs3wcXxvtfhnXAZ5dCDQfvZI5cXk+lml+IQ==
+  dependencies:
+    lodash "^4.17.15"
+    nullthrows "^1.1.0"
+
+expo-battery@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/expo-battery/-/expo-battery-2.1.1.tgz#dfd2cd466d2142796234f1a331e2fbe88bdf7176"
+  integrity sha512-vHBn/P1Da1O9I29z2qpEp4Gqk1sw34WSheIMV4rU4kbQPg0VWHwE0EyX21OMdNdFeObqZjL/Sv2NMEZ4dXN5eg==
+  dependencies:
+    fbjs "1.0.0"
+
 expo-camera@~8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-8.2.0.tgz#9c849f0dc409e1fe6ee886f479e0ee0050b6d386"
@@ -8347,7 +8362,7 @@ expo-cli@^3.17.18:
     "@expo/traveling-fastlane-darwin" "1.13.1"
     "@expo/traveling-fastlane-linux" "1.13.1"
 
-expo-constants@~9.0.0:
+expo-constants@^9.0.0, expo-constants@~9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-9.0.0.tgz#35c600079ee91d38fe4f56375caae6e90f122fdd"
   integrity sha512-1kqZMM8Ez5JT3sTEx8I69fP6NYFLOJjeM6Z63dD/m2NiwvzSADiO5+BhghnWNGN1L3bxbgOjXS6EHtS7CdSfxA==
@@ -8378,6 +8393,18 @@ expo-font@~8.1.0:
   dependencies:
     fbjs "1.0.0"
     fontfaceobserver "^2.1.0"
+
+expo-image-manipulator@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/expo-image-manipulator/-/expo-image-manipulator-8.1.0.tgz#63ae66e1a65e5be8c6ee7036fe88d53af551853f"
+  integrity sha512-ephPXtzEx32Js1SQ1B2IXdpi4Gn34DIMQGAOwrwOPfUuWXQX9jGxyX3tktIGMmQ7lHueVr0a8zdh6ME0YGHjkw==
+
+expo-image-picker@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-8.1.0.tgz#014e4f4aaef4c1daf56d13de27a41ef78660aa15"
+  integrity sha512-UMHiDGiflg47A/nfnmJ1gYdB/sEoxB4STVGgMeLNYpUkVR59kUWqsGTyVEtSywNCLPuXPZVB9NaRUd81Rbs7lA==
+  dependencies:
+    expo-permissions "~8.1.0"
 
 expo-keep-awake@~8.1.0:
   version "8.1.0"

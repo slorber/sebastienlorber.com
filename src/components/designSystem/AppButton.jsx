@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'react-native-paper';
 import { useAsyncCallback } from 'react-async-hook';
 
-const AppButton = ({ onPress, children }) => {
+const AppButton = ({ onPress, children, style }) => {
   const asyncCallback = useAsyncCallback(onPress, {
     onError: e => console.error('useAsyncCallback error', e),
   });
@@ -11,7 +11,7 @@ const AppButton = ({ onPress, children }) => {
       onPress={asyncCallback.execute}
       loading={asyncCallback.status === 'loading'}
       mode="contained"
-      style={{ alignSelf: 'center' }}
+      style={[{ alignSelf: 'center' }, style]}
     >
       {children}
     </Button>
