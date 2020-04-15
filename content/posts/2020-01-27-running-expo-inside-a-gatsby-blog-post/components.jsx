@@ -11,7 +11,7 @@ import ExpoGesturesExample from './ExpoGesturesExample';
 import ExpoImagePickerExample from './ExpoImagePickerExample';
 import { Video } from 'expo-av';
 import { useColorMode } from 'theme/useColorMode';
-import TigerSvg from "./TigerSvg"
+import TigerSvg from './TigerSvg';
 
 export const ExpoCameraDemo = () => {
   const [showCamera, setShowCamera] = useState(false);
@@ -118,7 +118,7 @@ export const ExpoVideoDemo = () => {
         resizeMode="cover"
         shouldPlay={true}
         isLooping={true}
-        style={{ width: '100%' }}
+        style={{ flex: 1, width: '100%' }}
       />
     </MobilePhoneView>
   );
