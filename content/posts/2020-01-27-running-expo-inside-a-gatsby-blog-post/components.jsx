@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Camera } from 'expo-camera';
-import Switch from 'expo-dark-mode-switch';
+import ExpoDarkModeSwitch from 'expo-dark-mode-switch';
 import * as Permissions from 'expo-permissions';
 import MobilePhoneView from 'components/MobilePhoneView';
 import AppButton from 'components/designSystem/AppButton';
@@ -11,6 +11,7 @@ import ExpoGesturesExample from './ExpoGesturesExample';
 import ExpoImagePickerExample from './ExpoImagePickerExample';
 import Svg, { Circle, Rect } from 'react-native-svg';
 import { Video } from 'expo-av';
+import { useColorMode } from 'theme-ui';
 
 export const ExpoCameraDemo = () => {
   const [showCamera, setShowCamera] = useState(false);
@@ -38,11 +39,14 @@ export const ExpoCameraDemo = () => {
   );
 };
 
-export const ExpoSwitchDemo = () => {
-  const [value, setValue] = React.useState(true);
+export const ExpoDarkModeSwitchDemo = () => {
+  const [colorMode, setColorMode] = useColorMode();
   return (
     <MobilePhoneView style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <Switch value={value} onChange={value => setValue(value)} />
+      <ExpoDarkModeSwitch
+        value={colorMode === 'dark'}
+        onChange={value => setColorMode(value ? 'dark' : 'light')}
+      />
     </MobilePhoneView>
   );
 };
@@ -128,10 +132,8 @@ export const ExpoVideoDemo = () => {
 
 export const ExpoImagePickerDemo = () => {
   return (
-    <MobilePhoneView
-      style={{ alignItems: 'center', justifyContent: 'center' }}
-    >
-      <ExpoImagePickerExample/>
+    <MobilePhoneView style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <ExpoImagePickerExample />
     </MobilePhoneView>
   );
 };
