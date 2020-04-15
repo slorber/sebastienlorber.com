@@ -77,8 +77,17 @@ export const ExpoBatteryDemo = () => {
 
 export const ExpoGesturesDemo = () => {
   return (
-    <MobilePhoneView safeAreaPaddingTop={0}>
-      <ExpoGesturesExample />
+    <MobilePhoneView safeAreaPaddingTop={20} style={{ padding: 20 }}>
+      <View
+        style={{
+          flex: 1,
+          borderWidth: 1,
+          borderColor: 'black',
+          borderStyle: 'dashed',
+        }}
+      >
+        <ExpoGesturesExample />
+      </View>
     </MobilePhoneView>
   );
 };
