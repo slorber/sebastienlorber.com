@@ -46,24 +46,22 @@ export default class ExpoImagePickerExample extends React.Component {
           <>
             <Image
               source={{ uri: image }}
-              resizeMethod="scale"
-              style={{ margin: 10, width: 200, height: 200 }}
+              style={{
+                margin: 10,
+                width: 200,
+                height: 200,
+                resizeMode: 'contain',
+              }}
             />
             <AppButton
-              onPress={() =>
-                this.transform([
-                  { rotate: 90 },
-                ])
-              }
+              onPress={() => this.transform([{ rotate: 90 }])}
               style={{ margin: 5 }}
             >
               Rotate
             </AppButton>
             <AppButton
               onPress={() =>
-                this.transform([
-                  { flip: ImageManipulator.FlipType.Vertical },
-                ])
+                this.transform([{ flip: ImageManipulator.FlipType.Vertical }])
               }
               style={{ margin: 5 }}
             >
