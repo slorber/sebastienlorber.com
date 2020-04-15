@@ -10,5 +10,7 @@ export const useColorMode = () => {
     setColorMode(userColorScheme);
   }, [userColorScheme]);
 
+  // console.debug("color mode native = " + colorMode);
+
   return [colorMode, setColorMode];
 };

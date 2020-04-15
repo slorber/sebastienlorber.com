@@ -10,8 +10,11 @@ import {
   useNavigation,
   useNavigationState,
   useRoute,
+  DefaultTheme,
+  DarkTheme,
 } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useColorMode } from 'theme/useColorMode';
 
 const Stack = createStackNavigator();
 
@@ -68,8 +71,11 @@ const BlogPostScreen = () => {
 };
 
 const AppNavigator = () => {
+  const [colorMode] = useColorMode();
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      theme={colorMode === 'dark' ? DarkTheme : DefaultTheme}
+    >
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="BlogPost" component={BlogPostScreen} />
