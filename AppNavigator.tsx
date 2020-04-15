@@ -46,7 +46,6 @@ const HomeScreen = () => {
       style={{
         flex: 1,
         width: '100%',
-        backgroundColor: 'white',
       }}
       contentContainerStyle={{
         alignItems: 'center',
@@ -77,8 +76,20 @@ const AppNavigator = () => {
       theme={colorMode === 'dark' ? DarkTheme : DefaultTheme}
     >
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="BlogPost" component={BlogPostScreen} />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            title: 'Home',
+          }}
+        />
+        <Stack.Screen
+          name="BlogPost"
+          component={BlogPostScreen}
+          options={({route}) => ({
+            title: (route.params as any).blogPost.frontmatter.title,
+          })}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

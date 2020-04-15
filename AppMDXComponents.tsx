@@ -1,10 +1,21 @@
 // Copy of https://gist.github.com/danieldunderfelt/1982786761cf4156b732b3a128a8050f
 
-import React from 'react';
-import { Image, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import React, { ReactNode } from 'react';
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
+  TextProps,
+} from 'react-native';
 import { Linking } from 'react-native';
 import { StyleSheet } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
+
+import { useColorMode } from 'theme/useColorMode';
+
+const useIsLight = () => useColorMode()[0] === 'light';
 
 function openUrl(url) {
   if (url) {
@@ -25,16 +36,12 @@ const styles = StyleSheet.create({
   },
   codeBlock: {
     borderWidth: 1,
-    borderColor: '#CCCCCC',
-    backgroundColor: '#f5f5f5',
     padding: 10,
     borderRadius: 4,
   },
   codeInline: {
     borderWidth: 1,
-    borderColor: '#CCCCCC',
-    backgroundColor: '#f5f5f5',
-    padding: 10,
+    padding: 5,
     borderRadius: 4,
   },
   del: {
@@ -74,7 +81,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 20,
     marginVertical: 20,
-    backgroundColor: '#CCCCCC',
   },
   inlineCode: {
     borderRadius: 3,
@@ -85,11 +91,11 @@ const styles = StyleSheet.create({
   list: {},
   listItem: {
     //marginVertical: 5,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   listUnordered: {
     marginTop: 5,
-    marginBottom: 15
+    marginBottom: 15,
   },
 
   listUnorderedItem: {
@@ -159,7 +165,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 5,
   },
-  text: {},
   strikethrough: {
     textDecorationLine: 'line-through',
   },
@@ -171,66 +176,71 @@ const styles = StyleSheet.create({
   },
 });
 
+const MDXText = (props: TextProps & { children?: ReactNode }) => {
+  const themeStyle = useIsLight() ? { color: 'black' } : { color: 'white' };
+  return <Text {...props} style={[themeStyle, props.style]} />;
+};
+
 const AppMDXComponents = {
   div: ({ children }) => <View style={styles.div}>{children}</View>,
   wrapper: ({ children }) => <View style={styles.wrapper}>{children}</View>,
   textgroup: ({ children }) => {
-    return <Text style={styles.text}>{children}</Text>;
+    return <MDXText>{children}</MDXText>;
   },
   inline: ({ children }) => {
-    return <Text>{children}</Text>;
+    return <MDXText>{children}</MDXText>;
   },
   text: ({ children }) => {
-    return <Text>{children}</Text>;
+    return <MDXText>{children}</MDXText>;
   },
   span: ({ children }) => {
-    return <Text>{children}</Text>;
+    return <MDXText>{children}</MDXText>;
   },
   strong: ({ children }) => {
-    return <Text style={styles.strong}>{children}</Text>;
+    return <MDXText style={styles.strong}>{children}</MDXText>;
   },
   a: ({ href, children }) => {
     return (
-      <Text onPress={() => openUrl(href)} style={styles.link}>
+      <MDXText onPress={() => openUrl(href)} style={styles.link}>
         {children}
-      </Text>
+      </MDXText>
     );
   },
   em: ({ children }) => {
-    return <Text style={styles.em}>{children}</Text>;
+    return <MDXText style={styles.em}>{children}</MDXText>;
   },
   h1: ({ children }) => {
     return (
       <View style={styles.headingContainer}>
-        <Text style={[styles.heading, styles.heading1]}>{children}</Text>
+        <MDXText style={[styles.heading, styles.heading1]}>{children}</MDXText>
       </View>
     );
   },
   h2: ({ children }) => {
     return (
       <View style={styles.headingContainer}>
-        <Text style={[styles.heading, styles.heading2]}>{children}</Text>
+        <MDXText style={[styles.heading, styles.heading2]}>{children}</MDXText>
       </View>
     );
   },
   h3: ({ children }) => (
     <View style={styles.headingContainer}>
-      <Text style={[styles.heading, styles.heading3]}>{children}</Text>
+      <MDXText style={[styles.heading, styles.heading3]}>{children}</MDXText>
     </View>
   ),
   h4: ({ children }) => (
     <View style={styles.headingContainer}>
-      <Text style={[styles.heading, styles.heading4]}>{children}</Text>
+      <MDXText style={[styles.heading, styles.heading4]}>{children}</MDXText>
     </View>
   ),
   h5: ({ children }) => (
     <View style={styles.headingContainer}>
-      <Text style={[styles.heading, styles.heading5]}>{children}</Text>
+      <MDXText style={[styles.heading, styles.heading5]}>{children}</MDXText>
     </View>
   ),
   h6: ({ children }) => (
     <View style={styles.headingContainer}>
-      <Text style={[styles.heading, styles.heading6]}>{children}</Text>
+      <MDXText style={[styles.heading, styles.heading6]}>{children}</MDXText>
     </View>
   ),
   p: ({ parentName, children }) => {
@@ -238,21 +248,51 @@ const AppMDXComponents = {
     const isText =
       children instanceof String || (children.length && children.length > 1);
 
-    const viewStyle = parentName === 'blockquote' ? {} : styles.paragraph;
     return (
-      <View style={viewStyle}>
-        {isText ? <Text>{children}</Text> : children}
+      <View style={parentName === 'blockquote' ? {} : [styles.paragraph]}>
+        {isText ? <MDXText>{children}</MDXText> : children}
       </View>
     );
   },
   blockquote: ({ children }) => (
-    <View style={styles.blockquote}>{children}</View>
+    <View
+      style={[
+        styles.blockquote,
+        useIsLight()
+          ? { backgroundColor: '#CCCCCC' }
+          : { backgroundColor: '#404040' },
+      ]}
+    >
+      {children}
+    </View>
   ),
   inlineCode: ({ children }) => {
-    return <Text style={styles.codeInline}>{children}</Text>;
+    return (
+      <MDXText
+        style={[
+          styles.codeInline,
+          useIsLight()
+            ? { backgroundColor: '#CCCCCC' }
+            : { backgroundColor: '#404040' },
+        ]}
+      >
+        {children}
+      </MDXText>
+    );
   },
   code: ({ children }) => {
-    return <Text style={styles.codeBlock}>{children}</Text>;
+    return (
+      <MDXText
+        style={[
+          styles.codeBlock,
+          useIsLight()
+            ? { backgroundColor: '#CCCCCC' }
+            : { backgroundColor: '#404040' },
+        ]}
+      >
+        {children}
+      </MDXText>
+    );
   },
   pre: ({ children }) => <View style={styles.pre}>{children}</View>,
   ul: ({ children }) => {
@@ -265,10 +305,14 @@ const AppMDXComponents = {
     return (
       <View style={styles.listUnorderedItem}>
         <View style={[styles.listItem]}>
-          <Text>
-            <Text style={{ paddingLeft: 10, paddingRight: 10, fontWeight: "bold" }}>{' \u00B7 '}</Text>
+          <MDXText>
+            <MDXText
+              style={{ paddingLeft: 10, paddingRight: 10, fontWeight: 'bold' }}
+            >
+              {' \u00B7 '}
+            </MDXText>
             {children}
-          </Text>
+          </MDXText>
         </View>
       </View>
     );
@@ -288,7 +332,7 @@ const AppMDXComponents = {
   hr: ({ children }) => {
     return <View style={[styles.hr]} />;
   },
-  br: ({ children }) => <Text>{'\n'}</Text>,
+  br: ({ children }) => <MDXText>{'\n'}</MDXText>,
   img: ({ src, children }) => {
     return (
       <View style={styles.imageContainer}>
