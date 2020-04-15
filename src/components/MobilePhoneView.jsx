@@ -7,6 +7,7 @@ const MobilePhoneView = ({
   height = 535,
   style,
   children,
+  userSelect = 'none',
 }) => (
   <View style={{ marginVertical: 20, alignItems: 'center' }}>
     <View
@@ -20,6 +21,7 @@ const MobilePhoneView = ({
         borderRadius: 25,
         alignItems: 'center',
         justifyContent: 'center',
+        userSelect,
       }}
     >
       <View
