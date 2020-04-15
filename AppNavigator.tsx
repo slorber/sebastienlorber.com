@@ -1,14 +1,24 @@
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
 import AppBlogPostList, { AppBlogPost } from './AppBlogPostList';
 import { Card } from 'react-native-paper';
-import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import AppBlogPostScreen from './AppBlogPostScreen';
-import { sortBy } from 'lodash';
+import { sortBy, last } from 'lodash';
 
-const SortedBlogPosts = sortBy(AppBlogPostList,blogPost => blogPost.frontmatter.date).reverse();
+import {
+  NavigationContainer,
+  useNavigation,
+  useNavigationState,
+  useRoute,
+} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
+
+const SortedBlogPosts = sortBy(
+  AppBlogPostList,
+  blogPost => blogPost.frontmatter.date,
+).reverse();
 
 const HomeBlogPostCard = ({
   blogPost,
@@ -27,7 +37,7 @@ const HomeBlogPostCard = ({
 );
 
 const HomeScreen = () => {
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
   return (
     <ScrollView
       style={{
@@ -45,9 +55,7 @@ const HomeScreen = () => {
         <HomeBlogPostCard
           blogPost={blogPost}
           key={i}
-          onPress={() =>
-            navigate({ routeName: 'BlogPostScreen', params: { blogPost } })
-          }
+          onPress={() => navigation.navigate('BlogPost', { blogPost })}
         />
       ))}
     </ScrollView>
@@ -55,15 +63,19 @@ const HomeScreen = () => {
 };
 
 const BlogPostScreen = () => {
-  const blogPost = useNavigationParam('blogPost') as AppBlogPost;
+  const { blogPost } = useRoute().params as { blogPost: AppBlogPost };
   return <AppBlogPostScreen blogPost={blogPost} />;
 };
 
-const AppStackNavigator = createStackNavigator({
-  HomeScreen,
-  BlogPostScreen,
-});
-
-const AppNavigator = createAppContainer(AppStackNavigator);
+const AppNavigator = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="BlogPost" component={BlogPostScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 export default AppNavigator;
