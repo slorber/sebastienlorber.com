@@ -18,7 +18,10 @@ export const ExpoCameraDemo = () => {
   return (
     <MobilePhoneView safeAreaPaddingTop={0}>
       {showCamera ? (
-        <AppRevealView delay={1000}>
+        <AppRevealView
+          // Workaround because onCameraReady fires at mount time in web (but camera does not display anything yet)
+          delay={2000}
+        >
           <Camera style={{ flex: 1, width: '100%' }} />
         </AppRevealView>
       ) : (
