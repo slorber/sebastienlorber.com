@@ -111,7 +111,8 @@ export const ExpoVideoDemo = () => {
     >
       <Video
         source={{
-          uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+          //uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+          uri: require("./images/coverr-oil-rig-attraction-1567244954839.mp4"),
         }}
         rate={1.0}
         isMuted={true}
