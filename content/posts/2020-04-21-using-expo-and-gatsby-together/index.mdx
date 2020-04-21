@@ -17,31 +17,29 @@ I'll show that it's possible (and actually pretty easy) to embed runnable React-
 
 # The state of cross-platform in 2020
 
-React-Native now has a [lean core](https://github.com/facebook/react-native/issues/23313). Somehow, [Expo](https://expo.io/) can be seen as an extension to React-Native SDK: it offers a much larger API surface, enabling richer experiences.
+React-Native now has a [lean core](https://github.com/facebook/react-native/issues/23313). Somehow, [Expo](https://expo.io/) can be seen as an extension of the React-Native SDK: it offers a much larger API surface, enabling richer experiences.
 
 These last years, Expo (particularly [Evan Bacon](https://twitter.com/baconbrix)) has done a great work to bring support for web to many of its APIs, and new APIs tend to be crafted with the web platform in mind.
 Expo created [@expo/webpack-config](@expo/webpack-config), a default Webpack config that enables you to get started with React-Native-Web ASAP (without configuring babel loader, enabling the `.web.js` extension, adding svg support...).
 
-It's also worth mentioning that Microsoft is developing [React-Native for Windows and MacOS](https://microsoft.github.io/react-native-windows/). and actively collaborate with Facebook. New React-Native abstractions also try to take into consideration desktop applications.
+It's also worth mentioning that Microsoft is developing [React-Native for Windows and MacOS](https://microsoft.github.io/react-native-windows/), and actively collaborate with Facebook. New React-Native abstractions also try to take into consideration desktop applications.
 They also work [ReactXP](https://microsoft.github.io/reactxp/), an alternative solution to React-Native-Web, with a smaller and reworked API surface (only 11 primitive components).
 That wouldn't surprise me to see Facebook/Microsoft to come up with a new mobile OS, running React-Native natively (it could run all existing apps for free, with minor adaptations, and with better performance than iOS/Android). That could explain why Microsoft invests in React-Native for MacOS, as it gives more incentives for developers to use React-Native, and bring desktop support to it.
 
 Flutter is also very interesting, but they have an even larger ecosystem to build to succeed, while React-Native can more easily reuse existing JS tooling. For example, it's unlikely to see this year a static site generators in Dart at the level of Gatsby or NextJS. Being able to render an UI is not the whole story, to enable enterprise production-ready Flutter on the web, they'll also have to tackle the distribution/packaging of apps.
 
-The future of cross-platform development looks bright to me.
+The future of cross-platform development looks bright to me. For Windows and Mac, it's a bit early, but it's really time to adopt cross-platform for the web.
 
 ------------------------------------------------
 
 
 # React-Native, Expo and Gatsby
 
-I'm the maintainer of [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web).
-
-The version 3.0 is now out of beta, and uses under the hood `@expo/webpack-config`.
+I'm the maintainer of [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web), and pleased to announce the **version 3.0 is now out of beta**, and uses under the hood `@expo/webpack-config`.
 This means you basically just need to add the plugin to `gatsby-config.js`, and **nothing else is required** to get started (there's not even a config object for this plugin to work). If you tried former versions, you should consider trying again with this one.
 
 Your favorite ReactNative libs and UI kits should work out of the box.
-There might still be a few edge cases (please report them), but I'm confident it's now ready for adoption.
+There might still be a few edge cases (please report them), but I'm confident it's now ready for massive adoption.
 
 
 ------------------------------------------------
@@ -59,6 +57,7 @@ It's time to embed some real, runnable React-Native code in your blog posts. And
 You can do this with [NextJS](https://dev.to/evanbacon/next-js-expo-and-react-native-for-web-3kd9) too. [Evanbacon.dev](http://evanbacon.dev/) is build with NextJS and Expo. But really, you can use [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config) anywhere there is webpack.
 
 If you have an Expo app, it's also time to try the `expo build --web` command.
+This is certainly the easiest to get started, but we haven't really figured out a good cross-platform navigation system. React-Navigation might support web, but mobile and desktop navigation patterns are simply different beasts, and it's hard to find a good abstraction.
 
 
 ### You are a web developer?
@@ -106,7 +105,9 @@ Or when you want to use a JS library in Node, but find out it unnecessarily depe
 
 These demos may not look very impressive, but keep in mind they are all written with React-Native and Expo components / apis.
 There's no usage of a single `div` in the codebase here, nor any DOM usage.
-All these demos can also run in React-Native (natively, no WebView).
+All these demos can also run in iOS and Android (natively of course).
+
+**Warning**: the web support of available cross-platform components might be a bit rough (usage is not really mainstream...). I can't guarantee all demos work in all browsers, and you'd rather try with Chrome.
 
 import {
   ExpoCameraDemo,

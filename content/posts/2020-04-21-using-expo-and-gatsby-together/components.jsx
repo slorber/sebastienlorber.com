@@ -28,8 +28,17 @@ export const ExpoCameraDemo = () => {
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <AppButton
             onPress={async () => {
-              const result = await Permissions.askAsync(Permissions.CAMERA);
-              if (result.status === 'granted') {
+              try {
+                const result = await Permissions.askAsync(Permissions.CAMERA);
+                if (result.status === 'granted') {
+                  setShowCamera(true);
+                }
+              } catch (e) {
+                console.error(e);
+
+                // TODO find a better workaround
+                // Firefox will throw, we have to actually mount the camera so that FF ask the user permission...
+                // See https://stackoverflow.com/a/53155894/82609
                 setShowCamera(true);
               }
             }}
@@ -73,7 +82,18 @@ export const ExpoBatteryDemo = () => {
 
   return (
     <MobilePhoneView style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{fontSize: 40}}>Battery = {Math.trunc(battery * 100)}%</Text>
+      {Battery.isSupported ? (
+        <View style={{ margin: 20 }}>
+          <Text style={{ fontSize: 30 }}>Battery</Text>
+          <Text style={{ fontSize: 50 }}>{Math.trunc(battery * 100)}%</Text>
+        </View>
+      ) : (
+        <View style={{ margin: 20 }}>
+          <Text>
+            navigator.getBattery() is unsupported by your browser (try Chrome).
+          </Text>
+        </View>
+      )}
     </MobilePhoneView>
   );
 };
@@ -112,7 +132,7 @@ export const ExpoVideoDemo = () => {
       <Video
         source={{
           //uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-          uri: require("./images/coverr-oil-rig-attraction-1567244954839.mp4"),
+          uri: require('./images/coverr-oil-rig-attraction-1567244954839.mp4'),
         }}
         rate={1.0}
         isMuted={true}
