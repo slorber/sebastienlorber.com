@@ -3,26 +3,37 @@ title: Using Expo and Gatsby together
 author: Sébastien Lorber
 date: 2020-04-21
 hero: ./images/hero.png
-excerpt: ...and a call to action: it's time to make cross-platform a reality.
+excerpt: ...and a call to action. It's time to make cross-platform a reality.
 ---
+
+This post hope to inspire you to get started with cross-platform development.
+
+I'll show it's possible (and easy) to embed runnable React-Native demos inside a Gatsby blog post. You will find demos and a bit of code at the end.
+
+
+------------------------------------------------
+
 
 You probably heard of [React-Native-Web](https://github.com/necolas/react-native-web), permitting to render React-Native views on the web. So, why not on a static website?
 
-React-Native now has a [lean core](https://github.com/facebook/react-native/issues/23313). [Expo](https://expo.io/) can be seen as an extension to React-Native SDK: it offers a much larger API surface, enabling richer experiences.
+React-Native now has a [lean core](https://github.com/facebook/react-native/issues/23313). Somehow, [Expo](https://expo.io/) can be seen as an extension to React-Native SDK: it offers a much larger API surface, enabling richer experiences.
 
 These last years, Expo (particularly [Evan Bacon](https://twitter.com/baconbrix)) has done a great work to bring support for web to many of its APIs, and new APIs tend to be crafted with the web platform in mind.
 
-React-Native-Web might look complicated to setup, and Expo created [@expo/webpack-config](@expo/webpack-config), a good default config that enables you to get started fast, without the need to deal too much with Webpack config (configuring babel loader, enabling the `.web.js` extension, svg support, fonts loading...).
+React-Native-Web might look complicated to setup. Expo created [@expo/webpack-config](@expo/webpack-config), a default Webpack config that enables you to get started fast (without configuring babel loader, enabling the `.web.js` extension, adding svg support...).
+
+
+------------------------------------------------
 
 
 # React-Native, Expo and Gatsby
 
-I've been maintaining the [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web). The version 3.0 is now out of beta, and uses under the hood `@expo/webpack-config`.
+I'm the maintainer of [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web).
 
-This means you basically just need to add the plugin to `gatsby-config.js`, and nothing else is required to get started.
+The version 3.0 is now out of beta, and uses under the hood `@expo/webpack-config`.
+This means you basically just need to add the plugin to `gatsby-config.js`, and nothing else is required to get started. If you tried former versions, you should consider trying again with this one.
 
 Your favorite ReactNative libs and UI kits should work out of the box.
-
 There might still be a few edge cases (please report them), but I'm confident it's now ready for adoption.
 
 
@@ -30,26 +41,15 @@ There might still be a few edge cases (please report them), but I'm confident it
 
 
 
-
-
-
-
 # Call to action
 
 
-### You are a React-Native or Expo developer?
+### You are a React-Native, Expo developer?
 
-It's time to embed some real, runnable React-Native code in your blog posts.
 
-And yes, it does work in [MDX](https://github.com/mdx-js/mdx) too!
+It's time to embed some real, runnable React-Native code in your blog posts. And yes, it works with [MDX](https://github.com/mdx-js/mdx), with a Gatsby theme (like [mine](https://github.com/narative/gatsby-theme-novela)!), with [Docz](https://www.docz.site/)...
 
-It also works if you use a [Gatsby theme like me](https://github.com/narative/gatsby-theme-novela)!
-
-All sites based on Gatsby can use this, including [Docz](https://www.docz.site/).
-
-It's also possible to do so with [NextJS](https://dev.to/evanbacon/next-js-expo-and-react-native-for-web-3kd9), if you prefer it to Gatsby. [Evanbacon.dev](http://evanbacon.dev/) is build with NextJS and Expo.
-
-But really, you can use [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config) anywhere there is webpack.
+You can do this with [NextJS](https://dev.to/evanbacon/next-js-expo-and-react-native-for-web-3kd9) too. [Evanbacon.dev](http://evanbacon.dev/) is build with NextJS and Expo. But really, you can use [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config) anywhere there is webpack.
 
 If you have an Expo app, it's also time to try the `expo build --web` command.
 
@@ -59,32 +59,25 @@ If you have an Expo app, it's also time to try the `expo build --web` command.
 I still encourage you to try this plugin, just to get a better idea about what React-Native-Web is.
 
 In case you don't aim to share code between web and mobile, React-Native-Web can be seen as a low-level UI kit, including its own performant CSS-in-JS system, with a few specificities like [atomic CSS](http://necolas.github.io/react-native-web/docs/?path=/docs/guides-style--page#implementation-details).
-
 It's so good, that Twitter choose to use this for their mobile and desktop websites, despite they don't even use ReactNative on mobile.
-
 Facebook also hired React-Native-Web author [Nicolas Gallagher](https://twitter.com/necolas), and the new Facebook (in beta), is using a proprietary atomic CSS framework (XStyle?).
-
 This atomic CSS strategy has been reported to scale extremely well for large websites (see this [React Conf 2019 keynote](https://www.youtube.com/watch?v=9JZHodNR184)).
 
-It's also been speculated by Swyx that [React-Native might become a better choice for a website than React-DOM](https://www.swyx.io/writing/react-native-web-singularity/).
+It has also been speculated that [React-Native might simply become a better choice for building websites than React-DOM](https://www.swyx.io/writing/react-native-web-singularity/).
 
 
 
 ### You are a lib author?
 
 It's time to seriously think about cross-platform development.
-
 What if your lib could be used everywhere, instead of just the web OR mobile?
 
-Publishing cross-platform might become as important for consumers as publishing a library with type definitions.
-
 Apart from Expo, React-Native core, and a few React-Native UI kits, there is a lack of quality cross-platform components for rich experiences (toasts, maps, credit card inputs...).
+[expo-dark-mode-switch](https://github.com/EvanBacon/expo-dark-mode-switch) is a good cross-platform component example. Using [expo-module-scripts](https://www.npmjs.com/package/expo-module-scripts) might help you publish something.
 
-[expo-dark-mode-switch](https://github.com/EvanBacon/expo-dark-mode-switch) is a good cross-platform component example.
-
-Using [expo-module-scripts](https://www.npmjs.com/package/expo-module-scripts) might help you publish something cross-platform.
-
-
+Publishing cross-platform  libraries might become as important for consumers as publishing a library with type definitions.
+Think about how annoying it is when you want to use a JS library but find out it does not have TypeScript defitions?
+Or when you want to use a JS library in Node, but find out it unnecessarily depends on some global browser object? In the future, not publishing cross-platform React widgets might create the same level of frustration. I think it's time to make the cross-platform ecosystem great, and the Expo team show us the way.
 
 
 
@@ -174,6 +167,47 @@ Can I build an image picker, and enable a few image transformations? Yes!
 
 ------------------------------------------------
 
+In case you wonder what the code looks like, here's a snippet for the camera demo.
+You can find the rest of the code [here](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-04-21-using-expo-and-gatsby-together).
+
+```jsx
+import { View, Text } from 'react-native';
+import { Camera } from 'expo-camera';
+import * as Permissions from 'expo-permissions';
+
+import MobilePhoneView from 'components/MobilePhoneView';
+import AppButton from 'components/designSystem/AppButton';
+import AppRevealView from 'components/designSystem/AppRevealView';
+
+export const ExpoCameraDemo = () => {
+  const [showCamera, setShowCamera] = useState(false);
+  return (
+    <MobilePhoneView safeAreaPaddingTop={0}>
+      {showCamera ? (
+        <AppRevealView>
+          <Camera style={{ flex: 1, width: '100%' }} />
+        </AppRevealView>
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <AppButton
+            onPress={async () => {
+              const result = await Permissions.askAsync(Permissions.CAMERA);
+              if (result.status === 'granted') {
+                setShowCamera(true);
+              }
+            }}
+          >
+            Show expo-camera
+          </AppButton>
+        </View>
+      )}
+    </MobilePhoneView>
+  );
+};
+```
+
+------------------------------------------------
+
 
 I hope these demos will help you understand that cross-platform works, is not so hard to setup, and is ready for wide-spread adoption.
 
@@ -185,32 +219,28 @@ I'll update this post regularly, if I find new interesting cross-platform experi
 
 # Toward cross-platform MDX content authoring
 
-As I said, all these demos use React Native and Expo code, and they can run natively on React-Native.
+All these demos use React Native and Expo code, and they can run natively on React-Native.
+These demos are embedded in this markdown post using [MDX](https://github.com/mdx-js/mdx).
+Fortunately, MDX can be run on React-Native too!
 
-These demos are embedded in this markdown post using [MDX](https://github.com/mdx-js/mdx). Fortunately, MDX can be run on React-Native too!
+This actually means that... **my posts are cross-platform**?
 
-This actually means that my posts are... cross-platform?
+Stay tuned: in upcoming blog posts, I'll show you how I run my MDX blog posts inside an Expo app.
 
-Stay tuned, in upcoming blog posts, I'll show you how I embed my MDX blog posts in an Expo app.
+![preview](./images/preview_smaller.png)
 
 For a preview, scan my [Expo QRCode](https://expo.io/@slorber/sebastien-lorber), or take a look at the [source code](https://github.com/slorber/sebastienlorber.com) :)
-
 
 ![QRCode](./images/qrcode.png)
 
 
-
-
-
-
+Thank you for reading!
 
 ------------------------------------------------
 
 
 If you like it, spread the word with a [Retweet]()
 
-Browser demos code or correct my post typos [on the blog repo]()
+Browser code demos, or correct my post typos [on the blog repo](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-04-21-using-expo-and-gatsby-together)
 
 For more content like this, subscribe to [my mailing list](https://mailchi.mp/4ea4df0b54f7/sebastienlorber) and follow me on [Twitter](https://twitter.com/sebastienlorber).
-
-Thanks for my reviewers:
