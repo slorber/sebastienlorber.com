@@ -73,7 +73,7 @@ export const ExpoBatteryDemo = () => {
 
   return (
     <MobilePhoneView style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Battery level = {battery}</Text>
+      <Text style={{fontSize: 40}}>Battery = {Math.trunc(battery * 100)}%</Text>
     </MobilePhoneView>
   );
 };
