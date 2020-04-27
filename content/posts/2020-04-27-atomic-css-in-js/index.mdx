@@ -122,15 +122,13 @@ There's no unique way to provide the remaining one-off styles.
 
 # Tailwind to the rescue
 
-The approach of Tailwind is very convenient and solve some of these problems.
+The approach of Tailwind is very convenient, and solves some of these problems.
 
-It does not really provide a unique utility CSS file for all websites. Instead, it only provides a shared scope and naming conventions.
-
-From a [configuration](https://tailwindcss.com/docs/configuration/) file, it allows you to generate your own custom utility CSS.
+It does not really provide a unique utility CSS file for all websites. Instead, it only provides a shared scope and naming conventions. From a [configuration](https://tailwindcss.com/docs/configuration/) file, it allows you to generate your own custom utility CSS.
 
 Knowledge of Tailwind is portable to other applications, even if they don't use exactly the same class names. It reminds me a bit of the "Learn once, write anywhere" philosophy of React.
 
-I've seen people reporting that Tailwind covers something like 90% or 95% of styling needs of their apps, so it seems the scope of the framework is large enough and cover most needs, without resorting to one-off style.
+I've seen people reporting that Tailwind classes cover something between 90% or 95% of their needs. It seems the scope is large enough, and we don't often need to use one-off style.
 
 At this point you might wonder `why use atomic CSS instead of Tailwind?`.
 What would you gain in enforcing the atomic CSS rule of `1 rule, 1 class`?
@@ -141,12 +139,11 @@ So, should we abandon the idea of atomic CSS, and simply use Tailwind?
 
 Tailwind is a great solution, but there are still a few problems that remain unsolved:
 - the need to learn an opiniated naming convention
-- CSS rules insertion order matters
+- CSS rules insertion order still matters
 - can unused rules be easily removed?
-- what do we do with the one-off styles?
+- what do we do with the remaining one-off styles?
 
-Handwritten atomic CSS might not be the most convenient compared to Tailwind, but what about about atomic CSS-in-JS?
-
+Handwritten atomic CSS might not be the most convenient compared to Tailwind, but what about atomic CSS-in-JS?
 
 
 
@@ -157,28 +154,25 @@ Handwritten atomic CSS might not be the most convenient compared to Tailwind, bu
 
 # Enter atomic CSS-in-JS
 
-Atomic CSS-in-JS can be seen as `automatic atomic CSS`:
+Atomic CSS-in-JS can be seen as "automatic atomic CSS":
 - You don't need to create a class name convention anymore
 - Common and one-off styles are treated the same way
 - Ability extract the critical CSS of a page, and do code-splitting
 - An opportunity to fix the CSS rules insertion order issues in JS
 
-I'm not aware about all CSS-in-JS libs currently supporting atomic CSS. Supporting atomic CSS is an implementation detail of the CSS-in-JS lib. One lib might not support it now, but might start supporting it in the future, without changing its API.
+I'm not aware about all CSS-in-JS libraries out there currently supporting atomic CSS. Supporting it is actually an implementation detail of the CSS-in-JS library. Support might come and go, or can even be made optional.
 
-In this post, I want to highlight 2 particular solutions, that recently lead to 2 large-scale atomic CSS deployments:
+I will highlight 2 particular solutions, that recently lead to 2 large-scale atomic CSS-in-JS deployments, using 2 talks as sources:
 - React-Native-Web at Twitter (more details in [Nicolas Gallagher's talk](https://www.youtube.com/watch?v=tFFn39lLO-U))
 - Stylex at Facebook (more details in [Frank Yan's talk](https://www.youtube.com/watch?v=9JZHodNR184))
-
-I'll show screenshots of these talks that are related to atomic CSS.
-
 
 
 
 ### React-Native-Web
 
-React-Native-Web is a very interesting library: it permits to render React-Native primitives on the web. But but we are not really talking about cross-platform mobile/web development here, watch the talks for more details.
+React-Native-Web is a very interesting library: it permits to render React-Native primitives on the web. We are not really talking about cross-platform mobile/web development here (watch the talks for more details).
 
-As a web developer, you just need to understand that React-Native-Web is a regular CSS-in-JS library, that comes with a few very basic React component primitives.
+As a web developer, you just need to understand that React-Native-Web is a regular CSS-in-JS library, that comes with a small set of primitive React components.
 Wherever you see `View`, you can replace it in your mind with `div`, and you are good to go.
 
 React-Native-Web has been created by [Nicolas Gallagher](https://mobile.twitter.com/necolas), working on Twitter mobile. They progressively deployed it to mobile, not sure when exactly but probably around 2017/2018.
@@ -197,7 +191,7 @@ It's worth mentioning that Nicolas Gallagher, the author of React-Native-Web, wa
 
 Unlike React-Native-Web, Stylex does not seem focused on cross-platform development.
 
-Unfortunately, all the infos I have are from the talk :) We'll have to wait for more details.
+All the infos I have are from the talk :) We'll have to wait for more details.
 
 
 
@@ -205,7 +199,7 @@ Unfortunately, all the infos I have are from the talk :) We'll have to wait for 
 
 ## Scalability
 
-As expected with atomic CSS, we see that both Twitter and Facebook a massive reduction of their CSS, as it now follows a logarithmic curve as the number of component grows.
+As expected with atomic CSS, both Twitter and Facebook have seen a massive reduction of their CSS, as it now follows a logarithmic curve. There's an initial price to pay for simple apps though.
 
 ![](./images/rnw-scalability.png)
 
@@ -247,13 +241,13 @@ It's worth highlighting React-Native-Web will expand the CSS shortand syntaxes l
 ## CSS rules order
 
 Unlike handwritten utility/atomic CSS, the JS libs are able to make the styling not dependent of the CSS rules insertion order.
-As you may know, in case of conflicting rules, it's not the last class of an attribute that wins, but the rule that is last in the stylesheet. I don't mention specificity rules, because here all selectors are simple class-based ones.
+As you may know, in case of conflicting rules, it's not the last class of an attribute that wins, but the rule that is inserted last in the stylesheet. Specificity issues are solved by only using simple class-based selectors.
 
 ![](./images/rnw-rules-order.png)
 
 ![](./images/stylex-rules-order.png)
 
-In practice, these libraries avoid outputting classes with conflicting rules on the same element, and ensure that the last style declared in the markup always wins.
+In practice, these libraries avoid outputting classes with conflicting rules on the same element. They ensure that the last style declared in the markup always wins. The "overriden classes" are filtered, and don't even make it to the DOM.
 
 ```jsx
 const styles = pseudoLib.create({
@@ -293,7 +287,7 @@ Thank you for reading.
 
 
 
-If you like it, spread the word with a [Retweet]()
+If you like it, spread the word with a [Retweet](https://twitter.com/sebastienlorber/status/1254822255164567552)
 
 Browser code demos, or correct my post typos [on the blog repo](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-04-27-atomic-css-in-js)
 
