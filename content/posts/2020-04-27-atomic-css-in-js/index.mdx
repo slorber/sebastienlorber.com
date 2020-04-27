@@ -1,0 +1,211 @@
+---
+title: Atomic CSS-in-JS
+author: Sébastien Lorber
+date: 2020-04-21
+hero: ./images/hero.png
+excerpt: ...or how to scale your CSS.
+secret: true
+---
+
+
+
+
+
+With recent production deployments from Facebook and Twitter, a new trend is growing: atomic CSS-in-JS.
+
+We'll see what atomic CSS is, how it relates to utility-first CSS, and that big players are adopting it in their modern React codebases, alongside CSS-in-JS.
+
+**Note**: Atomic CSS is not really related to [Atomic Design](https://atomicdesign.bradfrost.com/).
+
+
+
+
+
+
+----------------------------------------------------
+
+# What is atomic CSS?
+
+You may have heard of various CSS methodologies like BEM, OOCSS...
+
+```html
+<button class="button button--state-danger">
+	Danger button
+</button>
+```
+
+These days, people really like [Tailwind CSS](https://tailwindcss.com/) and its [utility-first](https://tailwindcss.com/docs/utility-first/) concept.
+
+```html
+<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+  Button
+</button>
+```
+
+With a stylesheet of a bunch of utility classes, you can go a long way.
+Atomic CSS is like an extreme version of utility-first CSS: all CSS classes have a single, unique CSS rule.
+`Atomic CSS` was first used by Thierry Koblentz (Yahoo!), in [Challenging CSS Best Practices](https://www.smashingmagazine.com/2013/10/challenging-css-best-practices-atomic-approach/) in 2013.
+
+```
+/* Atomic CSS */
+.bw-2x {
+  border-width: 2px;
+}
+.bss {
+  border-style: solid;
+}
+.sans {
+  font-style: sans-serif;
+}
+.p-1x {
+  padding: 10px;
+}
+
+
+/* Not atomic, because the class contains 2 rules */
+.p-1x-sans {
+  padding: 10px;
+  font-style: sans-serif;
+}
+```
+
+
+With utility/atomic CSS, we acknowledge it's ok to couple the structure and presentation layers: when we need to change the button color, we modify the HTML, not the CSS.
+This tight coupling is also acknowledged in modern CSS-in-JS React codebases, but it seems the CSS world figured out first that the "separation of concern" of the web didn't feel right.
+
+Specificity is also less a problem, as we use simple class selectors.
+
+We are now styling via the markup, which has several interesting properties:
+- the stylesheet grows less as we add new features
+- we can move the markup around, and the styles are moved at the same time
+- we can remove features, and be sure that we remove the related styling at the same time
+
+For sure, the html is a bit more bloated.
+This can be a concern for server rendered web apps, but the high redundancy in class names compress well with gzip, in the same way it worked well for duplicated css rules previously found in your CSS files.
+
+You don't need to use utility/atomic CSS for every cases, just the most common styling patterns.
+
+Once your utility/atomic CSS is ready, it will not change and grow much.
+It's possible to cache it more aggressively (you can append it to `vendor.css` for example).
+It is also quite portable, and you can use it in other applications.
+
+
+
+
+----------------------------------------------------
+
+# Limits of utility/atomic CSS
+
+Utility/atomic CSS looks interesting, but they come with a few challenges as well.
+
+People usually write utility/atomic CSS by hand, carefully crafting naming conventions.
+It can be hard to ensure the convention is easy to use, consistent, and not bloated over time.
+Can multiple persons work on this CSS and keep it consistent?
+Is it subject to the [bus factor](https://en.wikipedia.org/wiki/Bus_factor)?
+
+You also need to work on a good utility/atomic stylesheet up-front, before being able to iterate on features that will use it.
+
+If the utility/atomic CSS is made by someone else, you will have to learn the class naming conventions first (even if you know everything about CSS).
+This convention is opiniated, and it's possible that you don't like it.
+
+Sometimes, you need some extra CSS that is not provided by your utility/atomic CSS.
+There's no unique way to provide the remaining one-off styles.
+
+
+
+
+----------------------------------------------------
+
+# Tailwind to the rescue
+
+The approach of Tailwind is very convenient and solve some of these problems.
+
+It does not really provide a unique utility CSS file for all websites. Instead, it only provides a shared scope and naming conventions.
+
+From a [configuration](https://tailwindcss.com/docs/configuration/) file, it allows you to generate your own custom utility CSS.
+
+Knowledge of Tailwind is portable to other applications, even if they don't use exactly the same class names. It reminds me a bit of the "Learn once, write anywhere" philosophy of React.
+
+I've seen people reporting that Tailwind covers something like 90% or 95% of styling needs of their apps, so it seems the scope of the framework is large enough and cover most needs, without resorting to one-off style.
+
+At this point you might wonder `why use atomic CSS instead of Tailwind?`.
+What would you gain in enforcing the atomic CSS rule of `1 rule, 1 class`?
+You would end up with a larger html markup, and a less convenient naming convention?
+Tailwind already has many atomic classes anyway.
+
+So, should we abandon the idea of atomic CSS, and simply use Tailwind?
+
+I think Tailwind is a great solution. There are still a few problems that remain unsolved:
+- the need to learn an opiniated naming convention
+- CSS rules insertion order in the DOM can still affect the rendered UI
+- what about values that you don't use in your app, can they be removed from the CSS?
+- what do we do with the one-off styles?
+
+Handwritten atomic CSS might not be the most convenient compared to Tailwind, but what about about atomic CSS-in-JS?
+
+
+
+
+
+----------------------------------------------------
+
+# Enter atomic CSS-in-JS
+
+
+
+
+
+
+
+https://github.com/robinweser/fela
+
+
+
+
+
+
+
+<div class="ml-6 ml-4"/>
+
+
+Oracle collecting statistics
+
+
+
+
+
+
+
+caching: shared style in vendor.css
+
+
+
+
+
+
+
+
+
+
+
+
+RTL: serve 2 CSS files
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------
+
+
+
+If you like it, spread the word with a [Retweet]()
+
+Browser code demos, or correct my post typos [on the blog repo](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-04-21-using-expo-and-gatsby-together)
+
+For more content like this, subscribe to [my mailing list](https://mailchi.mp/4ea4df0b54f7/sebastienlorber) and follow me on [Twitter](https://twitter.com/sebastienlorber).
