@@ -34,7 +34,7 @@ You may have heard of various CSS methodologies like BEM, OOCSS...
 </button>
 ```
 
-These days, people really like [Tailwind CSS](https://tailwindcss.com/) and its [utility-first](https://tailwindcss.com/docs/utility-first/) concept.
+These days, people really like [Tailwind CSS](https://tailwindcss.com/) and its [utility-first](https://tailwindcss.com/docs/utility-first/) concept. This is close to Functional CSS and [Tachyon](https://github.com/tachyons-css/tachyons).
 
 ```html
 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -43,6 +43,7 @@ These days, people really like [Tailwind CSS](https://tailwindcss.com/) and its 
 ```
 
 With a stylesheet of a bunch of utility classes, you can go a long way.
+
 Atomic CSS is like an extreme version of utility-first CSS: all CSS classes have a single, unique CSS rule.
 `Atomic CSS` was first used by Thierry Koblentz (Yahoo!), in [Challenging CSS Best Practices](https://www.smashingmagazine.com/2013/10/challenging-css-best-practices-atomic-approach/) in 2013.
 
@@ -85,8 +86,8 @@ This can be a concern for server rendered web apps, but the high redundancy in c
 
 You don't need to use utility/atomic CSS for every cases, just the most common styling patterns.
 
-Once your utility/atomic CSS is ready, it will not change and grow much.
-It's possible to cache it more aggressively (you can append it to `vendor.css` for example).
+Once your utility/atomic CSS is ready, it will not change or grow much.
+It's possible to cache it more aggressively (you can append it to `vendor.css` for example, and expect it to not invalidate across app redeploys).
 It is also quite portable, and you can use it in other applications.
 
 
