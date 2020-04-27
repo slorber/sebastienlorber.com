@@ -1,0 +1,20 @@
+diff --git a/node_modules/expo-av/build/ExponentVideo.web.js b/node_modules/expo-av/build/ExponentVideo.web.js
+index f81fc34..657c816 100644
+--- a/node_modules/expo-av/build/ExponentVideo.web.js
++++ b/node_modules/expo-av/build/ExponentVideo.web.js
+@@ -1,5 +1,5 @@
+ import * as React from 'react';
+-import { createElement } from 'react-native';
++import { createElement, StyleSheet } from 'react-native';
+ import ExponentAV from './ExponentAV';
+ export const FULLSCREEN_UPDATE_PLAYER_WILL_PRESENT = 0;
+ export const FULLSCREEN_UPDATE_PLAYER_DID_PRESENT = 1;
+@@ -98,6 +98,8 @@ export default class ExponentVideo extends React.Component {
+             position: undefined,
+             objectFit,
+             overflow: 'hidden',
++            width: "100%",
++            height: "100%",
+         };
+         return (<Video ref={this.onRef} onLoadStart={this.onLoadStart} onLoadedData={this.onLoadedData} onError={this.onError} onTimeUpdate={this.onProgress} onSeeking={this.onSeeking} onEnded={this.onEnded} onLoadedMetadata={this.onLoadedMetadata} onCanPlay={this.onCanPlay} onStalled={this.onStalled} src={(source || { uri: undefined }).uri} muted={status.isMuted} loop={status.isLooping} autoPlay={status.shouldPlay} controls={useNativeControls} style={[style, customStyle]}/>);
+     }

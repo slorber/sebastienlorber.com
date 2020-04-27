@@ -8,7 +8,7 @@ const ScreenWidth = Dimensions.get('window').width;
 const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
   const { default: MDXBlogPostComp, frontmatter } = blogPost;
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+    <ScrollView style={{ flex: 1 }}>
       <View
         style={{
           marginTop: 20,

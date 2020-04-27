@@ -1,26 +1,35 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MDXProvider } from '@mdx-js/react';
+import { AppearanceProvider } from 'react-native-appearance';
 
 import AppMDXComponents from './AppMDXComponents';
 import AppNavigator from './AppNavigator';
 
 const AppStarter = () => {
   return (
-    <SafeAreaProvider>
-      <MDXProvider components={AppMDXComponents}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: '#fff',
-          }}
-        >
+    <AppearanceProvider>
+      <SafeAreaProvider>
+        <MDXProvider components={AppMDXComponents}>
           <AppNavigator />
-        </View>
-      </MDXProvider>
-    </SafeAreaProvider>
+        </MDXProvider>
+      </SafeAreaProvider>
+    </AppearanceProvider>
   );
 };
 
-export default AppStarter;
+// TODO hack to fix web issue, does not work yet
+const provideThemeUIForWeb = Comp => {
+  if (Platform.OS === 'web') {
+    const ThemeProvider = require('theme-ui').ThemeProvider;
+    return () => (
+      <ThemeProvider>
+        <Comp />
+      </ThemeProvider>
+    );
+  }
+  return Comp;
+};
+
+export default provideThemeUIForWeb(AppStarter);

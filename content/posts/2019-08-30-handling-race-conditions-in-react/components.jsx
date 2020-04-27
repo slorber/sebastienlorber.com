@@ -168,7 +168,7 @@ const useStarwarsSliderState = () => {
 
   const api = useMemo(() => {
     return {
-      previous: () => setId(i => (i > 2 ? i - 1 : i)),
+      previous: () => setId(i => (i > 1 ? i - 1 : i)),
       next: () => setId(i => i + 1),
     };
   }, [setId]);
