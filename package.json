@@ -20,7 +20,7 @@
     "clean": "gatsby clean",
     "netlify": "yarn netlify:build && netlify:publishContent",
     "netlify:build": "yarn build",
-    "netlify:publishContent": "echo 'publish ./content folder static assets, so that I can cross-post easily to other markdown-enabled sites' && cpx 'content/**/*.{png,jpg}' public/contentSourceImages",
+    "netlify:publishContent": "echo 'publish ./content folder static assets, so that I can cross-post easily to other markdown-enabled sites' && cpx 'content/**/*.{png,jpg}' public/content",
     "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'",
     "postinstall": "patch-package && yarn expo:mdx"
   },
