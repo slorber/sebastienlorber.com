@@ -18,6 +18,9 @@
     "build": "GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true gatsby build --log-pages",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
+    "netlify": "yarn netlify:build && netlify:publishContent",
+    "netlify:build": "yarn build",
+    "netlify:publishContent": "echo 'publish ./content folder static assets, so that I can cross-post easily to other markdown-enabled sites' && cpx 'content/**/*.{png,jpg}' public/contentSourceImages",
     "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'",
     "postinstall": "patch-package && yarn expo:mdx"
   },
@@ -78,6 +81,7 @@
     "babel-plugin-macros": "^2.8.0",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-preset-expo": "^8.1.0",
+    "cpx": "^1.5.0",
     "expo-cli": "^3.17.18",
     "glob": "^7.1.6",
     "gray-matter": "^4.0.2",
