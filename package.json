@@ -41,6 +41,7 @@
     "expo-image-picker": "^8.1.0",
     "expo-permissions": "~8.1.0",
     "gatsby": "^2.21.0",
+    "gatsby-plugin-canonical-urls": "^2.3.0",
     "gatsby-plugin-emotion": "^4.3.0",
     "gatsby-plugin-google-analytics": "^2.3.0",
     "gatsby-plugin-mailchimp": "^5.1.2",

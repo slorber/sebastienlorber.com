@@ -72,6 +72,12 @@ module.exports = {
     {
       resolve: `gatsby-plugin-sitemap`,
     },
-    'gatsby-plugin-netlify',
+    //'gatsby-plugin-netlify', // replaced by netlify cache plugin
+    {
+      resolve: `gatsby-plugin-canonical-urls`,
+      options: {
+        siteUrl: `https://sebastienlorber.com`,
+      },
+    },
   ],
 };
