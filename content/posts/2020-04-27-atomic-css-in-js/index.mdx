@@ -96,6 +96,7 @@ It is also quite portable, and you can use it in other applications.
 
 
 
+
 ----------------------------------------------------
 
 # Limits of utility/atomic CSS
@@ -143,7 +144,26 @@ Tailwind is a great solution, but there are still a few problems that remain uns
 - can unused rules be easily removed?
 - what do we do with the remaining one-off styles?
 
-Handwritten atomic CSS might not be the most convenient compared to Tailwind, but what about atomic CSS-in-JS?
+Handwritten atomic CSS might not be the most convenient compared to Tailwind.
+
+
+
+
+
+
+----------------------------------------------------
+
+# Comparison with CSS-in-JS
+
+There's a relationship with CSS-in-JS, and utility/atomic CSS. Both approaches advocate for styling from the markup, somehow trying to emulate performant inline styles, which gives them many similar properties (like the ability to move things around with confidence).
+
+[Christopher Chedeau](https://twitter.com/vjeux) greatly helped spread the idea of CSS-in-JS in the React ecosystem. In [multiple](https://speakerdeck.com/vjeux/react-css-in-js) [talks](https://speakerdeck.com/vjeux/react-css-in-js-react-france-meetup), he explains the problems of CSS:
+
+![](./images/css-problems.png)
+
+Utility/atomic CSS solve some of these problems too, but definitively not all (particularly, the non-deterministic resolution of styles).
+
+If they share similarities, can't we use them both together?
 
 
 
@@ -166,7 +186,7 @@ I will highlight 2 particular solutions, that recently lead to 2 large-scale ato
 - React-Native-Web at Twitter (more details in [Nicolas Gallagher's talk](https://www.youtube.com/watch?v=tFFn39lLO-U))
 - Stylex at Facebook (more details in [Frank Yan's talk](https://www.youtube.com/watch?v=9JZHodNR184))
 
-**Edit**: readers reported me other solutions: [Styletron](https://www.styletron.org/), [Fela](https://github.com/robinweser/fela)
+See also: [Styletron](https://www.styletron.org/), [Fela](https://github.com/robinweser/fela), [cxs](https://github.com/cxs-css/cxs/)
 
 
 ### React-Native-Web
@@ -283,7 +303,8 @@ const styles = pseudoLib.create({
 </div>
 ```
 
-This predictable behavior is only possible thanks to using the most strict atomic CSS.
+
+**Note**: This predictable behavior is only possible thanks to using the most strict atomic CSS.
 
 If a class had multiple rules, and only one of them was overridden, the CSS-in-JS library wouldn't be able to filter that class without removing the non-overridden rules as well.
 
@@ -292,17 +313,46 @@ If a class had a single shorthand rule like `margin: 0`, and the override was `m
 
 
 
+
+
+----------------------------------------------------
+
+# I still prefer Tailwind
+
+Once you know all the Tailwind naming conventions, you can code an UI very fast. It might feel less productive to go back to writing every CSS rule by hand, like you do in CSS-in-JS.
+
+Nothing prevents your for building your own abstractions on top of an atomic CSS-in-JS framework. [Styled-system](https://styled-system.com/) might be able to run some of the CSS-in-JS libraries supporting atomic CSS. It's even possible to reuse naming conventions for Tailwind in JS, if you feel you are productive with it.
+
+
+Let's take some Tailwind code:
+
+```jsx
+<div className="absolute inset-0 p-4 bg-blue-500" />
+```
+
+Now, let's take a random solution ([react-native-web-tailwindcss](https://www.npmjs.com/package/react-native-web-tailwindcss)) I just found on google:
+
+```jsx
+import {t} from 'react-native-tailwindcss';
+
+<View style={[t.absolute, t.inset0, t.p4, t.bgBlue500]} />
+```
+
+In term of productivity, this is not very different. And you could avoid typos with TypeScript.
+
+
 ----------------------------------------------------
 
 # Conclusion
 
-That's all I have to say about atomic CSS-in-JS.
+That's almost everything I have to say about atomic CSS-in-JS.
 
-I never used atomic CSS, CSS-in-JS, or Tailwind in production. I'm probably wrong on some parts, feel free to correct me on [Twitter](https://twitter.com/sebastienlorber)
+I have never used atomic CSS, atomic CSS-in-JS, or Tailwind in any large production deployment. I'm probably wrong on some parts, feel free to correct me on [Twitter](https://twitter.com/sebastienlorber).
 
 I think atomic CSS-in-JS is a trend to watch in the React ecosystem, and I hope you learned something useful with this post.
 
-As I've not been able to find any article about atomic CSS-in-JS, I wrote this mostly for myself, to be able to link to something in upcoming blog posts, as I plan to write more articles about React-Native-Web.
+As I've not been able to find any article about atomic CSS-in-JS, I wrote this mostly for myself.
+I want a resource to link to when I mention atomic CSS-in-JS in upcoming blog posts (I plan to write more articles about React-Native-Web and cross-platform, stay tuned).
 
 Thank you for reading.
 
