@@ -166,6 +166,7 @@ I will highlight 2 particular solutions, that recently lead to 2 large-scale ato
 - React-Native-Web at Twitter (more details in [Nicolas Gallagher's talk](https://www.youtube.com/watch?v=tFFn39lLO-U))
 - Stylex at Facebook (more details in [Frank Yan's talk](https://www.youtube.com/watch?v=9JZHodNR184))
 
+**Edit**: readers reported me other solutions: [Styletron](https://www.styletron.org/), [Fela](https://github.com/robinweser/fela)
 
 
 ### React-Native-Web
@@ -241,13 +242,15 @@ It's worth highlighting React-Native-Web will expand the CSS shortand syntaxes l
 ## CSS rules order
 
 Unlike handwritten utility/atomic CSS, the JS libs are able to make the styling not dependent of the CSS rules insertion order.
-As you may know, in case of conflicting rules, it's not the last class of an attribute that wins, but the rule that is inserted last in the stylesheet. Specificity issues are solved by only using simple class-based selectors.
+As you may know, in case of conflicting rules, it's not the last class of a class attribute that wins, but the rule that is inserted last in the stylesheet. Specificity issues are solved by only using simple class-based selectors.
 
 ![](./images/rnw-rules-order.png)
 
 ![](./images/stylex-rules-order.png)
 
-In practice, these libraries avoid outputting classes with conflicting rules on the same element. They ensure that the last style declared in the markup always wins. The "overriden classes" are filtered, and don't even make it to the DOM.
+In practice, these libraries avoid outputting classes with conflicting rules on the same element.
+They ensure that the last style declared in the markup always wins.
+The "overridden classes" are filtered, and don't even make it to the DOM.
 
 ```jsx
 const styles = pseudoLib.create({
@@ -255,16 +258,22 @@ const styles = pseudoLib.create({
   blue: {color: "blue"},
 });
 
-<!-- That div will have a single atomic class for the blue color -->
+// That div only will have a single atomic class (not 2!), for the blue color
 <div style={[styles.red, styles.blue]}>
   Always blue!
 </div>
 
-<!-- That div will have a single atomic class for the red color -->
+// That div only will have a single atomic class (not 2!), for the red color
 <div style={[styles.blue, styles.red]}>
   Always red!
 </div>
 ```
+
+This predictable behavior is only possible thanks to using the most strict atomic CSS.
+
+If a class had multiple rules, and only one of them was overridden, the CSS-in-JS library wouldn't be able to filter that class without removing the non-overridden rules as well.
+
+If a class had a single shorthand rule like `margin: 0`, and the override was `marginTop: 10`, it's the same problem. The shorthand syntax like `margin: 0` is expanded to 4 distinct classes, and the library is able to filter overridden classes that should not appear in the DOM with more granularity.
 
 
 
