@@ -15,7 +15,7 @@
     "expo:mdx": "yarn expo:mdx:generate && yarn expo:mdx:format",
     "expo:mdx:generate": "node expo-generate-mdx-as-jsx.js",
     "expo:mdx:format": "prettier --write '{src,content}/**/*.mdx.jsx'",
-    "build": "gatsby build",
+    "build": "GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true gatsby build --log-pages",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "prettier": "prettier --write '{src,content}/**/*.{js,jsx,ts,tsx,mdx}'",
