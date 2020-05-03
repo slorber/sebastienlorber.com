@@ -1,0 +1,120 @@
+# Sébastien Lorber
+
+<img
+        src="./seb.jpeg"
+        style={{
+                width: 150,
+                height: 150,
+                borderRadius: 100,
+                alignSelf: 'center',
+        }}
+/>
+
+- Expert React indépendant
+- Interet pour le dev cross-platform
+- [https://twitter.com/sebastienlorber](https://twitter.com/sebastienlorber)
+- [http://sebastienlorber.com/](http://sebastienlorber.com/)
+- [http://sebastienlorber.com/newsletter](http://sebastienlorber.com/newsletter)
+
+---
+
+# Gatsby, React-Native et MDX
+
+- React-Native sur un site static?
+- Markdown sur React-Native?
+- MDX: markdown intéractif et cross-platform
+
+---
+
+### Gatsby
+
+- générateur de site statique
+- React / SPA
+- GraphQL: data et affichage sont découplés
+- build incrémental
+- intégrations variées (dont MDX)
+
+---
+
+### MDX
+
+Du React dans Markdown
+
+```mdx
+# Hello, _world_!
+
+Je peux ajouter des composants React dans mon contenu Markdown:
+
+import MyComponent from './myComponent';
+
+<MyComponent age={42}>
+```
+
+---
+
+### React-Native
+
+- Piloter des vues natives via du JS
+- Expo: simplifie grandement le dev ReactNative
+- iOS, Android, Web (bientot Windows et MacOS)
+- Web: différentes possibilités, dont React-Native-Web
+- Installez Expo sur vos téléphones
+
+---
+
+### React-Native
+
+CSS-in-JS, flexbox (direction column)
+
+```jsx
+import { View, Text } from 'react-native';
+
+const MyComponent = () => (
+        <View style={{ flexDirection: 'row', backgroundColor: '#FFFFFF' }}>
+                <View style={{ flex: 0, width: 100 }}>
+                        <MyIcon />
+                </View>
+                <View style={{ flex: 1 }}>
+                        <Text>Hello!</Text>
+                </View>
+        </View>
+);
+```
+
+---
+
+### React-Native-Web
+
+- Support web pour les composants React-Native
+- Plugin babel: réécrit les imports au build
+
+```jsx
+import { View, Text } from 'react-native';
+```
+
+devient
+
+```jsx
+import { View, Text } from 'react-native-web';
+```
+
+---
+
+### React-Native-Web
+
+Implémentation grossière:
+
+```jsx
+export const View = (props) => (
+        <div
+                {...props}
+                style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        ...props.style,
+                }}
+        />
+);
+
+export const Text = (props) => <span {...props} />;
+```
