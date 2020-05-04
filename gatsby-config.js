@@ -72,7 +72,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-sitemap`,
     },
-    //'gatsby-plugin-netlify', // replaced by netlify cache plugin
+    'gatsby-plugin-netlify',
     {
       resolve: `gatsby-plugin-canonical-urls`,
       options: {
