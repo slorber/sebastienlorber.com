@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useColorScheme } from 'react-native-appearance';
+import { useAppColorScheme } from '../../AppColorSchemeContext';
 
 export const useColorMode = () => {
-  const userColorScheme = useColorScheme();
+  const [colorScheme,setColorScheme] = useAppColorScheme();
 
-  const [colorMode, setColorMode] = useState(userColorScheme);
-
-  useEffect(() => {
-    setColorMode(userColorScheme);
-  }, [userColorScheme]);
-
-  // console.debug("color mode native = " + colorMode);
-
-  return [colorMode, setColorMode];
+  // TODO handle the non light/dark values better here
+  return [colorScheme, setColorScheme];
 };

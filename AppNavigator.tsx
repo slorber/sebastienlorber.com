@@ -70,7 +70,7 @@ const BlogPostScreen = () => {
 };
 
 const AppNavigator = () => {
-  const [colorMode] = useColorMode();
+  const [colorMode,setColorMode] = useColorMode();
   return (
     <NavigationContainer
       theme={colorMode === 'dark' ? DarkTheme : DefaultTheme}

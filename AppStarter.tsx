@@ -6,21 +6,24 @@ import { AppearanceProvider } from 'react-native-appearance';
 
 import AppMDXComponents from './AppMDXComponents';
 import AppNavigator from './AppNavigator';
+import { AppColorSchemeProvider } from './AppColorSchemeContext';
 
 const AppStarter = () => {
   return (
     <AppearanceProvider>
-      <SafeAreaProvider>
-        <MDXProvider components={AppMDXComponents}>
-          <AppNavigator />
-        </MDXProvider>
-      </SafeAreaProvider>
+      <AppColorSchemeProvider>
+        <SafeAreaProvider>
+          <MDXProvider components={AppMDXComponents}>
+            <AppNavigator />
+          </MDXProvider>
+        </SafeAreaProvider>
+      </AppColorSchemeProvider>
     </AppearanceProvider>
   );
 };
 
 // TODO hack to fix web issue, does not work yet
-const provideThemeUIForWeb = Comp => {
+const provideThemeUIForWeb = (Comp) => {
   if (Platform.OS === 'web') {
     const ThemeProvider = require('theme-ui').ThemeProvider;
     return () => (
