@@ -69,6 +69,7 @@ export type AppBlogPost = {
     date: string,
     hero: {uri: string},
     excerpt: string,
+    secret?: boolean,
   }
 }
 
