@@ -25,15 +25,22 @@ export type AppColorSchemeContextValue = ReturnType<
   typeof useAppColorSchemeState
 >;
 
-const AppColorSchemeContext = React.createContext<AppColorSchemeContextValue | null>(
-  null,
-);
+// This is needed because this context is read in gatsby site as well
+// TODO try to fix this, it shouldn't be needed
+const AppColorSchemeContext = React.createContext<AppColorSchemeContextValue>([
+  Appearance.getColorScheme(),
+  () => {
+    // noop
+  },
+]);
 
 export const useAppColorScheme = () => {
   const value = useContext(AppColorSchemeContext);
+  /*
   if (!value) {
     throw new Error('AppColorSchemeProvider was not used!');
   }
+   */
   return value;
 };
 

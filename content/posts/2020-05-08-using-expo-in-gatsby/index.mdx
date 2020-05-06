@@ -1,0 +1,219 @@
+---
+title: Using Expo in Gatsby
+slug: using-expo-in-gatsby
+author: Sébastien Lorber
+date: 2020-04-21
+hero: ./images/hero.png
+excerpt: ...or how to use cross-platform components in a MDX blog post
+secret: true
+---
+
+You probably heard of [React-Native-Web](https://github.com/necolas/react-native-web), allowing to render React-Native views on the web.
+
+**So, why not on a React-based static website, like a Gatsby blog?**
+
+This post is a proof-of-concept: it contains React-Native and Expo interactive components, embedded directly into MDX articles of my Gatsby site.
+
+If you are not familiar with the React-Native ecosystem:
+- React-Native-Web is like a CSS-in-JS library (similar to Emotion or Styled-Components) using the React-Native API, and with interesting properties (like
+[atomic CSS-in-JS](https://sebastienlorber.com/atomic-css-in-js)).
+- Expo can be seen as an extension of the core React-Native SDK: it provides much more APIs (camera, battery...) that are not in React-Native (which now has a lean core).
+
+------------------------------------------------
+
+
+# Releasing gatsby-plugin-react-native-web v3
+
+I'm the maintainer of [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web), and pleased to announce **version 3.0 is now out of beta**.
+It uses under the hood `@expo/webpack-config`, which will does the heavy webpack config for you, so that you can get started fast (thanks [Evan Bacon](https://twitter.com/baconbrix).
+
+There might still be a few issues (please [report them](https://github.com/slorber/gatsby-plugin-react-native-web/issues/)), but I'm confident it's now ready for massive adoption.
+
+After adding the required dependencies, you only need to add the plugin to `gatsby-config.js`, and **nothing else is required** to get started (no plugin config to provide).
+
+Your favorite ReactNative libs, and UI kits should work out of the box, but also Expo APIs supporting the web platform.
+
+### Step 1
+
+Add dependencies to `package.json`
+
+```
+"react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+"react-native-web": "^0.11.7",
+"react-native-gesture-handler": "^0.6.1",
+"gatsby-plugin-react-native-web": "^3.1.0",
+"expo": "^36.0.2",
+"@expo/webpack-config": "0.11.19"
+```
+
+I use these versions in this website, but you should be fine upgrading them.
+
+### Step 2
+
+Add the plugin in `gatsby-config.js`
+
+```
+module.exports = {
+  siteMetadata: {
+    title: `Sébastien Lorber`,
+    name: `Sébastien Lorber`,
+    siteUrl: `https://sebastienlorber.com`,
+  },
+  plugins: [
+    `gatsby-plugin-react-native-web`,
+  ],
+};
+```
+
+### Step 3
+
+Just use React-Native and Expo components in your Gatsby site.
+
+Note: only components that support the web platform will work. You'll find available platform support in React-Native-Web and Expo documentation.
+
+
+------------------------------------------------
+
+
+# Demo time
+
+These demos may not look very impressive for a web developer. Keep in mind they are all written with React-Native and Expo components / apis.
+There's no usage of a single `div` in the codebase here, or any direct browser API usage, without going through an intermediate layer of React-Native components.
+
+All these demos can also run in iOS and Android (natively, of course), as we'll see later.
+
+
+import {
+  ExpoCameraDemo,
+  ExpoDarkModeSwitchDemo,
+  ExpoGesturesDemo,
+  ExpoSvgDemo,
+  ExpoVideoDemo,
+  ExpoImagePickerDemo,
+} from './components';
+
+
+------------------------------------------------
+
+So, let's start with a simple one.
+
+Can I render a complex svg with react-native-svg? Yes!
+
+<ExpoSvgDemo />
+
+
+------------------------------------------------
+
+
+Can I use a cross-platform component, like [expo-dark-mode-switch](https://github.com/EvanBacon/expo-dark-mode-switch), and wire it to my Gatsby theme-ui state? Yes!
+
+<ExpoDarkModeSwitchDemo />
+
+------------------------------------------------
+
+
+
+Can I ask your permission to use your camera, and reveal it with a fade-in animation? Yes!
+
+<ExpoCameraDemo />
+
+------------------------------------------------
+
+
+Can I use more complex gesture-based systems? Yes!
+
+<ExpoGesturesDemo />
+
+
+
+Can I play a video? Yes!
+
+<ExpoVideoDemo />
+
+------------------------------------------------
+
+
+Can I build an image picker, and enable a few image transformations? Yes!
+
+<ExpoImagePickerDemo />
+
+------------------------------------------------
+
+In case you wonder what the code looks like, here's a snippet for the camera demo.
+
+You can find the rest of the code [here](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-04-21-using-expo-and-gatsby-together).
+
+```jsx
+import { View, Text } from 'react-native';
+import { Camera } from 'expo-camera';
+import * as Permissions from 'expo-permissions';
+
+import MobilePhoneView from 'components/MobilePhoneView';
+import AppButton from 'components/designSystem/AppButton';
+import AppRevealView from 'components/designSystem/AppRevealView';
+
+export const ExpoCameraDemo = () => {
+  const [showCamera, setShowCamera] = useState(false);
+  return (
+    <MobilePhoneView safeAreaPaddingTop={0}>
+      {showCamera ? (
+        <AppRevealView>
+          <Camera style={{ flex: 1, width: '100%' }} />
+        </AppRevealView>
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <AppButton
+            onPress={async () => {
+              const result = await Permissions.askAsync(Permissions.CAMERA);
+              if (result.status === 'granted') {
+                setShowCamera(true);
+              }
+            }}
+          >
+            Show expo-camera
+          </AppButton>
+        </View>
+      )}
+    </MobilePhoneView>
+  );
+};
+```
+
+------------------------------------------------
+
+
+I hope this post helps you understand that cross-platform works fine for various kind of experiences, and there are very few things that you can't do in a cross-platform way today. Let's build more of these!
+
+I'll update this post regularly, if I find new interesting cross-platform experiences (feel free to give me ideas).
+
+------------------------------------------------
+
+
+# Toward cross-platform MDX content authoring
+
+All these demos use React Native and Expo code, and they can run natively on React-Native.
+These demos are embedded in this markdown post using [MDX](https://github.com/mdx-js/mdx).
+Fortunately, MDX can be run on React-Native too!
+
+This actually means that... **my posts are cross-platform**?
+
+Stay tuned: in upcoming blog posts, I'll show you how I run my MDX blog posts inside an Expo app.
+
+![preview](./images/preview_smaller.png)
+
+For a preview, scan my [Expo QRCode](https://expo.io/@slorber/sebastien-lorber), or take a look at the [source code](https://github.com/slorber/sebastienlorber.com) :)
+
+![QRCode](./images/qrcode.png)
+
+------------------------------------------------
+
+Thank you for reading!
+
+------------------------------------------------
+
+
+If you like it, spread the word with a [Retweet]()
+
+Browser code demos, or correct my post typos [on the blog repo](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-04-21-using-expo-and-gatsby-together)
+
+For more content like this, subscribe to [my mailing list](https://mailchi.mp/4ea4df0b54f7/sebastienlorber) and follow me on [Twitter](https://twitter.com/sebastienlorber).
