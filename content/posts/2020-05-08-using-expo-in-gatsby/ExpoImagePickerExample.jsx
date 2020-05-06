@@ -6,10 +6,38 @@ import * as Permissions from 'expo-permissions';
 import AppButton from 'components/designSystem/AppButton';
 import * as ImageManipulator from 'expo-image-manipulator';
 
-// copy of https://docs.expo.io/versions/v37.0.0/sdk/imagepicker/
+// inspired of https://docs.expo.io/versions/v37.0.0/sdk/imagepicker/
 export default class ExpoImagePickerExample extends React.Component {
   state = {
     image: null,
+  };
+
+  getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+  };
+
+  _pickImage = async () => {
+    try {
+      await this.getPermissionAsync();
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      if (!result.cancelled) {
+        this.setState({ image: result.uri });
+      }
+
+      console.log(result);
+    } catch (E) {
+      console.log(E);
+    }
   };
 
   rotate90andFlip = async () => {
@@ -23,7 +51,7 @@ export default class ExpoImagePickerExample extends React.Component {
     this.setState({ image: result.uri });
   };
 
-  transform = async actions => {
+  transform = async (actions) => {
     const image = this.state.image;
     const result = await ImageManipulator.manipulateAsync(image, actions, {
       compress: 1,
@@ -72,35 +100,4 @@ export default class ExpoImagePickerExample extends React.Component {
       </>
     );
   }
-
-  componentDidMount() {
-    this.getPermissionAsync();
-  }
-
-  getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
-      }
-    }
-  };
-
-  _pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-      if (!result.cancelled) {
-        this.setState({ image: result.uri });
-      }
-
-      console.log(result);
-    } catch (E) {
-      console.log(E);
-    }
-  };
 }
