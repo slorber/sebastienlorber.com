@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { Platform, StyleSheet, View, Text } from 'react-native';
 import { Camera } from 'expo-camera';
 import ExpoDarkModeSwitch from 'expo-dark-mode-switch';
 import * as Permissions from 'expo-permissions';
 import MobilePhoneView from 'components/MobilePhoneView';
 import AppButton from 'components/designSystem/AppButton';
 import AppRevealView from 'components/designSystem/AppRevealView';
-import * as Battery from 'expo-battery';
 import ExpoGesturesExample from './ExpoGesturesExample';
 import ExpoImagePickerExample from './ExpoImagePickerExample';
 import { Video } from 'expo-av';
@@ -57,43 +56,8 @@ export const ExpoDarkModeSwitchDemo = () => {
     <MobilePhoneView style={{ alignItems: 'center', justifyContent: 'center' }}>
       <ExpoDarkModeSwitch
         value={colorMode === 'dark'}
-        onChange={value => setColorMode(value ? 'dark' : 'light')}
+        onChange={(value) => setColorMode(value ? 'dark' : 'light')}
       />
-    </MobilePhoneView>
-  );
-};
-
-export const ExpoBatteryDemo = () => {
-  const [battery, setBattery] = useState(undefined);
-
-  useEffect(() => {
-    let canceled = false;
-    const subscription = Battery.addBatteryLevelListener(({ batteryLevel }) => {
-      setBattery(batteryLevel);
-    });
-    Battery.getBatteryLevelAsync().then(batteryLevel => {
-      if (!canceled) setBattery(batteryLevel);
-    });
-    return () => {
-      canceled = true;
-      subscription.remove();
-    };
-  }, []);
-
-  return (
-    <MobilePhoneView style={{ alignItems: 'center', justifyContent: 'center' }}>
-      {Battery.isSupported ? (
-        <View style={{ margin: 20 }}>
-          <Text style={{ fontSize: 30 }}>Battery</Text>
-          <Text style={{ fontSize: 50 }}>{Math.trunc(battery * 100)}%</Text>
-        </View>
-      ) : (
-        <View style={{ margin: 20 }}>
-          <Text>
-            navigator.getBattery() is unsupported by your browser (try Chrome).
-          </Text>
-        </View>
-      )}
     </MobilePhoneView>
   );
 };
@@ -123,6 +87,12 @@ export const ExpoSvgDemo = () => {
   );
 };
 
+// TODO report this annoying thing
+const VideoSource =
+  Platform.OS === 'web'
+    ? { uri: require('./images/coverr-oil-rig-attraction-1567244954839.mp4') }
+    : require('./images/coverr-oil-rig-attraction-1567244954839.mp4');
+
 export const ExpoVideoDemo = () => {
   return (
     <MobilePhoneView
@@ -130,10 +100,7 @@ export const ExpoVideoDemo = () => {
       style={{ alignItems: 'center', justifyContent: 'center' }}
     >
       <Video
-        source={{
-          //uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-          uri: require('./images/coverr-oil-rig-attraction-1567244954839.mp4'),
-        }}
+        source={VideoSource}
         rate={1.0}
         isMuted={true}
         resizeMode="cover"
