@@ -2488,10 +2488,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@narative/gatsby-theme-novela@0.14.3":
-  version "0.14.3"
-  resolved "https://registry.yarnpkg.com/@narative/gatsby-theme-novela/-/gatsby-theme-novela-0.14.3.tgz#9a061202323d0e6a8bd76d9a345fcf678d35fe16"
-  integrity sha512-cdGMPwgSD75Pueg0iFm8wTS7bOsU1zzm9D4pispcXxEoYNDg12KBgKM9xh5WzEoom2a4LqprcQqNpJaoyDMAtA==
+"@narative/gatsby-theme-novela@^0.15.0":
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/@narative/gatsby-theme-novela/-/gatsby-theme-novela-0.15.0.tgz#32ec06d684d1aeb4872d61a790822b16f4e4177c"
+  integrity sha512-FSBeBxbD6Dy2QnoQwyoyCACCIbDLnpQbI6CxybLb9nY16NKwTkI3Orht6oFrKIiN3HPEFASbwIcJ2kWloLLzlw==
   dependencies:
     "@emotion/core" "^10.0.14"
     "@emotion/styled" "^10.0.14"
@@ -17503,7 +17503,7 @@ react-native-auto-height-image@^3.0.0:
   dependencies:
     prop-types "^15.7.2"
 
-react-native-gesture-handler@~1.6.0:
+react-native-gesture-handler@~1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.6.1.tgz#678e2dce250ed66e93af409759be22cd6375dd17"
   integrity sha512-gQgIKhDiYf754yzhhliagLuLupvGb6ZyBdzYzr7aus3Fyi87TLOw63ers+r4kGw0h26oAWTAdHd34JnF4NeL6Q==

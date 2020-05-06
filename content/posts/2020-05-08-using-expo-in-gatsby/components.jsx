@@ -94,20 +94,26 @@ const VideoSource =
     : require('./images/coverr-oil-rig-attraction-1567244954839.mp4');
 
 export const ExpoVideoDemo = () => {
+  const [showVideo, setShowVideo] = useState(false);
+
   return (
     <MobilePhoneView
       safeAreaPaddingTop={0}
       style={{ alignItems: 'center', justifyContent: 'center' }}
     >
-      <Video
-        source={VideoSource}
-        rate={1.0}
-        isMuted={true}
-        resizeMode="cover"
-        shouldPlay={true}
-        isLooping={true}
-        style={{ flex: 1, width: '100%' }}
-      />
+      {showVideo ? (
+        <Video
+          source={VideoSource}
+          rate={1.0}
+          isMuted={true}
+          resizeMode="cover"
+          shouldPlay={true}
+          isLooping={true}
+          style={{ flex: 1, width: '100%' }}
+        />
+      ) : (
+        <AppButton onPress={() => setShowVideo(true)}>Show video</AppButton>
+      )}
     </MobilePhoneView>
   );
 };
