@@ -26,7 +26,7 @@
 
 - Gatsby + React-Native + Expo + MDX?
 
-* MDX: markdown intéractif ET cross-platform
+* MDX: markdown intéractif ET cross-platform, sur web ET mobile
 
 ---
 
@@ -290,10 +290,7 @@ import { MyTestButton } from './MyTestButton';
                         textAlign: 'center',
                 }}
         >
-                <a
-                        href="https://sebastienlorber.com/using-expo-in-gatsby"
-                        target="_blank"
-                >
+                <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
                         https://sebastienlorber.com/using-expo-in-gatsby
                 </a>
         </div>
@@ -405,10 +402,7 @@ import { Video } from 'expo-av';
                         textAlign: 'center',
                 }}
         >
-                <a
-                        href="https://sebastienlorber.com/using-expo-in-gatsby"
-                        target="_blank"
-                >
+                <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
                         https://sebastienlorber.com/using-expo-in-gatsby
                 </a>
         </div>
@@ -564,11 +558,7 @@ import { View, Text, Linking } from 'react-native';
 const ReactNativeComponents = {
         div: (props) => <View>{props.children}</View>,
         p: (props) => <Text>{props.children}</Text>,
-        a: (props) => (
-                <Text onPress={() => Linking.openUrl(props.href)}>
-                        {props.children}
-                </View>
-        ),
+        a: (props) => <Text onPress={() => Linking.openUrl(props.href)}>{props.children}</View>,
 };
 
 export const ReactNativeMDXProvider = ({ children }) => (
@@ -597,8 +587,7 @@ export const MDXComponent = jsx('div', {
 ```
 
 ```jsx
-const MDXComponent = require('./my-super-mdx-blog-post-transpiled')
-        .MDXComponent;
+const MDXComponent = require('./my-super-mdx-blog-post-transpiled').MDXComponent;
 
 const MDXBlogPost = () => {
         return (
@@ -608,3 +597,327 @@ const MDXBlogPost = () => {
         );
 };
 ```
+
+---
+
+<div
+        style={{
+                flex: 1,
+                flexDirection: 'column',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+        }}
+>
+        <h1
+                style={{
+                        fontSize: 150,
+                        textAlign: 'center',
+                }}
+        >
+                Partie 4
+        </h1>
+        <div
+                style={{
+                        fontSize: 60,
+                        textAlign: 'center',
+                }}
+        >
+                React-Native + React-Navigation + MDX + Expo
+        </div>
+</div>
+
+---
+
+### React-Navigation
+
+- Navigation pour React-Native et Expo
+- Web et Mobile: patterns de navigation différents
+- Tabs
+- Stack
+- Drawer
+- Switch
+
+---
+
+### React-Navigation
+
+```jsx
+const LinkedInTabNavigation = () => (
+        <Tab.Navigator>
+                <Tab.Screen component={FeedScreen} />
+                <Tab.Screen component={NetworkScreen} />
+                <Tab.Screen component={AddContentScreen} />
+                <Tab.Screen component={NotificationsScreen} />
+                <Tab.Screen component={JobsScreen} />
+        </Tab.Navigator>
+);
+
+const LinkedInStackNavigation = () => (
+        <Stack.Navigator>
+                <Stack.Screen component={LinkedInTabNavigation} />
+                <Stack.Screen component={MessagesScreen} />
+                <Stack.Screen component={OtherStackScreens} />
+        </Stack.Navigator>
+);
+
+const LinkedInNavigation = () => (
+        <NavigationContainer>
+                <LinkedInStackNavigation>
+        </NavigationContainer>
+);
+```
+
+---
+
+### Static mobile app generator
+
+- Lire tous les fichiers MDX d'un dossier
+- Ajouter le pragma MDX
+- Extraire des métadonnées (frontmatter)
+- Créer un navigateur React-Navigation pour les posts
+- Intégrer à l'app existante
+- Transpilation JSX -> JS: Metro
+
+Solution: script au build
+
+---
+
+### React-Native app build script
+
+```jsx
+const fs = require('fs');
+const mdx = require('@mdx-js/mdx');
+const glob = require('glob');
+const grayMatter = require('gray-matter');
+
+const toJSXString = (mdxString) => {
+        const { data, content } = grayMatter(mdxString); // Extract frontmatter
+
+        const frontmatter = `export const frontmatter = ${JSON.stringify(data)};`;
+
+        const jsx = mdx.sync(content);
+
+        const pragma = `/* @jsx mdx */
+                        import { mdx } from '@mdx-js/react';`;
+
+        return `
+                ${pragma}
+                ${frontMatterExport}
+                ${jsx}
+                `;
+};
+```
+
+---
+
+### React-Native app build script
+
+```jsx
+// in: ./content/posts/my-super-post.mdx
+// out: ./content/posts/my-super-post.mdx.jsx
+// gitignore: *.mdx.jsx
+const jsxFiles = glob.sync('./content/**/*.mdx').map((mdxFile) => {
+        const mdxString = fs.readFileSync(mdxFile);
+        const outputFile = mdxFile + '.jsx';
+        fs.writeFileSync(outputFile, toJSXString(mdxString));
+        return outputFile;
+});
+
+// expose all blog posts, as an "index": AppBlogPostList.js
+// export default [
+//   require("./content/posts/my-super-post.mdx.jsx"),
+//   require("./content/posts/another-post.mdx.jsx")
+// ]
+fs.writeFileSync(
+        './AppBlogPostList.js',
+        `export default [${jsxFiles.map((jsxFile) => `require('${jsxFile}')`).join(',\n')}]`,
+);
+```
+
+---
+
+### React-Native app
+
+```jsx
+const App = () => (
+        <ReactNativeMDXProvider>
+                <AppNavigation />
+        </ReactNativeMDXProvider>
+);
+```
+
+---
+
+### React-Native navigation
+
+```jsx
+const BlogPostsNavigator = () => (
+        <Stack.Navigator>
+                <Stack.Screen name="BlogPostList" component={BlogPostListScreen} />
+                <Stack.Screen
+                        name="BlogPost"
+                        component={BlogPostScreen}
+                        options={({ route }) => ({
+                                title: route.params.blogPost.frontmatter.title,
+                        })}
+                />
+        </Stack.Navigator>
+);
+
+const AppNavigation = () => (
+        <NavigationContainer>
+                <BlogPostsNavigator />
+        </NavigationContainer>
+);
+```
+
+---
+
+### React-Native BlogPostScreen
+
+```jsx
+const BlogPostScreen = ({ blogPost }) => {
+        const { default: MDXBlogPostContent, frontmatter } = blogPost;
+        const navigation = useNavigation();
+        return (
+                <ScrollView>
+                        <BlogPostHeader
+                                frontmatter={frontmatter}
+                                onBackPress={() => navigation.goBack()}
+                        />
+                        <MDXBlogPostContent />
+                </ScrollView>
+        );
+};
+```
+
+---
+
+### React-Native BlogPostListScreen
+
+```jsx
+import AppBlogPostList, from './AppBlogPostList';
+
+const SortedBlogPosts = sortBy(
+  AppBlogPostList,
+  blogPost => blogPost.frontmatter.date,
+).reverse();
+```
+
+---
+
+### React-Native BlogPostListScreen
+
+```jsx
+const BlogPostListScreen = () => {
+        const navigation = useNavigation();
+        return (
+                <ScrollView>
+                        {SortedBlogPosts.map((blogPost, i) => (
+                                <BlogPostCard
+                                        blogPost={blogPost}
+                                        key={i}
+                                        onPress={() =>
+                                                navigation.navigate('BlogPost', { blogPost })
+                                        }
+                                />
+                        ))}
+                </ScrollView>
+        );
+};
+```
+
+---
+
+<div
+        style={{
+                flex: 1,
+                flexDirection: 'column',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+        }}
+>
+        <h1
+                style={{
+                        fontSize: 150,
+                        textAlign: 'center',
+                }}
+        >
+                Demo
+        </h1>
+        <div
+                style={{
+                        fontSize: 60,
+                        textAlign: 'center',
+                }}
+        >
+                React-Native + React-Navigation + MDX + Expo
+        </div>
+        <div
+                style={{
+                        fontSize: 60,
+                        textAlign: 'center',
+                }}
+        >
+                <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
+                        https://sebastienlorber.com/using-expo-in-gatsby
+                </a>
+        </div>
+</div>
+
+---
+
+<div
+        style={{
+                flex: 1,
+                flexDirection: 'column',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+        }}
+>
+        <div
+                style={{
+                        fontSize: 30,
+                        textAlign: 'center',
+                }}
+        >
+                Open Expo client app
+        </div>
+        <div
+                style={{
+                        marginTop: 30,
+                        fontSize: 30,
+                        textAlign: 'center',
+                }}
+        >
+                <h4>iOS</h4>
+                <div>Log-in: gatsby-rnw / gatsby-rnw</div>
+        </div>
+        <div
+                style={{
+                        marginTop: 30,
+                        fontSize: 30,
+                        textAlign: 'center',
+                }}
+        >
+                <h4>Android users:</h4>
+                <div>Scan this QRCode (or log-in)</div>
+                <div
+                        style={{
+                                marginTop: 10,
+                        }}
+                >
+                        <img
+                                src="./seb.jpeg"
+                                style={{
+                                        width: 300,
+                                        height: 300,
+                                        alignSelf: 'center',
+                                }}
+                        />
+                </div>
+        </div>
+</div>
