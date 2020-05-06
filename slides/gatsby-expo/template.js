@@ -9,7 +9,7 @@ const Template = () => {
                                         top: 0,
                                         right: 0,
                                         padding: 5,
-                                        fontSize: 25,
+                                        fontSize: 15,
                                 }}
                         >
                                 @sebastienlorber

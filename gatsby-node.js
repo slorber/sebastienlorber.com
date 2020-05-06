@@ -15,4 +15,9 @@ exports.createPages = ({ graphql, actions }) => {
     toPath: 'https://www.linkedin.com/in/sebastienlorber/detail/recent-activity/shares/',
     isPermanent: false,
   });
+  createRedirect({
+    fromPath: '/app',
+    toPath: 'https://expo.io/@slorber/sebastien-lorber',
+    isPermanent: false,
+  });
 };
