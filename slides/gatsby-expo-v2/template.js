@@ -1,18 +1,32 @@
 import React from 'react';
+import { Box, FlexBox, Progress } from 'spectacle';
 
-const Template = () => {
-        return (
-                <div
+const template = () => (
+        <FlexBox
+                justifyContent="space-between"
+                position="absolute"
+                width={1}
+                style={{bottom: 2}}
+        >
+                <Box
                         style={{
-                                position: 'absolute',
-                                bottom: 0,
-                                right: 0,
-                                padding: 5,
-                                fontSize: 20,
+                                paddingLeft: 10,
+                                opacity: 0,
                         }}
                 >
                         @sebastienlorber
-                </div>
-        );
-};
-export default Template;
+                </Box>
+                <Box>
+                        <Progress />
+                </Box>
+                <Box
+                        style={{
+                                paddingRight: 10,
+                        }}
+                >
+                        @sebastienlorber
+                </Box>
+        </FlexBox>
+);
+
+export default template;
