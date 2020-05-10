@@ -2,18 +2,16 @@ import React from 'react';
 
 const Template = () => {
         return (
-                <div>
-                        <div
-                                style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        right: 0,
-                                        padding: 5,
-                                        fontSize: 15,
-                                }}
-                        >
-                                @sebastienlorber
-                        </div>
+                <div
+                        style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                right: 0,
+                                padding: 5,
+                                fontSize: 20,
+                        }}
+                >
+                        @sebastienlorber
                 </div>
         );
 };

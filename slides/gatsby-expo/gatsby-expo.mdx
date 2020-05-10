@@ -19,6 +19,16 @@
 
 ---
 
+<img
+        src="./venn.png"
+        style={{
+                height: 500,
+                alignSelf: 'center',
+        }}
+/>
+
+---
+
 # Intro
 
 - React-Native sur un site statique?
@@ -101,10 +111,9 @@ import MyComponent from './myComponent';
 ### React-Native
 
 - Piloter des vues natives via du JS
-- Expo: simplifie grandement le dev ReactNative
-- iOS, Android, Web (bientot Windows et MacOS)
-- Web: différentes possibilités, dont React-Native-Web
-- Installez Expo sur vos téléphones
+- iOS, Android
+- Web: plusieurs solutions...
+- bientot Windows et MacOS (par Microsoft!)
 
 ---
 
@@ -513,7 +522,7 @@ Solution:
 Voir la doc de babel-plugin-transform-react-jsx
 
 ```jsx
-/** @jsx Preact.h */
+/** @jsx jsx */
 import { jsx } from '@mdx-js/react';
 import React from 'react';
 import { MyComponent } from './components';
@@ -633,11 +642,10 @@ const MDXBlogPost = () => {
 ### React-Navigation
 
 - Navigation pour React-Native et Expo
-- Web et Mobile: patterns de navigation différents
+- Web VS Mobile: patterns de navigation différents
 - Tabs
 - Stack
 - Drawer
-- Switch
 
 ---
 
