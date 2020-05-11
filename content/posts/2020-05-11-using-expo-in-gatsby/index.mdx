@@ -12,11 +12,11 @@ You probably heard of [React-Native-Web](https://github.com/necolas/react-native
 
 **So, what about using React-Native in a Gatsby website?**
 
-This post is a **proof-of-concept**: it contains React-Native and Expo interactive components, embedded directly into [this article](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-05-11-using-expo-in-gatsby) (using [MDX](https://github.com/mdx-js/mdx)), of my ([open-source](https://github.com/slorber/sebastienlorber.com)) Gatsby site.
+This post is a **proof-of-concept**: it contains **React-Native** and **Expo** interactive components, embedded directly into [this article](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-05-11-using-expo-in-gatsby) (using [MDX](https://github.com/mdx-js/mdx)), of my [open-source](https://github.com/slorber/sebastienlorber.com) Gatsby site.
 
 If you are not familiar with the React-Native ecosystem:
 
-- **React-Native-Web**: it is a CSS-in-JS library (similar to Emotion), using the React-Native APIs, with interesting properties (like [atomic CSS-in-JS](https://sebastienlorber.com/atomic-css-in-js)).
+- **React-Native-Web**: it is like a CSS-in-JS (similar to Emotion) that reuse the existing React-Native APIs. It has interesting properties (like [atomic CSS-in-JS](https://sebastienlorber.com/atomic-css-in-js)).
 - **Expo**: it is like an extension of React-Native: it provides a large SDK with much more APIs than core React-Native (camera, battery, video, audio, qrcode...), enabling you to build more complex experiences.
 
 The idea is that I can use such code in my Gatsby site:
@@ -87,7 +87,7 @@ import MobilePhoneView from 'components/MobilePhoneView';
 - cross-platform: sharing code between your mobile app and a static website
 - using React-Native-Web, as it's a performant [atomic CSS-in-JS](https://sebastienlorber.com/atomic-css-in-js) library
 
-I have good hope to see more React-Native developers embed **runnable code** in their blogs, like I did in this post!
+I have good hope to see more React-Native developers embed **runnable code** in their blogs, like I did in this post.
 
 ---
 
@@ -109,7 +109,6 @@ import {
 } from './components';
 
 So, let's start with a simple one.
-
 Can I render a complex svg with react-native-svg? Yes!
 
 <ExpoSvgDemo />
