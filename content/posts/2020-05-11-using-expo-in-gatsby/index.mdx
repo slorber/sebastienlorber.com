@@ -5,73 +5,21 @@ author: Sébastien Lorber
 date: 2020-05-11
 hero: ./images/hero.png
 excerpt: ...or how to use cross-platform components in a MDX blog post
-secret: true
+secret: false
 ---
 
-You probably heard of [React-Native-Web](https://github.com/necolas/react-native-web), allowing to render React-Native views on the web.
+You probably heard of [React-Native-Web](https://github.com/necolas/react-native-web), allowing to render **React-Native views on the web**.
 
-**So, why not on a React-based static website, like a Gatsby blog?**
+**So, what about using React-Native in a Gatsby website?**
 
-This post is a proof-of-concept: it contains React-Native and Expo interactive components, embedded directly into this [MDX](https://github.com/mdx-js/mdx) article, of my ([open-source](https://github.com/slorber/sebastienlorber.com)) Gatsby site.
+This post is a **proof-of-concept**: it contains React-Native and Expo interactive components, embedded directly into [this article](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-05-11-using-expo-in-gatsby) (using [MDX](https://github.com/mdx-js/mdx)), of my ([open-source](https://github.com/slorber/sebastienlorber.com)) Gatsby site.
 
 If you are not familiar with the React-Native ecosystem:
 
-- React-Native-Web is like a CSS-in-JS library (similar to Emotion), using the React-Native API, with interesting properties (check my post about [atomic CSS-in-JS](https://sebastienlorber.com/atomic-css-in-js)).
-- Expo is like an extension of React-Native: it provides much more APIs (camera, battery...), enabling you to build more complex experiences.
+- **React-Native-Web**: it is a CSS-in-JS library (similar to Emotion), using the React-Native APIs, with interesting properties (like [atomic CSS-in-JS](https://sebastienlorber.com/atomic-css-in-js)).
+- **Expo**: it is like an extension of React-Native: it provides a large SDK with much more APIs than core React-Native (camera, battery, video, audio, qrcode...), enabling you to build more complex experiences.
 
----
-
-# gatsby-plugin-react-native-web v3
-
-I'm the maintainer of [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web), and pleased to announce **version 3.0 is now out of beta**.
-
-It uses under the hood [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config), which permit to get started fast without any config (thanks [Evan Bacon](https://twitter.com/baconbrix)).
-
-After adding the required dependencies, you only need to add the plugin to `gatsby-config.js`, and **nothing else is required** (0 plugin config to provide).
-
-Your favorite ReactNative libs and UI kits should work out of the box, but also Expo APIs supporting the web platform.
-
-**Note**: you can use [React-Native and Expo with NextJS](https://dev.to/evanbacon/next-js-expo-and-react-native-for-web-3kd9) too. [Evanbacon.dev](http://evanbacon.dev/) is build with NextJS and Expo. Actually, you can use [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config) on any project using Webpack.
-
-### Step 1
-
-Add dependencies to `package.json`
-
-```json
-{
-  "dependencies": {
-    "gatsby-plugin-react-native-web": "^3.1.0",
-    "@expo/webpack-config": "0.11.19",
-    "react-native": "^0.61.0",
-    "react-native-web": "^0.11.7",
-
-    // Optional
-    "expo": "^36.0.2",
-    "react-native-gesture-handler": "^0.6.1",
-    "react-native-reanimated": "~1.7.0"
-  }
-}
-```
-
-I use these versions in this website, but you should be fine upgrading them.
-
-### Step 2
-
-Add the plugin in `gatsby-config.js`
-
-```js
-module.exports = {
-  siteMetadata: {
-    title: `Sébastien Lorber`,
-    siteUrl: `https://sebastienlorber.com`,
-  },
-  plugins: [`gatsby-plugin-react-native-web`],
-};
-```
-
-### Step 3
-
-Just use React-Native and Expo components in your Gatsby site, using React-Native components (check the React-Native-Web and Expo docs for available web platform support).
+The idea is that I can use such code in my Gatsby site:
 
 ```jsx
 import { TouchableOpacity, Text } from 'react-native';
@@ -90,6 +38,29 @@ export const MyTestButton = () => (
 );
 ```
 
+And it should work fine in my Gatsby pages, but also in MDX content:
+
+```mdx
+# Blog title
+
+blabla this is a MDX blog post using an embedded RN button:
+
+import { TouchableOpacity, Text } from 'react-native';
+
+<TouchableOpacity
+  onPress={() => alert('press')}
+  style={{
+    padding: 10,
+    backgroundColor: 'blue',
+    borderRadius: 5,
+  }}
+>
+  <Text style={{ color: 'white' }}>Click me</Text>
+</TouchableOpacity>
+```
+
+Let's run this code and see:
+
 import { TouchableOpacity, Text } from 'react-native';
 import MobilePhoneView from 'components/MobilePhoneView';
 
@@ -97,7 +68,7 @@ import MobilePhoneView from 'components/MobilePhoneView';
   style={{ alignItems: 'center', justifyContent: 'center' }}
 >
   <TouchableOpacity
-    onPress={() => alert('press')}
+    onPress={() => alert("You though it wouldn't work?")}
     style={{
       padding: 10,
       backgroundColor: 'blue',
@@ -108,28 +79,81 @@ import MobilePhoneView from 'components/MobilePhoneView';
   </TouchableOpacity>
 </MobilePhoneView>
 
-It works in MDX content too. You can easily create an interactive blog post like this one:
+---
 
-```mdx
-# Implementing a button in React-Native
+# Why ???
 
-Hey, this blog post will show you how you can implement **a button** in React-Native
+- blogging about React-Native
+- cross-platform: sharing code between your mobile app and a static website
+- using React-Native-Web, as it's a performant [atomic CSS-in-JS](https://sebastienlorber.com/atomic-css-in-js) library
 
-We will build this button:
+I have good hope to see more React-Native developers embed **runnable code** in their blogs, like I do in this post!
 
-import { MyTestButton } from './MyTestButton';
+---
 
-<MyTestButton />
+# gatsby-plugin-react-native-web v3
+
+I created [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web), and **version 3.0 is now out of beta**.
+
+It uses under the hood [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config), which permit to get started fast without any config (thanks [Evan Bacon](https://twitter.com/baconbrix)).
+
+After adding the required dependencies, you only need to add the plugin to `gatsby-config.js`, and **nothing else is required** (0 plugin config to provide). This blog post needs 0 config to run properly.
+
+Your favorite ReactNative libs and UI kits should work out of the box, but also Expo APIs supporting the web platform.
+
+**Note**: you can use [React-Native and Expo with NextJS](https://dev.to/evanbacon/next-js-expo-and-react-native-for-web-3kd9) too. [Evanbacon.dev](http://evanbacon.dev/) is build with NextJS and Expo. You can use [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config) on any project using Webpack.
+
+---
+
+# Setup
+
+The best way to get started is to use the new [Gatsby Recipes](https://www.gatsbyjs.org/blog/2020-04-15-announcing-gatsby-recipes/) feature:
+
 ```
+gatsby recipes https://raw.githubusercontent.com/slorber/gatsby-plugin-react-native-web/master/recipe.mdx
+```
+
+Otherwise you can do these steps manually
+
+### Step 1
+
+Add required dependencies to `package.json`
+
+```
+yarn add react-native react-native-web@~0.11.7 gatsby-plugin-react-native-web
+```
+
+If you want to use Expo APIs, and advanced animations, you can install these too:
+
+```
+yarn add expo react-native-gesture-handler react-native-reanimated
+```
+
+### Step 2
+
+Add the plugin in `gatsby-config.js`:
+
+```js
+module.exports = {
+  plugins: [`gatsby-plugin-react-native-web`],
+};
+```
+
+### Step 3
+
+Use React-Native and Expo components in your Gatsby site.
+
+Check the React-Native-Web and Expo docs for available web platform support, as not all components have web support.
+
 
 ---
 
 # Demo time
 
-Keep in mind they are all written with React-Native and Expo components / apis.
-There's no usage of a single `div` in the codebase here, or any direct browser API usage, without going through an intermediate layer of React-Native components.
+Keep in mind that all the demos are written with React-Native and Expo components / apis.
+There's no usage of a single `div`, or any direct browser API usage.
 
-All these demos can also run in iOS and Android (natively, of course), as we'll see later.
+All these demos can also run (natively) in iOS and Android (natively).
 
 import {
   ExpoCameraDemo,
@@ -148,7 +172,7 @@ Can I render a complex svg with react-native-svg? Yes!
 
 ---
 
-Can I use a cross-platform component (supporting both mobile and web), like [expo-dark-mode-switch](https://github.com/EvanBacon/expo-dark-mode-switch), and wire it to my Gatsby theme-ui state? Yes!
+Can I use a cross-platform third-party component, like [expo-dark-mode-switch](https://github.com/EvanBacon/expo-dark-mode-switch), and wire it to my Gatsby theme-ui state? Yes!
 
 <ExpoDarkModeSwitchDemo />
 
@@ -222,9 +246,9 @@ export const ExpoCameraDemo = () => {
 
 ---
 
-# Toward cross-platform interactive content
+# Toward cross-platform content
 
-All these demos use React Native and Expo code, and they can run natively on React-Native, because the only rely on React-Native primitives.
+All these demos use React Native and Expo code, and they can run natively on React-Native, because they only rely on React-Native primitives.
 These demos are embedded in this markdown post using [MDX](https://github.com/mdx-js/mdx).
 Fortunately, MDX can be run on React-Native too!
 
@@ -242,11 +266,11 @@ For a preview, scan my [Expo QRCode](https://expo.io/@slorber/sebastien-lorber),
 
 # Conclusion
 
+We need more people to adopt cross-platform development, to make it more mainstream and polished.
+
+As the setup is easier than ever, it's a good time to jump on the bandwagon, and get started with React-Native-Web.
+
 Thank you for reading!
-
-From now on, I hope to see all React-Native developers embedding interactive React-Native demos in their post!
-
-We need more people to adopt cross-platform development today, to make it mainstream and polished. Jump on the bandwagon now!
 
 ---
 
