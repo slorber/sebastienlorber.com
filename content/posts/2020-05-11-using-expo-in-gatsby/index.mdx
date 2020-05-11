@@ -59,7 +59,7 @@ import { TouchableOpacity, Text } from 'react-native';
 </TouchableOpacity>
 ```
 
-Let's run this code and see:
+Let's run this `Hello world` code and see if it works:
 
 import { TouchableOpacity, Text } from 'react-native';
 import MobilePhoneView from 'components/MobilePhoneView';
@@ -91,65 +91,6 @@ I have good hope to see more React-Native developers embed **runnable code** in 
 
 ---
 
-# gatsby-plugin-react-native-web v3
-
-I created [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web), and **version 3.0 is now out of beta**.
-
-It uses under the hood [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config), which permit to get started fast without any config (thanks [Evan Bacon](https://twitter.com/baconbrix)).
-
-After adding the required dependencies, you only need to add the plugin to `gatsby-config.js`, and **nothing else is required** (0 plugin config to provide). This blog post needs 0 config to run properly.
-
-Your favorite ReactNative libs and UI kits should work out of the box, but also Expo APIs supporting the web platform.
-
-**Note**: you can use [React-Native and Expo with NextJS](https://dev.to/evanbacon/next-js-expo-and-react-native-for-web-3kd9) too. [Evanbacon.dev](http://evanbacon.dev/) is build with NextJS and Expo. You can use [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config) on any project using Webpack.
-
----
-
-# Setup
-
-The best way to get started is to use the new [Gatsby Recipes](https://www.gatsbyjs.org/blog/2020-04-15-announcing-gatsby-recipes/) feature:
-
-```
-gatsby recipes https://raw.githubusercontent.com/slorber/gatsby-plugin-react-native-web/master/recipe.mdx
-```
-
-Otherwise you can do these steps manually
-
-### Step 1
-
-Add required dependencies to `package.json`
-
-```
-yarn add react-native react-native-web@~0.11.7 gatsby-plugin-react-native-web
-```
-
-If you want to use Expo APIs, and advanced animations, you can install these too:
-
-```
-yarn add expo react-native-gesture-handler react-native-reanimated
-```
-
-### Step 2
-
-Add the plugin in `gatsby-config.js`:
-
-```js
-module.exports = {
-  plugins: [`gatsby-plugin-react-native-web`],
-};
-```
-
-### Step 3
-
-Use React-Native and Expo components in your Gatsby site.
-
-Check the React-Native-Web and Expo docs for available web platform support.
-
-You can also browse libraries with web support on [reactnative.directory](https://reactnative.directory/?web=true).
-
-
----
-
 # Demo time
 
 Keep in mind that all the demos are written in a cross-platform way, using only React-Native and Expo apis.
@@ -157,7 +98,6 @@ Keep in mind that all the demos are written in a cross-platform way, using only 
 All these demos can also run (natively) in iOS and Android (natively).
 
 There's no usage of a single `div`, or any direct browser or DOM api usage.
-
 
 import {
   ExpoCameraDemo,
@@ -250,6 +190,60 @@ export const ExpoCameraDemo = () => {
 
 ---
 
+# gatsby-plugin-react-native-web v3
+
+I created [gatsby-plugin-react-native-web](https://github.com/slorber/gatsby-plugin-react-native-web), and **version 3.0 is now out of beta**.
+
+It uses under the hood [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config), which permit to get started fast without any config (thanks [Evan Bacon](https://twitter.com/baconbrix)).
+
+**Note**: you can use [React-Native and Expo with NextJS](https://dev.to/evanbacon/next-js-expo-and-react-native-for-web-3kd9) too. [Evanbacon.dev](http://evanbacon.dev/) is build with NextJS and Expo. You can use [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config) on any project using Webpack.
+
+After adding the required dependencies, you only need to add the plugin to `gatsby-config.js`, and **nothing else is required** (0 plugin config to provide).
+This blog post does not need any fancy additional config to render properly.
+Expo APIs, and your favorite React-Native libs, should work out of the box.
+
+The best way to get started is to use the new [Gatsby Recipes](https://www.gatsbyjs.org/blog/2020-04-15-announcing-gatsby-recipes/) feature:
+
+```
+gatsby recipes https://raw.githubusercontent.com/slorber/gatsby-plugin-react-native-web/master/recipe.mdx
+```
+
+Otherwise you can do these steps manually
+
+### Step 1
+
+Add required dependencies to `package.json`
+
+```
+yarn add react-native react-native-web@~0.11.7 gatsby-plugin-react-native-web
+```
+
+If you want to use Expo APIs, and advanced animations, you can install these too:
+
+```
+yarn add expo react-native-gesture-handler react-native-reanimated
+```
+
+### Step 2
+
+Add the plugin in `gatsby-config.js`:
+
+```js
+module.exports = {
+  plugins: [`gatsby-plugin-react-native-web`],
+};
+```
+
+### Step 3
+
+Use React-Native and Expo components in your Gatsby site.
+
+Check the React-Native-Web and Expo docs for available web platform support.
+
+You can also browse libraries with web support on [reactnative.directory](https://reactnative.directory/?web=true).
+
+---
+
 # Toward cross-platform content
 
 All these demos use React Native and Expo code, and they can run natively on React-Native, because they only rely on React-Native primitives.
@@ -270,9 +264,9 @@ For a preview, scan my [Expo QRCode](https://expo.io/@slorber/sebastien-lorber),
 
 # Conclusion
 
-We need more people to adopt cross-platform development, to make it more mainstream and polished.
+We need more people to adopt cross-platform development, to make it mainstream and polished.
 
-As the setup is easier than ever, it's a good time to jump on the bandwagon, and get started with React-Native-Web.
+The setup to get started has never been so simple, it's time to jump on the bandwagon, and get started with React-Native-Web.
 
 Thank you for reading!
 
