@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, Text, ScrollView, Dimensions } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { AppBlogPost } from './AppBlogPostList';
-
-const ScreenWidth = Dimensions.get('window').width;
+import { optimizeHeavyScreen } from 'react-navigation-heavy-screen';
+import { ActivityIndicator } from 'react-native-paper';
+import { useDimensions } from '@react-native-community/hooks';
 
 const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
   const { default: MDXBlogPostComp, frontmatter } = blogPost;
+  const { window } = useDimensions();
   return (
     <ScrollView style={{ flex: 1 }}>
       <View
@@ -30,7 +32,7 @@ const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
           justifyContent: 'center',
         }}
       >
-        <AutoHeightImage width={ScreenWidth - 40} source={frontmatter.hero} />
+        <AutoHeightImage width={window.width - 40} source={frontmatter.hero} />
       </View>
       <View
         style={{
@@ -39,7 +41,7 @@ const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
           justifyContent: 'center',
         }}
       >
-        <View style={{ width: ScreenWidth - 40, overflow: 'hidden' }}>
+        <View style={{ width: window.width - 40, overflow: 'hidden' }}>
           <MDXBlogPostComp />
         </View>
       </View>
@@ -47,4 +49,10 @@ const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
   );
 };
 
-export default AppBlogPostScreen;
+const Placeholder = () => (
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <ActivityIndicator size="large" />
+  </View>
+);
+
+export default optimizeHeavyScreen(AppBlogPostScreen, Placeholder);
