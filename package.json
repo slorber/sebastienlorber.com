@@ -15,6 +15,7 @@
     "expo:build:web": "yarn expo:mdx && expo build:web",
     "expo:mdx": "node expo-generate-mdx-as-jsx.js && prettier --write '{src,content}/**/*.mdx.jsx'",
     "expo:mdx:watch": "chokidar \"content/**/*.mdx\" -c \"yarn expo:mdx\"",
+    "expo:netlify": "yarn expo:build:web && yarn expo:publish",
     "build": "GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true gatsby build --log-pages",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
