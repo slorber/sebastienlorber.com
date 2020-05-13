@@ -2,11 +2,8 @@
 
 import React, { ReactNode } from 'react';
 import {
-  Image,
   Text,
-  TouchableOpacity,
   View,
-  Dimensions,
   TextProps,
 } from 'react-native';
 import { Linking } from 'react-native';
@@ -14,6 +11,7 @@ import { StyleSheet } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 import { useColorMode } from 'theme/useColorMode';
+import { useDimensions } from '@react-native-community/hooks';
 
 const useIsLight = () => useColorMode()[0] === 'light';
 
@@ -369,10 +367,11 @@ const AppMDXComponents = {
   },
   br: ({ children }) => <MDXText>{'\n'}</MDXText>,
   img: ({ src, children }) => {
+    const { window } = useDimensions();
     return (
       <View style={styles.imageContainer}>
         <AutoHeightImage
-          width={Dimensions.get('window').width * 0.8}
+          width={window.width * 0.8}
           source={src}
         />
       </View>
