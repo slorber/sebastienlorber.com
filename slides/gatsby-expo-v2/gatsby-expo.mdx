@@ -54,7 +54,7 @@
 
 - Twitter: [@sebastienlorber](https://twitter.com/sebastienlorber)
 - Github: [@slorber](https://github.com/slorber/)
-- Blog: [sebastienlorber.com/](https://sebastienlorber.com/)
+- Blog: [sebastienlorber.com](https://sebastienlorber.com/)
 
 ---
 
@@ -66,8 +66,8 @@
         }}
 />
 
-- [https://sebastienlorber.com/newsletter](https://sebastienlorber.com/newsletter)
-- [https://sebastienlorber.com/linkedin](https://sebastienlorber.com/linkedin)
+- [sebastienlorber.com/newsletter](https://sebastienlorber.com/newsletter)
+- [sebastienlorber.com/linkedin](https://sebastienlorber.com/linkedin)
 
 ---
 
@@ -88,7 +88,7 @@
         style={{ position: 'absolute', top: 380, left: 900, width: 300 }}
 />
 
-<img src="./logos/expo.png" style={{ position: 'absolute', top: 540, left: 790, width: 300 }} />
+<img src="./logos/expo.png" style={{ position: 'absolute', top: 540, left: 790, width: 180 }} />
 
 ---
 
@@ -110,27 +110,9 @@
         }}
 />
 
-# Intro
-
-- React-Native sur un site statique?
-
-* Markdown dans React-Native?
-
-- Gatsby + React-Native + Expo + MDX?
-
-* MDX: markdown intéractif ET cross-platform, sur web ET mobile
-
----
-
-# Plan
-
-- Partie 1: React-Native-Web + Gatsby + MDX
-
-* Partie 2: Expo + Gatsby + MDX
-
-- Partie 3: React-Native + MDX
-
-* Partie 4: React-Native + React-Navigation + MDX + Expo
+- React-Native et Expo dans un site statique?
+- Markdown et MDX dans une app React-Native?
+- Partage de code et contenu cross-platform possible?
 
 ---
 
@@ -157,7 +139,7 @@
                         textAlign: 'center',
                 }}
         >
-                React-Native-Web + Gatsby + MDX
+                Gatsby + React-Native-Web
         </div>
 </div>
 
@@ -166,8 +148,9 @@
 ### Gatsby
 
 - générateur de site statique
-- React / SPA
-- GraphQL: data et affichage sont découplés
+- React
+- SPA
+- couche data GraphQL
 - build incrémental
 - intégrations variées (dont MDX)
 
@@ -175,7 +158,8 @@
 
 ### MDX
 
-Du React dans Markdown
+- composants React dans Markdown
+- VueJS (beta)
 
 ```mdx
 # Hello, _world_!
@@ -191,16 +175,18 @@ import MyComponent from './myComponent';
 
 ### React-Native
 
-- Piloter des vues natives via du JS
+- vues natives pilotées par du JS
 - iOS, Android
 - Web: plusieurs solutions...
-- bientot Windows et MacOS (par Microsoft!)
+- bientôt Windows et MacOS
 
 ---
 
 ### React-Native
 
-CSS-in-JS, flexbox (direction column)
+- CSS-in-JS (inline ou api StyleSheet)
+- pas de cascade, pas de selecteurs
+- flexbox (direction column)
 
 ```jsx
 import { View, Text } from 'react-native';
@@ -222,7 +208,7 @@ const MyComponent = () => (
 ### React-Native-Web
 
 - CSS-in-JS pour le web, utilisant les APIs React-Native
-- Plugin babel: réécrit les imports au build
+- babel-plugin-react-native-web
 
 ```jsx
 import { View, Text } from 'react-native';
@@ -257,32 +243,44 @@ export const Text = (props) => <span {...props} />;
 
 ---
 
-### React-Native-Web + Gatsby
+### Gatsby + React-Native-Web
 
-`package.json`:
+Intégration SSR / SSG nécessaire pour Gatsby
 
-```json
-{
-        "dependencies": {
-                "gatsby-plugin-react-native-web": "^3.1.0",
-                "@expo/webpack-config": "0.11.19",
-                "react-native": "^0.61.0",
-                "react-native-web": "^0.11.7"
-        }
-}
-```
+```jsx
+// RNW part
+AppRegistry.registerComponent('App', () => App);
+const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps });
 
-`gatsby-config.js`
+// Render the React element
+const html = ReactDOMServer.renderToString(element);
+// Extract the critical CSS that was used
+const css = ReactDOMServer.renderToStaticMarkup(getStyleElement());
 
-```js
-module.exports = {
-        plugins: [`gatsby-plugin-react-native-web`],
-};
+const document = `<!DOCTYPE html>
+<html>
+    <head>
+        <style>${css}</style>
+    </head>
+    <body>${html}</body>
+</html>`;
 ```
 
 ---
 
-### React-Native-Web + Gatsby
+### Gatsby + React-Native-Web
+
+<img
+        src="./v1.jpeg"
+        style={{
+                width: 800,
+                alignSelf: 'center',
+        }}
+/>
+
+---
+
+### Gatsby + React-Native-Web
 
 ```jsx
 import { TouchableOpacity, Text } from 'react-native';
@@ -306,7 +304,7 @@ export const MyTestButton = () => (
 
 ---
 
-### React-Native-Web + Gatsby
+### Gatsby + React-Native-Web
 
 ```jsx
 import React from 'react';
@@ -332,9 +330,7 @@ export const MyGatsbyPage = () => (
 
 ---
 
-### React-Native-Web + Gatsby + MDX
-
-On utilise le bouton dans le contenu MDX:
+### Gatsby + React-Native-Web + MDX
 
 ```mdx
 # Implementing a button in React-Native
@@ -373,7 +369,7 @@ import { MyTestButton } from './MyTestButton';
                         textAlign: 'center',
                 }}
         >
-                React-Native-Web + Gatsby + MDX
+                Gatsby + React-Native-Web + MDX
         </div>
         <div
                 style={{
@@ -382,7 +378,7 @@ import { MyTestButton } from './MyTestButton';
                 }}
         >
                 <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
-                        https://sebastienlorber.com/using-expo-in-gatsby
+                        sebastienlorber.com/using-expo-in-gatsby
                 </a>
         </div>
 </div>
@@ -412,7 +408,7 @@ import { MyTestButton } from './MyTestButton';
                         textAlign: 'center',
                 }}
         >
-                Expo + Gatsby + MDX
+                Gatsby + Expo + MDX
         </div>
 </div>
 
@@ -424,9 +420,9 @@ import { MyTestButton } from './MyTestButton';
 
 * Expo: extension de React-Native
 
-- Nombreuses APIs supplémentaires (camera, battery, video, audio, file system...)
+- APIs supplémentaires (camera, battery, video, audio, file system...)
 
-* Support mobile et web (partiel)
+* Support web (partiel)
 
 ---
 
@@ -436,11 +432,37 @@ import { MyTestButton } from './MyTestButton';
 
 * Client Expo: React-Native sans XCode / Android studio
 
-- Client Expo: télécharchez le pour la suite!
+- Client Expo: télécharchez le!
+
+<img
+        src="./logos/expo.png"
+        style={{
+                width: 200,
+                alignSelf: 'center',
+        }}
+/>
 
 ---
 
-### Expo + Gatsby + MDX
+### Gatsby + Expo
+
+Package [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config)
+
+```jsx
+import { withUnimodules } from '@expo/webpack-config/addons';
+
+export const onCreateWebpackConfig = ({ actions, getConfig }) => {
+        const gatsbyConfig = getConfig();
+
+        const gatsbyExpoConfig = withUnimodules(gatsbyConfig);
+
+        actions.replaceWebpackConfig(gatsbyExpoConfig);
+};
+```
+
+---
+
+### Gatsby + Expo + MDX
 
 ```mdx
 # A React-Native Camera in my blog post
@@ -485,7 +507,7 @@ import { Video } from 'expo-av';
                         textAlign: 'center',
                 }}
         >
-                Expo + Gatsby + MDX
+                Gatsby + Expo + MDX
         </div>
         <div
                 style={{
@@ -494,7 +516,7 @@ import { Video } from 'expo-av';
                 }}
         >
                 <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
-                        https://sebastienlorber.com/using-expo-in-gatsby
+                        sebastienlorber.com/using-expo-in-gatsby
                 </a>
         </div>
 </div>
@@ -587,20 +609,19 @@ export const MDXComponent = React.createElement('div', {
 
 Problème:
 
-- MDX compile le markdown en React-DOM
-- React-DOM ne tourne pas sur React-Native
+- div, h1, p...
+- React-DOM: ne tourne pas sur React-Native
 
 Solution:
 
-- Utiliser le JSX pragma de MDX
-- Babel: remplace `React.createElement()` par `MDX.jsx()`
-- Utiliser [MDXProvider](https://mdxjs.com/advanced/components#mdxprovider): overrider les composants DOM
+- Pragma JSX de MDX
+- [MDXProvider](https://mdxjs.com/advanced/components#mdxprovider): overrider les composants React-DOM
 
 ---
 
 ### JSX Pragma
 
-Voir la doc de babel-plugin-transform-react-jsx
+babel-plugin-transform-react-jsx
 
 ```jsx
 /** @jsx jsx */
@@ -646,14 +667,18 @@ import React from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { View, Text, Linking } from 'react-native';
 
-const ReactNativeComponents = {
+const ReactNativeMDXComponents = {
         div: (props) => <View>{props.children}</View>,
         p: (props) => <Text>{props.children}</Text>,
-        a: (props) => <Text onPress={() => Linking.openUrl(props.href)}>{props.children}</View>,
+        a: (props) => (
+                <Text accessibilityRole="link" onPress={() => Linking.openUrl(props.href)}>
+                        {props.children}
+                </View>
+        ),
 };
 
 export const ReactNativeMDXProvider = ({ children }) => (
-        <MDXProvider components={ReactNativeComponents}>{children}</MDXProvider>
+        <MDXProvider components={ReactNativeMDXComponents}>{children}</MDXProvider>
 );
 ```
 
@@ -678,16 +703,45 @@ export const MDXComponent = jsx('div', {
 ```
 
 ```jsx
-const MDXComponent = require('./my-super-mdx-blog-post-transpiled').MDXComponent;
+const MyBlogPostContent = require('./my-super-mdx-blog-post-transpiled').MDXComponent;
 
-const MDXBlogPost = () => {
-        return (
-                <ReactNativeMDXProvider>
-                        <MDXComponent />
-                </ReactNativeMDXProvider>
-        );
-};
+const MDXBlogPost = () => (
+        <ReactNativeMDXProvider>
+                <MyBlogPostContent />
+        </ReactNativeMDXProvider>
+);
 ```
+
+---
+
+---
+
+<div
+        style={{
+                flex: 1,
+                flexDirection: 'column',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+        }}
+>
+        <h1
+                style={{
+                        fontSize: 150,
+                        textAlign: 'center',
+                }}
+        >
+                Demo
+        </h1>
+        <div
+                style={{
+                        fontSize: 60,
+                        textAlign: 'center',
+                }}
+        >
+                React-Native + MDX
+        </div>
+</div>
 
 ---
 
@@ -952,7 +1006,7 @@ const BlogPostListScreen = () => {
                 }}
         >
                 <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
-                        https://sebastienlorber.com/using-expo-in-gatsby
+                        sebastienlorber.com/using-expo-in-gatsby
                 </a>
         </div>
 </div>
@@ -1018,7 +1072,7 @@ const BlogPostListScreen = () => {
                         }}
                 >
                         <a href="https://sebastienlorber.com/expo" target="_blank">
-                                https://sebastienlorber.com/expo
+                                sebastienlorber.com/expo
                         </a>
                 </div>
         </div>
@@ -1045,11 +1099,11 @@ const BlogPostListScreen = () => {
         </h1>
 </div>
 
-- [https://twitter.com/sebastienlorber](https://twitter.com/sebastienlorber)
-- [https://sebastienlorber.com/](https://sebastienlorber.com/)
-- [https://sebastienlorber.com/linkedin](https://sebastienlorber.com/linkedin)
-- [https://sebastienlorber.com/newsletter](https://sebastienlorber.com/newsletter)
-- [https://sebastienlorber.com/expo](https://sebastienlorber.com/expo)
-- [https://sebastienlorber.com/using-expo-in-gatsby](https://sebastienlorber.com/using-expo-in-gatsby)
-- [https://github.com/slorber/sebastienlorber.com](https://github.com/slorber/sebastienlorber.com)
-- [https://slides-gatsby-expo.netlify.app/](https://slides-gatsby-expo.netlify.app/)
+- [twitter.com/sebastienlorber](https://twitter.com/sebastienlorber)
+- [sebastienlorber.com](https://sebastienlorber.com/)
+- [sebastienlorber.com/linkedin](https://sebastienlorber.com/linkedin)
+- [sebastienlorber.com/newsletter](https://sebastienlorber.com/newsletter)
+- [sebastienlorber.com/expo](https://sebastienlorber.com/expo)
+- [sebastienlorber.com/using-expo-in-gatsby](https://sebastienlorber.com/using-expo-in-gatsby)
+- [github.com/slorber/sebastienlorber.com](https://github.com/slorber/sebastienlorber.com)
+- [slides-gatsby-expo.netlify.app](https://slides-gatsby-expo.netlify.app/)
