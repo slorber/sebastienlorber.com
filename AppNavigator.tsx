@@ -15,6 +15,14 @@ import { useColorMode } from 'theme/useColorMode';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
 
+const LightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFFFFF',
+  },
+};
+
 const Stack = createStackNavigator();
 
 const BlogPostScreen = () => {
@@ -57,9 +65,7 @@ const SimpleMDXScreen = () => {
 const AppNavigator = () => {
   const [colorMode] = useColorMode();
   return (
-    <NavigationContainer
-      theme={colorMode === 'dark' ? DarkTheme : DefaultTheme}
-    >
+    <NavigationContainer theme={colorMode === 'dark' ? DarkTheme : LightTheme}>
       <Stack.Navigator>
         <Stack.Screen
           name="Home"

@@ -35,13 +35,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   codeBlock: {
-    borderWidth: 1,
+    // borderWidth: 1,
+    fontSize: 12,
     padding: 10,
+    paddingBottom: 0, // quickfix: there's always an extra line at end of code blocks
+    marginBottom: 10,
     borderRadius: 4,
   },
   codeInline: {
-    borderWidth: 1,
-    padding: 5,
     borderRadius: 4,
   },
   del: {
@@ -193,11 +194,41 @@ const wrapInTextIfNeeded = (
   });
    */
   if (node instanceof Array) {
-    return node.map((n, i) => wrapInTextIfNeeded(n, { key: `key_${i}` }));
+    const hasOnlyTextNodes = node.every((n) => {
+      if (typeof n === 'string') {
+        return true;
+      } else {
+        // @ts-ignore
+        const mdxType = n?.props?.mdxType ?? '';
+        const textMdxTypes = ['inlineCode', 'a', 'strong'];
+        //console.debug("node",{n});
+        //console.debug('mdxType', n.props.mdxType);
+        return textMdxTypes.includes(mdxType);
+      }
+    });
+
+    if (hasOnlyTextNodes) {
+      return <MDXText key={options.key}>{node}</MDXText>;
+    } else {
+      // We can't wrap here, because some nodes might be non-text (like inline images)
+      return node.map((n, i) => wrapInTextIfNeeded(n, { key: `key_${i}` }));
+    }
   } else if (typeof node === 'string') {
     return <MDXText key={options.key}>{node}</MDXText>;
   } else {
     return node;
+  }
+};
+
+const TextNodeTypes = [''];
+const isTextNode = (node: ReactNode) => {
+  if (node instanceof Array) {
+    return node.every(isTextNode);
+  } else if (typeof node === 'string') {
+    return true;
+  } else {
+    console.debug('textNode', { node: ReactNode });
+    return false;
   }
 };
 
@@ -275,7 +306,7 @@ const AppMDXComponents = {
       style={[
         styles.blockquote,
         useIsLight()
-          ? { backgroundColor: '#CCCCCC' }
+          ? { backgroundColor: '#EEEEEE' }
           : { backgroundColor: '#404040' },
       ]}
     >
@@ -288,7 +319,7 @@ const AppMDXComponents = {
         style={[
           styles.codeInline,
           useIsLight()
-            ? { backgroundColor: '#CCCCCC' }
+            ? { backgroundColor: '#EEEEEE' }
             : { backgroundColor: '#404040' },
         ]}
       >
@@ -302,7 +333,7 @@ const AppMDXComponents = {
         style={[
           styles.codeBlock,
           useIsLight()
-            ? { backgroundColor: '#CCCCCC' }
+            ? { backgroundColor: '#EEEEEE' }
             : { backgroundColor: '#404040' },
         ]}
       >
