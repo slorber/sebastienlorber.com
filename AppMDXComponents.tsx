@@ -181,6 +181,26 @@ const MDXText = (props: TextProps & { children?: ReactNode }) => {
   return <Text {...props} style={[themeStyle, props.style]} />;
 };
 
+const wrapInTextIfNeeded = (
+  node: ReactNode,
+  options: { key?: string } = {},
+) => {
+  /*
+  console.debug('wrapInTextIfNeeded', {
+    node,
+    array: node instanceof Array,
+    string: typeof node === 'string',
+  });
+   */
+  if (node instanceof Array) {
+    return node.map((n, i) => wrapInTextIfNeeded(n, { key: `key_${i}` }));
+  } else if (typeof node === 'string') {
+    return <MDXText key={options.key}>{node}</MDXText>;
+  } else {
+    return node;
+  }
+};
+
 const AppMDXComponents = {
   div: ({ children }) => <View style={styles.div}>{children}</View>,
   wrapper: ({ children }) => <View style={styles.wrapper}>{children}</View>,
@@ -244,13 +264,9 @@ const AppMDXComponents = {
     </View>
   ),
   p: ({ parentName, children }) => {
-    // TODO probably unsafe
-    const isText =
-      children instanceof String || (children.length && children.length > 1);
-
     return (
       <View style={parentName === 'blockquote' ? {} : [styles.paragraph]}>
-        {isText ? <MDXText>{children}</MDXText> : children}
+        {wrapInTextIfNeeded(children)}
       </View>
     );
   },
