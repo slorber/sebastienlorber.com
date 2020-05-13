@@ -385,6 +385,18 @@ import { MyTestButton } from './MyTestButton';
 
 ---
 
+### Gatsby + React-Native-Web + MDX
+
+Limites:
+
+- Pas d'extension .web.js
+- Pas de TS
+- Pas de transpilation des libs react-native
+- Pas de DefinePlugin pour `__DEV__`
+- ...
+
+---
+
 <div
         style={{
                 flex: 1,
@@ -667,7 +679,7 @@ import React from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { View, Text, Linking } from 'react-native';
 
-const ReactNativeMDXComponents = {
+const components = {
         div: (props) => <View>{props.children}</View>,
         p: (props) => <Text>{props.children}</Text>,
         a: (props) => (
@@ -677,8 +689,8 @@ const ReactNativeMDXComponents = {
         ),
 };
 
-export const ReactNativeMDXProvider = ({ children }) => (
-        <MDXProvider components={ReactNativeMDXComponents}>{children}</MDXProvider>
+export const MyReactNativeMDXProvider = ({ children }) => (
+        <MDXProvider components={components}>{children}</MDXProvider>
 );
 ```
 
@@ -703,12 +715,12 @@ export const MDXComponent = jsx('div', {
 ```
 
 ```jsx
-const MyBlogPostContent = require('./my-super-mdx-blog-post-transpiled').MDXComponent;
+import { MDXComponent as MyBlogPostMDX } from './my-super-mdx-blog-post-transpiled';
 
-const MDXBlogPost = () => (
-        <ReactNativeMDXProvider>
-                <MyBlogPostContent />
-        </ReactNativeMDXProvider>
+const MyBlogPost = () => (
+        <MyReactNativeMDXProvider>
+                <MyBlogPostMDX />
+        </MyReactNativeMDXProvider>
 );
 ```
 
