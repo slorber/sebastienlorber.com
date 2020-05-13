@@ -220,18 +220,6 @@ const wrapInTextIfNeeded = (
   }
 };
 
-const TextNodeTypes = [''];
-const isTextNode = (node: ReactNode) => {
-  if (node instanceof Array) {
-    return node.every(isTextNode);
-  } else if (typeof node === 'string') {
-    return true;
-  } else {
-    console.debug('textNode', { node: ReactNode });
-    return false;
-  }
-};
-
 const AppMDXComponents = {
   div: ({ children }) => <View style={styles.div}>{children}</View>,
   wrapper: ({ children }) => <View style={styles.wrapper}>{children}</View>,
