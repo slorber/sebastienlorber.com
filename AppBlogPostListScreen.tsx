@@ -11,9 +11,12 @@ let BlogPosts = sortBy(
   (blogPost) => blogPost.frontmatter.date,
 ).reverse();
 
-const showSecretBlogPosts = __DEV__ && false;
+const ShowSecretBlogPostsInDev = false; // toggle this if needed
 
-BlogPosts = BlogPosts.filter((blogPost) => !blogPost.frontmatter.secret);
+BlogPosts =
+  __DEV__ && ShowSecretBlogPostsInDev
+    ? BlogPosts
+    : BlogPosts.filter((blogPost) => !blogPost.frontmatter.secret);
 
 const AppBlogPostListCard = ({
   blogPost,
