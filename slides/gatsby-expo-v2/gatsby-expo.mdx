@@ -714,8 +714,6 @@ const MDXBlogPost = () => (
 
 ---
 
----
-
 <div
         style={{
                 flex: 1,
@@ -768,7 +766,7 @@ const MDXBlogPost = () => (
                         textAlign: 'center',
                 }}
         >
-                React-Native + React-Navigation + MDX + Expo
+                Industrialisation
         </div>
 </div>
 
@@ -816,18 +814,23 @@ const LinkedInNavigation = () => (
 
 ### Static mobile app generator
 
-- Lire tous les fichiers MDX d'un dossier
-- Ajouter le pragma MDX
-- Extraire des métadonnées (frontmatter)
-- Créer un navigateur React-Navigation pour les posts
-- Intégrer à l'app existante
-- Transpilation JSX -> JS: Metro
+Step 1: compiler MDX -> JSX (part1)
 
-Solution: script au build
+```jsx
+// in: ./content/posts/my-super-post.mdx
+// out: ./content/posts/my-super-post.mdx.jsx
+// gitignore: *.mdx.jsx
+const jsxFiles = glob.sync('./content/**/*.mdx').map((mdxFile) => {
+        const mdxString = fs.readFileSync(mdxFile);
+        const outputFile = mdxFile + '.jsx';
+        fs.writeFileSync(outputFile, toJSXString(mdxString));
+        return outputFile;
+});
+```
 
 ---
 
-### React-Native app build script
+### Static mobile app generator
 
 ```jsx
 const fs = require('fs');
@@ -855,19 +858,11 @@ const toJSXString = (mdxString) => {
 
 ---
 
-### React-Native app build script
+### Static mobile app generator
+
+Step 2: générer la liste des posts
 
 ```jsx
-// in: ./content/posts/my-super-post.mdx
-// out: ./content/posts/my-super-post.mdx.jsx
-// gitignore: *.mdx.jsx
-const jsxFiles = glob.sync('./content/**/*.mdx').map((mdxFile) => {
-        const mdxString = fs.readFileSync(mdxFile);
-        const outputFile = mdxFile + '.jsx';
-        fs.writeFileSync(outputFile, toJSXString(mdxString));
-        return outputFile;
-});
-
 // expose all blog posts, as an "index": AppBlogPostList.js
 // export default [
 //   require("./content/posts/my-super-post.mdx.jsx"),
@@ -881,19 +876,9 @@ fs.writeFileSync(
 
 ---
 
-### React-Native app
+### Static mobile app generator
 
-```jsx
-const App = () => (
-        <ReactNativeMDXProvider>
-                <AppNavigation />
-        </ReactNativeMDXProvider>
-);
-```
-
----
-
-### React-Native navigation
+Step 3: créer la navigation
 
 ```jsx
 const BlogPostsNavigator = () => (
@@ -918,40 +903,9 @@ const AppNavigation = () => (
 
 ---
 
-### React-Native BlogPostScreen
+### Static mobile app generator
 
-```jsx
-const BlogPostScreen = ({ blogPost }) => {
-        const { default: MDXBlogPostContent, frontmatter } = blogPost;
-        const navigation = useNavigation();
-        return (
-                <ScrollView>
-                        <BlogPostHeader
-                                frontmatter={frontmatter}
-                                onBackPress={() => navigation.goBack()}
-                        />
-                        <MDXBlogPostContent />
-                </ScrollView>
-        );
-};
-```
-
----
-
-### React-Native BlogPostListScreen
-
-```jsx
-import AppBlogPostList, from './AppBlogPostList';
-
-const SortedBlogPosts = sortBy(
-  AppBlogPostList,
-  blogPost => blogPost.frontmatter.date,
-).reverse();
-```
-
----
-
-### React-Native BlogPostListScreen
+Step 4: écran BlogPostList
 
 ```jsx
 const BlogPostListScreen = () => {
@@ -967,6 +921,28 @@ const BlogPostListScreen = () => {
                                         }
                                 />
                         ))}
+                </ScrollView>
+        );
+};
+```
+
+---
+
+### Static mobile app generator
+
+Step 5: écran BlogPost
+
+```jsx
+const BlogPostScreen = ({ blogPost }) => {
+        const { default: MDXBlogPostContent, frontmatter } = blogPost;
+        const navigation = useNavigation();
+        return (
+                <ScrollView>
+                        <BlogPostHeader
+                                frontmatter={frontmatter}
+                                onBackPress={() => navigation.goBack()}
+                        />
+                        <MDXBlogPostContent />
                 </ScrollView>
         );
 };
@@ -1022,60 +998,46 @@ const BlogPostListScreen = () => {
                 justifyContent: 'center',
         }}
 >
-        <div
-                style={{
-                        fontSize: 30,
-                        textAlign: 'center',
-                }}
-        >
-                Open Expo client app
-        </div>
-        <div
-                style={{
-                        marginTop: 30,
-                        fontSize: 30,
-                        textAlign: 'center',
-                }}
-        >
-                <h4>iOS</h4>
-                <div>Log-in: gatsby-rnw / gatsby-rnw</div>
-        </div>
-        <div
-                style={{
-                        marginTop: 20,
-                        fontSize: 20,
-                        textAlign: 'center',
-                }}
-        >
-                <h4>Android users:</h4>
-                <div>Scan this QRCode (or log-in)</div>
+        <div style={{ display: 'flex' }}>
+                <img
+                        src="./logos/expo.png"
+                        style={{ alignSelf: 'center', width: 270, margin: 10 }}
+                />
                 <div
                         style={{
-                                marginTop: 10,
-                                padding: 5,
+                                margin: 20,
+                                padding: 10,
                                 backgroundColor: 'white',
                         }}
                 >
                         <img
                                 src="./qrcode.png"
                                 style={{
-                                        width: 280,
-                                        height: 280,
+                                        width: 250,
+                                        height: 250,
                                         alignSelf: 'center',
                                 }}
                         />
                 </div>
-                <div
-                        style={{
-                                fontSize: 20,
-                                textAlign: 'center',
-                        }}
-                >
-                        <a href="https://sebastienlorber.com/expo" target="_blank">
-                                sebastienlorber.com/expo
-                        </a>
+        </div>
+        <div
+                style={{
+                        fontSize: 20,
+                        textAlign: 'center',
+                }}
+        >
+                <div>
+                        <h4>iOS</h4>
+                        login with gatsby-rnw / gatsby-rnw
+                </div>
+                <div>
+                        <h4>Android</h4>
+                        scan QRCode
                 </div>
         </div>
+        <a href="https://sebastienlorber.com/app" target="_blank">
+                sebastienlorber.com/app
+        </a>
 </div>
 
 ---
@@ -1103,7 +1065,7 @@ const BlogPostListScreen = () => {
 - [sebastienlorber.com](https://sebastienlorber.com/)
 - [sebastienlorber.com/linkedin](https://sebastienlorber.com/linkedin)
 - [sebastienlorber.com/newsletter](https://sebastienlorber.com/newsletter)
-- [sebastienlorber.com/expo](https://sebastienlorber.com/expo)
+- [sebastienlorber.com/app](https://sebastienlorber.com/app)
 - [sebastienlorber.com/using-expo-in-gatsby](https://sebastienlorber.com/using-expo-in-gatsby)
 - [github.com/slorber/sebastienlorber.com](https://github.com/slorber/sebastienlorber.com)
 - [slides-gatsby-expo.netlify.app](https://slides-gatsby-expo.netlify.app/)

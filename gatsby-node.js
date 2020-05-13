@@ -20,4 +20,9 @@ exports.createPages = ({ graphql, actions }) => {
     toPath: 'https://expo.io/@slorber/sebastien-lorber',
     isPermanent: false,
   });
+  createRedirect({
+    fromPath: '/expo',
+    toPath: 'https://expo.io/@slorber/sebastien-lorber',
+    isPermanent: false,
+  });
 };
