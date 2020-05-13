@@ -5,6 +5,7 @@ import { AppBlogPost } from './AppBlogPostList';
 import { optimizeHeavyScreen } from 'react-navigation-heavy-screen';
 import { ActivityIndicator } from 'react-native-paper';
 import { useDimensions } from '@react-native-community/hooks';
+import { Transition } from 'react-native-reanimated';
 
 const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
   const { default: MDXBlogPostComp, frontmatter } = blogPost;
@@ -55,4 +56,12 @@ const Placeholder = () => (
   </View>
 );
 
-export default optimizeHeavyScreen(AppBlogPostScreen, Placeholder);
+export default optimizeHeavyScreen(AppBlogPostScreen, Placeholder, {
+  disableHoistStatics: false,
+  transition: (
+    <Transition.Together>
+      <Transition.Change interpolation="easeInOut" durationMs={400}/>
+      <Transition.In type="fade" durationMs={400} />
+    </Transition.Together>
+  ),
+});
