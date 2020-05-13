@@ -45,8 +45,8 @@ const HomeScreen = () => {
 };
 
 const SimpleMDXScreen = () => {
-  const navigation = useNavigation();
-  const MDXComponent = require('./content/test/simpleMDX.mdx').default;
+  // extension is required for web!
+  const MDXComponent = require('./content/test/simpleMDX.mdx.jsx').default;
   return (
     <View style={{ padding: 40 }}>
       <MDXComponent />

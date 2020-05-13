@@ -1,14 +1,17 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useColorMode as useColorModeThemeUI } from 'theme-ui';
 import { useColorMode as useColorModeRN } from './useColorMode.native';
+
+const colorModes = ['light', 'dark'];
+const defaultColorMode = 'dark';
 
 export const useColorMode = () => {
   const [colorMode, setColorMode] = useColorModeThemeUI();
   const [_, setColorModeRN] = useColorModeRN();
 
   const setColorModeFixed = useCallback(
-    colorMode => {
+    (colorMode) => {
       setColorMode(colorMode);
       setColorModeRN(colorMode);
       // console.debug("setColorMode",colorMode);
@@ -16,5 +19,9 @@ export const useColorMode = () => {
     [setColorMode],
   );
 
-  return [colorMode, setColorModeFixed];
+  const colorModeFixed = colorModes.includes(colorMode)
+    ? colorMode
+    : defaultColorMode;
+
+  return [colorModeFixed, setColorModeFixed];
 };
