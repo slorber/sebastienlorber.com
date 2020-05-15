@@ -9,28 +9,20 @@
 >
         <h4
                 style={{
-                        fontSize: 100,
+                        fontSize: 80,
                         textAlign: 'center',
                 }}
         >
-                Jamstack
+                Jamstack + ReactNative
         </h4>
-        <h4
+        <div
                 style={{
-                        fontSize: 100,
+                        fontSize: 30,
                         textAlign: 'center',
                 }}
         >
-                +
-        </h4>
-        <h4
-                style={{
-                        fontSize: 100,
-                        textAlign: 'center',
-                }}
-        >
-                React-Native
-        </h4>
+                Lightning talk @ ReactEurope
+        </div>
 </div>
 
 ---
@@ -47,174 +39,44 @@
         }}
 />
 
-- Expert React indépendant
-- Interet pour le dev cross-platform
+- Freelance React developer
+- Interested by anything cross-platform
 
 <br />
 
 - Twitter: [@sebastienlorber](https://twitter.com/sebastienlorber)
 - Github: [@slorber](https://github.com/slorber/)
-- Blog: [sebastienlorber.com](https://sebastienlorber.com/)
-
----
-
-<img
-        src="./newsletter.png"
-        style={{
-                width: 900,
-                alignSelf: 'center',
-        }}
-/>
-
-- [sebastienlorber.com/newsletter](https://sebastienlorber.com/newsletter)
-- [sebastienlorber.com/linkedin](https://sebastienlorber.com/linkedin)
-
----
-
-# Projet de blog
-
-<img src="./logos/gatsby.png" style={{ position: 'absolute', top: 350, left: 500, width: 300 }} />
-
-<img src="./logos/reasonml.png" style={{ position: 'absolute', top: 200, left: 850, width: 200 }} />
-
-<img src="./logos/yarn.png" style={{ position: 'absolute', top: 550, left: 100, width: 200 }} />
-
-<img src="./logos/lerna.png" style={{ position: 'absolute', top: 540, left: 380, width: 200 }} />
-
-<img src="./logos/apollo.png" style={{ position: 'absolute', top: 220, left: 200, width: 200 }} />
-
-<img
-        src="./logos/reactnative.png"
-        style={{ position: 'absolute', top: 380, left: 900, width: 300 }}
-/>
-
-<img src="./logos/expo.png" style={{ position: 'absolute', top: 540, left: 790, width: 180 }} />
-
----
-
-# 2 ans plus tard...
-
-<div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "space-around"}}>
-<img src="./novela.jpg" style={{ width: 500, alignSelf: 'center' }} />
-
-<img src="./first-blog.png" style={{ width: 500, alignSelf: 'center' }} />
-</div>
+- Website: [sebastienlorber.com](https://sebastienlorber.com/)
 
 ---
 
 <img
         src="./venn.png"
         style={{
-                height: 400,
+                height: 300,
                 alignSelf: 'center',
         }}
 />
 
-- React-Native et Expo dans un site statique?
-- Markdown et MDX dans une app React-Native?
-- Partage de code et contenu cross-platform possible?
+<br />
 
----
-
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Partie 1
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                Gatsby + React-Native-Web
-        </div>
-</div>
-
----
-
-### Gatsby
-
-- générateur de site statique
-- React
-- SPA
-- couche data GraphQL
-- build incrémental
-- intégrations variées (dont MDX)
-
----
-
-### MDX
-
-- composants React dans Markdown
-- VueJS (beta)
-
-```mdx
-# Hello, _world_!
-
-Je peux ajouter des composants React dans mon contenu Markdown:
-
-import MyComponent from './myComponent';
-
-<MyComponent age={42}>
-```
-
----
-
-### React-Native
-
-- vues natives pilotées par du JS
-- iOS, Android
-- Web: plusieurs solutions...
-- bientôt Windows et MacOS
-
----
-
-### React-Native
-
-- CSS-in-JS (inline ou api StyleSheet)
-- pas de cascade, pas de selecteurs
-- flexbox (direction column)
-
-```jsx
-import { View, Text } from 'react-native';
-
-const MyComponent = () => (
-        <View style={{ flexDirection: 'row', backgroundColor: '#FFFFFF' }}>
-                <View style={{ flex: 0, width: 100 }}>
-                        <MyIcon />
-                </View>
-                <View style={{ flex: 1 }}>
-                        <Text>Hello!</Text>
-                </View>
-        </View>
-);
-```
+- For fun, not €€€
+- React-Native + Expo + Gatsby + MDX?
+- Cross-platform content?
 
 ---
 
 ### React-Native-Web
 
-- CSS-in-JS pour le web, utilisant les APIs React-Native
+- A CSS-in-JS library
+- Reuse ReactNative abstractions
 - babel-plugin-react-native-web
 
 ```jsx
 import { View, Text } from 'react-native';
 ```
 
-devient
+becomes
 
 ```jsx
 import { View, Text } from 'react-native-web';
@@ -224,16 +86,16 @@ import { View, Text } from 'react-native-web';
 
 ### React-Native-Web
 
-Implémentation simpliste:
+Rough implementation:
 
 ```jsx
 export const View = (props) => (
         <div
                 {...props}
                 style={{
-                        flexDirection: 'column', // Override possible
+                        flexDirection: 'column',
                         ...props.style,
-                        display: 'flex', // Override impossible, RN est toujours display flex!
+                        display: 'flex', // can't override this, RN => always flex
                 }}
         />
 );
@@ -245,17 +107,16 @@ export const Text = (props) => <span {...props} />;
 
 ### Gatsby + React-Native-Web
 
-Intégration SSR / SSG nécessaire pour Gatsby
+SSR integration, similar to any CSS-in-JS lib
 
 ```jsx
-// RNW part
 AppRegistry.registerComponent('App', () => App);
+
 const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps });
 
-// Render the React element
 const html = ReactDOMServer.renderToString(element);
-// Extract the critical CSS that was used
-const css = ReactDOMServer.renderToStaticMarkup(getStyleElement());
+
+const css = ReactDOMServer.renderToStaticMarkup(getStyleElement()); // extract critical CSS
 
 const document = `<!DOCTYPE html>
 <html>
@@ -280,7 +141,9 @@ const document = `<!DOCTYPE html>
 
 ---
 
-### Gatsby + React-Native-Web
+### RN component
+
+Cross-platform
 
 ```jsx
 import { TouchableOpacity, Text } from 'react-native';
@@ -299,12 +162,11 @@ export const MyTestButton = () => (
 );
 ```
 
-- APIs React-Native uniquement
-- Composant cross-platform (web + mobile)
-
 ---
 
-### Gatsby + React-Native-Web
+### Gatsby Page
+
+Works, but not cross-platform
 
 ```jsx
 import React from 'react';
@@ -324,20 +186,16 @@ export const MyGatsbyPage = () => (
 );
 ```
 
-- React-Native: Text, View, MyTestButton
-- React-DOM: h1, div, Link
-- web uniquement
-
 ---
 
-### Gatsby + React-Native-Web + MDX
+### MDX
+
+Blog post about RN
 
 ```mdx
-# Implementing a button in React-Native
+# Create a ReactNative button
 
-Hey, this blog post will show you how you can implement **a button** in React-Native
-
-We will build this button:
+This blog post will show you how you can create **a button** in React-Native:
 
 import { MyTestButton } from './MyTestButton';
 
@@ -346,156 +204,25 @@ import { MyTestButton } from './MyTestButton';
 
 ---
 
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Demo
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                Gatsby + React-Native-Web + MDX
-        </div>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
-                        sebastienlorber.com/using-expo-in-gatsby
-                </a>
-        </div>
-</div>
-
----
-
-### Gatsby + React-Native-Web + MDX
-
-Limites:
-
-- Pas d'extension .web.js
-- Pas de TS
-- Pas de transpilation des libs react-native
-- Pas de DefinePlugin pour `__DEV__`
-- ...
-
----
-
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Partie 2
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                Gatsby + Expo + MDX
-        </div>
-</div>
-
----
-
-### Expo
-
-- React-Native: lean core
-
-* Expo: extension de React-Native
-
-- APIs supplémentaires (camera, battery, video, audio, file system...)
-
-* Support web (partiel)
-
----
-
-### Expo
-
-- DX React-Native optimale
-
-* Client Expo: React-Native sans XCode / Android studio
-
-- Client Expo: télécharchez le!
-
-<img
-        src="./logos/expo.png"
-        style={{
-                width: 200,
-                alignSelf: 'center',
-        }}
-/>
-
----
-
 ### Gatsby + Expo
 
-Package [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config)
+- React-Native: lean core
+- Additional apis: camera, video, audio, file system...
+- Web support
+- [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config)
 
 ```jsx
-import { withUnimodules } from '@expo/webpack-config/addons';
+import { addExpoSupport } from '@expo/webpack-config/addons';
 
 export const onCreateWebpackConfig = ({ actions, getConfig }) => {
-        const gatsbyConfig = getConfig();
+        const webpackConfig = getConfig();
 
-        const gatsbyExpoConfig = withUnimodules(gatsbyConfig);
-
-        actions.replaceWebpackConfig(gatsbyExpoConfig);
+        actions.replaceWebpackConfig(addExpoSupport(webpackConfig));
 };
 ```
 
 ---
 
-### Gatsby + Expo + MDX
-
-```mdx
-# A React-Native Camera in my blog post
-
-Hey, look at my Expo camera:
-
-import { Video } from 'expo-av';
-
-<Video
-        source={{ uri: 'https://someDomain/video.mp4' }}
-        rate={1.0}
-        isMuted={true}
-        resizeMode="cover"
-        shouldPlay={true}
-        isLooping={true}
-        style={{ width: 360, height: 600 }}
-/>
-```
-
----
-
 <div
         style={{
                 flex: 1,
@@ -515,11 +242,11 @@ import { Video } from 'expo-av';
         </h1>
         <div
                 style={{
-                        fontSize: 60,
+                        fontSize: 50,
                         textAlign: 'center',
                 }}
         >
-                Gatsby + Expo + MDX
+                ReactNative + Expo in a Gatsby blog post
         </div>
         <div
                 style={{
@@ -530,35 +257,6 @@ import { Video } from 'expo-av';
                 <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
                         sebastienlorber.com/using-expo-in-gatsby
                 </a>
-        </div>
-</div>
-
----
-
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Partie 3
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                React-Native + MDX
         </div>
 </div>
 
@@ -566,27 +264,17 @@ import { Video } from 'expo-av';
 
 ### React-Native + MDX
 
-Step 1: fichier source:
-
 ```mdx
 # title
-
-some text
 
 import { MyComponent } from './components';
 
 <MyComponent answer={42} />
 ```
 
----
-
-### React-Native + MDX
-
-Step 2: MDX -> JSX (compilateur MDX)
+div, h1, p...
 
 ```jsx
-import { MyComponent } from './components';
-
 export const MDXComponent = () => (
         <div>
                 <h1>title</h1>
@@ -594,85 +282,13 @@ export const MDXComponent = () => (
                 <MyComponent answer={42} />
         </div>
 );
-```
-
----
-
-### React-Native + MDX
-
-Step 3: JSX -> JS ([babel-plugin-transform-react-jsx](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx))
-
-```jsx
-import React from 'react';
-import { MyComponent } from './components';
-
-export const MDXComponent = React.createElement('div', {
-        children: [
-                React.createElement('h1', undefined, (children: 'title')),
-                React.createElement('p', undefined, (children: 'title')),
-                React.createElement(MyComponent, { answer: 42 }, undefined),
-        ],
-});
-```
-
----
-
-### React-Native + MDX
-
-Problème:
-
-- div, h1, p...
-- React-DOM: ne tourne pas sur React-Native
-
-Solution:
-
-- Pragma JSX de MDX
-- [MDXProvider](https://mdxjs.com/advanced/components#mdxprovider): overrider les composants React-DOM
-
----
-
-### JSX Pragma
-
-babel-plugin-transform-react-jsx
-
-```jsx
-/** @jsx jsx */
-import { jsx } from '@mdx-js/react';
-import React from 'react';
-import { MyComponent } from './components';
-
-export const MDXComponent = () => (
-        <div>
-                <h1>title</h1>
-                <p>some text</p>
-                <MyComponent answer={42} />
-        </div>
-);
-```
-
----
-
-### JSX Pragma
-
-Après transpilation babel
-
-```jsx
-import { jsx } from '@mdx-js/react';
-import React from 'react';
-import { MyComponent } from './components';
-
-export const MDXComponent = jsx('div', {
-        children: [
-                jsx('h1', undefined, (children: 'title')),
-                jsx('p', undefined, (children: 'title')),
-                jsx(MyComponent, { answer: 42 }, undefined),
-        ],
-});
 ```
 
 ---
 
 ### MDXProvider
+
+Mdx pragma required: `/* @jsx mdx */`
 
 ```jsx
 import React from 'react';
@@ -694,149 +310,21 @@ export const MyReactNativeMDXProvider = ({ children }) => (
 );
 ```
 
-Override les composants DOM (a, div, p) par des implémentations React-Native
-
----
-
-### MDXProvider + JSX Pragma
-
-```jsx
-import { jsx } from '@mdx-js/react';
-import React from 'react';
-import { MyComponent } from './components';
-
-export const MDXComponent = jsx('div', {
-        children: [
-                jsx('h1', undefined, (children: 'title')),
-                jsx('p', undefined, (children: 'title')),
-                jsx(MyComponent, { answer: 42 }, undefined),
-        ],
-});
-```
-
-```jsx
-import { MDXComponent as MyBlogPostMDX } from './my-super-mdx-blog-post-transpiled';
-
-const MyBlogPost = () => (
-        <MyReactNativeMDXProvider>
-                <MyBlogPostMDX />
-        </MyReactNativeMDXProvider>
-);
-```
-
----
-
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Demo
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                React-Native + MDX
-        </div>
-</div>
-
----
-
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Partie 4
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                Industrialisation
-        </div>
-</div>
-
----
-
-### React-Navigation
-
-- Navigation pour React-Native et Expo
-- Web VS Mobile: patterns de navigation différents
-- Tabs
-- Stack
-- Drawer
-
----
-
-### React-Navigation
-
-```jsx
-const LinkedInTabNavigation = () => (
-        <Tab.Navigator>
-                <Tab.Screen component={FeedScreen} />
-                <Tab.Screen component={NetworkScreen} />
-                <Tab.Screen component={AddContentScreen} />
-                <Tab.Screen component={NotificationsScreen} />
-                <Tab.Screen component={JobsScreen} />
-        </Tab.Navigator>
-);
-
-const LinkedInStackNavigation = () => (
-        <Stack.Navigator>
-                <Stack.Screen component={LinkedInTabNavigation} />
-                <Stack.Screen component={MessagesScreen} />
-                <Stack.Screen component={OtherStackScreens} />
-        </Stack.Navigator>
-);
-
-const LinkedInNavigation = () => (
-        <NavigationContainer>
-                <LinkedInStackNavigation>
-        </NavigationContainer>
-);
-```
-
 ---
 
 ### Static mobile app generator
 
-Step 1: compiler MDX -> JSX (part1)
+Compile MDX blog posts to JSX
 
 ```jsx
 // in: ./content/posts/my-super-post.mdx
 // out: ./content/posts/my-super-post.mdx.jsx
-// gitignore: *.mdx.jsx
 const jsxFiles = glob.sync('./content/**/*.mdx').map((mdxFile) => {
         const mdxString = fs.readFileSync(mdxFile);
+
         const outputFile = mdxFile + '.jsx';
+
         fs.writeFileSync(outputFile, toJSXString(mdxString));
-        return outputFile;
 });
 ```
 
@@ -845,17 +333,12 @@ const jsxFiles = glob.sync('./content/**/*.mdx').map((mdxFile) => {
 ### Static mobile app generator
 
 ```jsx
-const fs = require('fs');
-const mdx = require('@mdx-js/mdx');
-const glob = require('glob');
-const grayMatter = require('gray-matter');
-
 const toJSXString = (mdxString) => {
-        const { data, content } = grayMatter(mdxString); // Extract frontmatter
+        const { frontmatterData, content } = extractFrontmatter(mdxString);
 
-        const frontmatter = `export const frontmatter = ${JSON.stringify(data)};`;
+        const frontmatter = `export const frontmatter = ${JSON.stringify(frontmatterData)};`;
 
-        const jsx = mdx.sync(content);
+        const jsx = compileMDX(content);
 
         const pragma = `/* @jsx mdx */
                         import { mdx } from '@mdx-js/react';`;
@@ -872,132 +355,22 @@ const toJSXString = (mdxString) => {
 
 ### Static mobile app generator
 
-Step 2: générer la liste des posts
-
-```jsx
-// expose all blog posts, as an "index": AppBlogPostList.js
-// export default [
-//   require("./content/posts/my-super-post.mdx.jsx"),
-//   require("./content/posts/another-post.mdx.jsx")
-// ]
-fs.writeFileSync(
-        './AppBlogPostList.js',
-        `export default [${jsxFiles.map((jsxFile) => `require('${jsxFile}')`).join(',\n')}]`,
-);
-```
-
----
-
-### Static mobile app generator
-
-Step 3: créer la navigation
-
-```jsx
-const BlogPostsNavigator = () => (
-        <Stack.Navigator>
-                <Stack.Screen name="BlogPostList" component={BlogPostListScreen} />
-                <Stack.Screen
-                        name="BlogPost"
-                        component={BlogPostScreen}
-                        options={({ route }) => ({
-                                title: route.params.blogPost.frontmatter.title,
-                        })}
-                />
-        </Stack.Navigator>
-);
-
-const AppNavigation = () => (
-        <NavigationContainer>
-                <BlogPostsNavigator />
-        </NavigationContainer>
-);
-```
-
----
-
-### Static mobile app generator
-
-Step 4: écran BlogPostList
-
-```jsx
-const BlogPostListScreen = () => {
-        const navigation = useNavigation();
-        return (
-                <ScrollView>
-                        {SortedBlogPosts.map((blogPost, i) => (
-                                <BlogPostCard
-                                        blogPost={blogPost}
-                                        key={i}
-                                        onPress={() =>
-                                                navigation.navigate('BlogPost', { blogPost })
-                                        }
-                                />
-                        ))}
-                </ScrollView>
-        );
-};
-```
-
----
-
-### Static mobile app generator
-
-Step 5: écran BlogPost
+Render a blog post
 
 ```jsx
 const BlogPostScreen = ({ blogPost }) => {
-        const { default: MDXBlogPostContent, frontmatter } = blogPost;
-        const navigation = useNavigation();
+        const { MDXContent, frontmatter } = blogPost;
         return (
                 <ScrollView>
-                        <BlogPostHeader
-                                frontmatter={frontmatter}
-                                onBackPress={() => navigation.goBack()}
-                        />
-                        <MDXBlogPostContent />
+                        <BlogPostHeader frontmatter={frontmatter} />
+
+                        <MyReactNativeMDXProvider>
+                                <MDXContent />
+                        </MyReactNativeMDXProvider>
                 </ScrollView>
         );
 };
 ```
-
----
-
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Demo
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                React-Native + React-Navigation + MDX + Expo
-        </div>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
-                        sebastienlorber.com/using-expo-in-gatsby
-                </a>
-        </div>
-</div>
 
 ---
 
@@ -1040,7 +413,7 @@ const BlogPostScreen = ({ blogPost }) => {
         >
                 <div>
                         <h4>iOS</h4>
-                        login with gatsby-rnw / gatsby-rnw
+                        login with <b>gatsby-rnw / gatsby-rnw</b>
                 </div>
                 <div>
                         <h4>Android</h4>
@@ -1073,11 +446,12 @@ const BlogPostScreen = ({ blogPost }) => {
         </h1>
 </div>
 
-- [twitter.com/sebastienlorber](https://twitter.com/sebastienlorber)
+- [sebastienlorber.com/app](https://sebastienlorber.com/app) (login: gatsby-rnw / gatsby-rnw)
+- [mobile.sebastienlorber.com](https://mobile.sebastienlorber.com)
+
+<br />
+
 - [sebastienlorber.com](https://sebastienlorber.com/)
-- [sebastienlorber.com/linkedin](https://sebastienlorber.com/linkedin)
-- [sebastienlorber.com/newsletter](https://sebastienlorber.com/newsletter)
-- [sebastienlorber.com/app](https://sebastienlorber.com/app)
 - [sebastienlorber.com/using-expo-in-gatsby](https://sebastienlorber.com/using-expo-in-gatsby)
 - [github.com/slorber/sebastienlorber.com](https://github.com/slorber/sebastienlorber.com)
 - [slides-gatsby-expo.netlify.app](https://slides-gatsby-expo.netlify.app/)
