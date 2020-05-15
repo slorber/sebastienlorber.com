@@ -355,6 +355,29 @@ const toJSXString = (mdxString) => {
 
 ### Static mobile app generator
 
+Generate an "index":
+
+```jsx
+// './BlogPostList.js',
+// export const BlogPostList = [
+//   require("./content/posts/my-super-post.mdx.jsx"),
+//   require("./content/posts/another-post.mdx.jsx")
+// ]
+
+const allBlogJsxFiles = glob.sync('./content/**/*.mdx.jsx');
+
+fs.writeFileSync(
+        './BlogPostList.js',
+        `export const BlogPostList = [${allBlogJsxFiles
+                .map((jsxFile) => `require('${jsxFile}')`)
+                .join(',')}]`,
+);
+```
+
+---
+
+### Static mobile app generator
+
 Render a blog post
 
 ```jsx
