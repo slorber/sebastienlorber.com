@@ -1,15 +1,10 @@
 // Copy of https://gist.github.com/danieldunderfelt/1982786761cf4156b732b3a128a8050f
 
 import React, { ReactNode } from 'react';
-import {
-  Text,
-  View,
-  TextProps,
-} from 'react-native';
+import { Text, View, TextProps } from 'react-native';
 import { Linking } from 'react-native';
 import { StyleSheet } from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
-
+import AppImage from 'components/AppImage';
 import { useColorMode } from 'theme/useColorMode';
 import { useDimensions } from '@react-native-community/hooks';
 
@@ -36,7 +31,6 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     fontSize: 12,
     padding: 10,
-    paddingBottom: 0, // quickfix: there's always an extra line at end of code blocks
     marginBottom: 10,
     borderRadius: 4,
   },
@@ -168,7 +162,10 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
   },
   pre: {},
-  link: {},
+  link: {
+    textDecorationLine: 'underline',
+    fontWeight: "bold"
+  },
   image: {
     width: 200,
     height: 200,
@@ -238,7 +235,13 @@ const AppMDXComponents = {
   },
   a: ({ href, children }) => {
     return (
-      <MDXText onPress={() => openUrl(href)} style={styles.link}>
+      <MDXText
+        onPress={() => openUrl(href)}
+        style={[
+          styles.link,
+          useIsLight() ? { color: '#6166DC' } : { color: '#E9DAAC' },
+        ]}
+      >
         {children}
       </MDXText>
     );
@@ -370,10 +373,7 @@ const AppMDXComponents = {
     const { window } = useDimensions();
     return (
       <View style={styles.imageContainer}>
-        <AutoHeightImage
-          width={window.width * 0.8}
-          source={src}
-        />
+        <AppImage width={window.width * 0.8} source={src} />
       </View>
     );
   },
