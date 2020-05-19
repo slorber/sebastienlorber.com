@@ -1,7 +1,7 @@
 // Copy of https://gist.github.com/danieldunderfelt/1982786761cf4156b732b3a128a8050f
 
 import React, { ReactNode } from 'react';
-import { Text, View, TextProps } from 'react-native';
+import { Text, View, TextProps, Platform } from 'react-native';
 import { Linking } from 'react-native';
 import { StyleSheet } from 'react-native';
 import AppImage from 'components/AppImage';
@@ -234,9 +234,16 @@ const AppMDXComponents = {
     return <MDXText style={styles.strong}>{children}</MDXText>;
   },
   a: ({ href, children }) => {
+    const webProps = {href, target: "_blank", rel: "noopener"};
     return (
       <MDXText
-        onPress={() => openUrl(href)}
+        {...webProps}
+        accessibilityRole="link"
+        onPress={() => {
+          if ( Platform.OS !== "web" ) {
+            openUrl(href)
+          }
+        }}
         style={[
           styles.link,
           useIsLight() ? { color: '#6166DC' } : { color: '#E9DAAC' },
