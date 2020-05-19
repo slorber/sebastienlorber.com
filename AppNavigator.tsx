@@ -99,6 +99,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer
       theme={colorMode === 'dark' ? DarkTheme : LightTheme}
+      // TODO why does it mess up to pass linking props in native platforms?
       linking={Platform.OS === 'web' ? Linking : undefined}
     >
       <AppStackNavigator />
