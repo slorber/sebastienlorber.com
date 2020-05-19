@@ -4,32 +4,14 @@ import AppImage from 'components/AppImage';
 import { AppBlogPost } from './AppBlogPostList';
 import { optimizeHeavyScreen } from 'react-navigation-heavy-screen';
 import { ActivityIndicator } from 'react-native-paper';
-import { useDimensions } from '@react-native-community/hooks';
 import { Transition } from 'react-native-reanimated';
-import { clamp } from 'lodash';
-
-const clampWidth = (width: number) => clamp(width, 0, 800);
+import { useBodyWidth } from './AppHooks';
 
 const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
-  const { default: MDXBlogPostComp, frontmatter } = blogPost;
-  const { window } = useDimensions();
+  const { default: BlogPostMDXComponent, frontmatter } = blogPost;
+  const width = useBodyWidth() - 20;
   return (
     <ScrollView style={{ flex: 1 }}>
-      {/*}
-      <View
-        style={{
-          marginTop: 20,
-          paddingHorizontal: 20,
-          width: '100%',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 30, fontWeight: 'bold' }}>
-          {frontmatter.title}
-        </Text>
-      </View>
-      */}
       <View
         style={{
           marginTop: 20,
@@ -38,10 +20,7 @@ const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
           justifyContent: 'center',
         }}
       >
-        <AppImage
-          width={clampWidth(window.width - 40)}
-          source={frontmatter.hero}
-        />
+        <AppImage width={width} source={frontmatter.hero} />
       </View>
       <View
         style={{
@@ -51,10 +30,8 @@ const AppBlogPostScreen = ({ blogPost }: { blogPost: AppBlogPost }) => {
           justifyContent: 'center',
         }}
       >
-        <View
-          style={{ width: clampWidth(window.width - 40), overflow: 'hidden' }}
-        >
-          <MDXBlogPostComp />
+        <View style={{ width, overflow: 'hidden' }}>
+          <BlogPostMDXComponent />
         </View>
       </View>
     </ScrollView>

@@ -1,19 +1,19 @@
 import React from 'react';
-import { AppBlogPost } from './AppBlogPostList';
+import { getBlogPostBySlug } from './AppBlogPostList';
 import AppBlogPostListScreen from './AppBlogPostListScreen';
 import AppBlogPostScreen from './AppBlogPostScreen';
+import AppHomeScreen from './AppHomeScreen';
 
 import {
   NavigationContainer,
   useRoute,
   DefaultTheme,
   DarkTheme,
-  useNavigation,
 } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useColorMode } from 'theme/useColorMode';
-import { View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, Platform } from 'react-native';
+import { useBodyWidth } from './AppHooks';
 
 const LightTheme = {
   ...DefaultTheme,
@@ -25,77 +25,83 @@ const LightTheme = {
 
 const Stack = createStackNavigator();
 
-const BlogPostScreen = () => {
-  const { blogPost } = useRoute().params as { blogPost: AppBlogPost };
-  return <AppBlogPostScreen blogPost={blogPost} />;
+const getBlogPostFromParams = (params: any) => {
+  const { slug } = params as { slug: string };
+  return getBlogPostBySlug(slug);
 };
 
-const HomeScreen = () => {
-  const navigation = useNavigation();
-  return (
-    <View style={{ padding: 40 }}>
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('SimpleMDX')}
-        style={{ margin: 20 }}
-      >
-        Simple MDX
-      </Button>
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('BlogPostList')}
-        style={{ margin: 20 }}
-      >
-        Blog Post List
-      </Button>
-    </View>
-  );
-};
+const BlogPostScreen = () => (
+  <AppBlogPostScreen blogPost={getBlogPostFromParams(useRoute().params)} />
+);
 
 const SimpleMDXScreen = () => {
   // extension is required for web!
+  const width = useBodyWidth();
+
   const MDXComponent = require('./content/test/simpleMDX.mdx.jsx').default;
   return (
     <View style={{ padding: 40 }}>
-      <MDXComponent />
+      <View style={{ width, alignSelf: 'center' }}>
+        <MDXComponent />
+      </View>
     </View>
   );
+};
+
+const AppStackNavigator = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={AppHomeScreen}
+        options={{
+          title: 'Home',
+        }}
+      />
+      <Stack.Screen
+        name="SimpleMDX"
+        component={SimpleMDXScreen}
+        options={{
+          title: 'Simple MDX',
+        }}
+      />
+      <Stack.Screen
+        name="BlogPostList"
+        component={AppBlogPostListScreen}
+        options={{
+          title: 'All my posts',
+        }}
+      />
+      <Stack.Screen
+        name="BlogPost"
+        component={BlogPostScreen}
+        options={({ route }) => ({
+          title: getBlogPostFromParams(route.params).frontmatter.title,
+        })}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const Linking = {
+  prefixes: ['https://sebastienlorber.com', 'slorber://'],
+  config: {
+    Home: '',
+    BlogPostList: 'posts',
+    BlogPost: {
+      path: 'posts/:slug',
+    },
+  },
 };
 
 const AppNavigator = () => {
   const [colorMode] = useColorMode();
   return (
-    <NavigationContainer theme={colorMode === 'dark' ? DarkTheme : LightTheme}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            title: 'Home',
-          }}
-        />
-        <Stack.Screen
-          name="SimpleMDX"
-          component={SimpleMDXScreen}
-          options={{
-            title: 'Simple MDX',
-          }}
-        />
-        <Stack.Screen
-          name="BlogPostList"
-          component={AppBlogPostListScreen}
-          options={{
-            title: 'All my posts',
-          }}
-        />
-        <Stack.Screen
-          name="BlogPost"
-          component={BlogPostScreen}
-          options={({ route }) => ({
-            title: (route.params as any).blogPost.frontmatter.title,
-          })}
-        />
-      </Stack.Navigator>
+    <NavigationContainer
+      theme={colorMode === 'dark' ? DarkTheme : LightTheme}
+      linking={Platform.OS === 'web' ? Linking : undefined}
+    >
+      <AppStackNavigator />
     </NavigationContainer>
   );
 };
