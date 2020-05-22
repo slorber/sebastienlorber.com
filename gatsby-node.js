@@ -27,10 +27,11 @@ exports.createPages = ({ graphql, actions }) => {
     isPermanent: false,
   });
 
-  
+
   createRedirect({
     fromPath: '/sizzy',
     toPath: 'https://a.paddle.com/v2/click/49831/114267?link=1947',
     isPermanent: false,
   });
+
 };
