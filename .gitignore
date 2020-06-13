@@ -93,3 +93,6 @@ web-report/
 
 
 content/**/*.mdx.jsx
+
+# Local Netlify folder
+.netlify
