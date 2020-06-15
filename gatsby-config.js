@@ -25,6 +25,14 @@ module.exports = {
         name: `linkedin`,
         url: `https://www.linkedin.com/in/sebastienlorber/`,
       },
+      {
+        name: `devto`,
+        url: `https://dev.to/sebastienlorber`,
+      },
+      {
+        name: `mailto`,
+        url: `mailto:lorber.sebastien+website@gmail.com`,
+      },
     ],
   },
   plugins: [
