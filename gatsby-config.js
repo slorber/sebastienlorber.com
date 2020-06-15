@@ -90,7 +90,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-webmention`,
       options: {
-        username: undefined, // webmention.io username
+        username: 'sebastienlorber.com', // webmention.io username
         identity: {
           github: 'slorber',
           twitter: 'sebastienlorber', // no @
@@ -100,7 +100,7 @@ module.exports = {
         //forwardPingbacksAsWebmentions: "https://example.com/endpoint",
         domain: 'sebastienlorber.com',
         fetchLimit: 10000, // number of webmentions to fetch
-        // token: process.env.WEBMENTIONS_TOKEN,
+        token: 'y7ZYx9itzOXhfeaKm20w5w',
       },
     },
   ],
