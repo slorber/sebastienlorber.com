@@ -25,6 +25,14 @@ module.exports = {
         name: `linkedin`,
         url: `https://www.linkedin.com/in/sebastienlorber/`,
       },
+      {
+        name: `devto`,
+        url: `https://dev.to/sebastienlorber`,
+      },
+      {
+        name: `mailto`,
+        url: `mailto:lorber.sebastien+website@gmail.com`,
+      },
     ],
   },
   plugins: [
@@ -77,6 +85,22 @@ module.exports = {
       resolve: `gatsby-plugin-canonical-urls`,
       options: {
         siteUrl: `https://sebastienlorber.com`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-webmention`,
+      options: {
+        username: undefined, // webmention.io username
+        identity: {
+          github: 'slorber',
+          twitter: 'sebastienlorber', // no @
+        },
+        mentions: true,
+        pingbacks: true,
+        //forwardPingbacksAsWebmentions: "https://example.com/endpoint",
+        domain: 'sebastienlorber.com',
+        fetchLimit: 10000, // number of webmentions to fetch
+        // token: process.env.WEBMENTIONS_TOKEN,
       },
     },
   ],
