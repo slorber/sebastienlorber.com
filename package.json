@@ -55,6 +55,7 @@
     "gatsby-plugin-react-native-web": "^3.1.0",
     "gatsby-plugin-resolve-src": "^2.1.0",
     "gatsby-plugin-sitemap": "^2.4.5",
+    "gatsby-plugin-webmention": "^0.2.0",
     "lodash": "^4.17.15",
     "mdx.macro": "^0.2.9",
     "prettier": "^2.0.5",

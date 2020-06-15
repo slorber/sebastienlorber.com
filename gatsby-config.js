@@ -87,5 +87,21 @@ module.exports = {
         siteUrl: `https://sebastienlorber.com`,
       },
     },
+    {
+      resolve: `gatsby-plugin-webmention`,
+      options: {
+        username: undefined, // webmention.io username
+        identity: {
+          github: 'slorber',
+          twitter: 'sebastienlorber', // no @
+        },
+        mentions: true,
+        pingbacks: true,
+        //forwardPingbacksAsWebmentions: "https://example.com/endpoint",
+        domain: 'sebastienlorber.com',
+        fetchLimit: 10000, // number of webmentions to fetch
+        // token: process.env.WEBMENTIONS_TOKEN,
+      },
+    },
   ],
 };
