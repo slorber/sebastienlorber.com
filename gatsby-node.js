@@ -12,7 +12,8 @@ exports.createPages = ({ graphql, actions }) => {
   });
   createRedirect({
     fromPath: '/linkedin',
-    toPath: 'https://www.linkedin.com/in/sebastienlorber/detail/recent-activity/shares/',
+    toPath:
+      'https://www.linkedin.com/in/sebastienlorber/detail/recent-activity/shares/',
     isPermanent: false,
   });
 
@@ -27,11 +28,15 @@ exports.createPages = ({ graphql, actions }) => {
     isPermanent: false,
   });
 
-
   createRedirect({
     fromPath: '/sizzy',
     toPath: 'https://a.paddle.com/v2/click/49831/114267?link=1947',
     isPermanent: false,
   });
-
+  createRedirect({
+    fromPath: '/coding-career-handbook',
+    toPath:
+      'https://swyx.podia.com/coding-career-handbook/gozhi?coupon=LAUNCHSALE20&via=sebastienlorber',
+    isPermanent: false,
+  });
 };
