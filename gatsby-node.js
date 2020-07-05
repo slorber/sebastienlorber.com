@@ -33,10 +33,17 @@ exports.createPages = ({ graphql, actions }) => {
     toPath: 'https://a.paddle.com/v2/click/49831/114267?link=1947',
     isPermanent: false,
   });
+
   createRedirect({
     fromPath: '/coding-career-handbook',
-    toPath:
-      'https://swyx.podia.com/coding-career-handbook/gozhi?coupon=LAUNCHSALE20&via=sebastienlorber',
+    // toPath: 'https://swyx.podia.com/coding-career-handbook/gozhi?coupon=LAUNCHSALE20&via=sebastienlorber',
+    toPath: 'https://www.learninpublic.org/?a=gozhi',
+    isPermanent: false,
+  });
+  createRedirect({
+    fromPath: '/learninpublic',
+    // toPath: 'https://swyx.podia.com/coding-career-handbook/gozhi?coupon=LAUNCHSALE20&via=sebastienlorber',
+    toPath: 'https://www.learninpublic.org/?a=gozhi',
     isPermanent: false,
   });
 };
