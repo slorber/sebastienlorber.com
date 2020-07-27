@@ -1,0 +1,201 @@
+---
+title: Records & Tuples for React
+slug: records-and-tuples-for-react
+author: Sébastien Lorber
+date: 2020-07-27
+excerpt: ...how this JS proposal will impact your React codebase.
+secret: true
+---
+
+Records & Tuples is a very interesting [proposal](https://github.com/tc39/proposal-record-tuple) for the JavaScript language, that just reached [stage 2](https://twitter.com/robpalmer2/status/1286040041089904640) at TC39.
+
+In this article, I want to show you how it is going to impact your React codebase, in a pragmatic way.
+
+---
+
+# Records & Tuples 101
+
+This article is about Records & Tuples **for React**. I'll only cover the basics here.
+
+They looks like regular Objects and Arrays, with a **#** prefix.
+
+```js
+const record = #{a: 1, b: 2};
+
+const updatedRecord = #{...record, b: 3};
+// #{a: 1, b: 3};
+
+const tuple = #[1, 2, 3, 4];
+
+const filteredTuple = tuple.filter(num => num > 2)
+// #[3, 4];
+```
+
+They are **deeply immutable** by default.
+
+```js
+const record = #{a: 1, b: 2};
+
+record.b = 3;
+// throws TypeError
+```
+
+They can be seen as **"compound primitives"**, and can be compared by value. Two deeply equal records will always have the same identity.
+
+```js
+{a: 1, b: [3, 4]} === {a: 1, b: [3, 4]}
+// false
+
+#{a: 1, b: #[3, 4]} === #{a: 1, b: #[3, 4]}
+// true
+```
+
+They are interoperable with JSON:
+
+```js
+const record = JSON.parseImmutable('{a: 1, b: [2, 3]}');
+// #{a: 1, b: #[2, 3]}
+
+JSON.stringify(record);
+// '{a: 1, b: [2, 3]}'
+```
+
+They can only contain other records and tuples, or primitive values.
+
+```js
+const record = #{
+  a: 1,
+  b: new Date(),
+  c: new MyClass()
+};
+// throws TypeError
+```
+
+Want more? Read the [proposal](https://github.com/tc39/proposal-record-tuple) directly, or this [article](https://2ality.com/2020/05/records-tuples-first-look.html) from Axel Rauschmayer.
+
+# Records & Tuples for React
+
+React developers are now used to **immutability**.
+Every time you update some piece of state in an immutable way, you create **new object identities**.
+
+But this immutability model has introduced a whole new class of bugs, and performance issues in React applications.
+Sometimes, a component works correctly and in a performant way, only under the assumption that props preserve identities as most as they can over time.
+
+I like to think about Records & Tuples as a convenient **way to make object identities more "stable"**.
+
+Let's see how this proposal will impact your React code with practical use cases.
+
+## Immutability
+
+Enforcing immutability can be achieved with `Object.freeze()` applied recursively.
+
+But in practice, we often use the immutability model without enforcing it too strictly, as it's not convenient to apply `Object.freeze()` after each update. Yet, mutating the React state directly is a common mistake for new React developers.
+
+The Records & Tuples proposal will enforce immutability, and prevent state mutation mistakes:
+
+```js
+const Hello = ({profile}) => {
+
+   // prop mutation: throws TypeError
+   profile.name = "Sebastien updated" // throws TypeError
+
+   return <p>Hello {profile.name}</p>;
+}
+
+function App() {
+   const [profile, setProfile] = React.useState(#{ name: "Sebastien" });
+
+   // state mutation: throws TypeError
+   profile.name = "Sebastien updated" // throws TypeError
+
+   return <Hello profile={profile}/>
+}
+```
+
+## Immutable updates
+
+There are many ways to perform immutable state updates in React: vanilla JS, Lodash's set, ImmerJS, ImmutableJS (check [my article](https://dev.to/sebastienlorber/insight-3-use-immerjs-over-lodash-set-immutablejs-or-plain-js-36bl).
+
+I think it's safe to say that [ImmerJS](https://github.com/immerjs/immer) has won this battle, due to its simplicity and interoperability with regular JS code.
+
+Michael Weststrate (author of ImmerJS), has highlighted in this [tweet](https://twitter.com/mweststrate/status/1263482177934819329), Records & Tuples can be updated deeply without requiring a lib like ImmerJS:
+
+```js
+const initialState = #{
+    counters: #[
+        #{ name: "Counter 1", value: 1 },
+        #{ name: "Counter 2", value: 0 },
+        #{ name: "Counter 3", value: 123 },
+    ],
+    metadata: #{
+        lastUpdate: 1584382969000,
+    },
+};
+
+const updatedState = #{
+    ...initialState,
+    counters[0].value: 2,
+    counters[1].value: 1,
+    metadata.lastUpdate: 1584383011300,
+};
+```
+
+This is part of a [separate proposal](https://github.com/tc39/proposal-deep-path-properties-for-record), currently at stage 1.
+
+## UseMemo
+
+TODO
+
+## UseEffect
+
+TODO
+
+## Props
+
+TODO
+
+## React.memo
+
+TODO
+
+
+## CSS-in-JS
+
+TODO
+
+
+## Refetch and Stale-while-revalidate
+
+TODO
+
+## Reading Apollo cache
+
+TODO
+
+## Reading Redux with Reselect
+
+TODO
+
+## Reading querystrings
+
+TODO
+
+## Basic JS state transformations
+
+TODO
+
+## Explicit API surface regarding object identities
+
+TODO
+
+---
+
+Thank you for reading!
+
+---
+
+If you like it, spread the word with a [Retweet]()
+
+Browser code demos, or correct my post typos [on the blog repo](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-04-21-using-expo-and-gatsby-together)
+
+For more content like this, subscribe to [my mailing list](https://mailchi.mp/4ea4df0b54f7/sebastienlorber) and follow me on [Twitter](https://twitter.com/sebastienlorber).
