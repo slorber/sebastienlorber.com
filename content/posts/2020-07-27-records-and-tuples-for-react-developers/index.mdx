@@ -588,13 +588,15 @@ We have an explicit way to tell the compiler that our implementation is object-i
 Let's consider some CSS-in-JS from a popular lib, using the css prop with object styles:
 
 ```jsx
-<div
-  css={{
-    backgroundColor: 'hotpink',
-  }}
->
-  This has a hotpink background.
-</div>
+const Component = () => (
+  <div
+    css={{
+      backgroundColor: 'hotpink',
+    }}
+  >
+    This has a hotpink background.
+  </div>
+);
 ```
 
 Your CSS-in-JS library receives a new CSS object on every re-render.
@@ -622,13 +624,15 @@ function handleStyleObject(styleObject) {
 With Records & Tuples, the identity of such a style object is preserved over time.
 
 ```jsx
-<div
-  css={#{
-    backgroundColor: 'hotpink',
-  }}
->
-  This has a hotpink background.
-</div>
+const Component = () => (
+  <div
+    css={#{
+      backgroundColor: 'hotpink',
+    }}
+  >
+    This has a hotpink background.
+  </div>
+);
 ```
 
 Records & Tuples can be used as [Map keys](https://github.com/tc39/proposal-record-tuple#usage-in-mapsetweakmapweakset), which could make the implementation of your CSS-in-JS faster:
@@ -657,9 +661,11 @@ Note: some CSS-in-JS library with a good babel plugin might be able to transform
 ```jsx
 const staticStyleObject = { backgroundColor: 'hotpink' };
 
-<div css={staticStyleObject}>
-  This has a hotpink background.
-</div>;
+const Component = () => (
+  <div css={staticStyleObject}>
+    This has a hotpink background.
+  </div>
+);
 ```
 
 ---
