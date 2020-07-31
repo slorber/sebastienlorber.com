@@ -477,9 +477,11 @@ When the user will update the `displayMode` (that should only change the renderi
 Again, Records & Tuples would prevent such things to happen.
 
 ```jsx
+// Unfortunately, the Record(obj) conversion function is not recursive
+// there's a recursive conversion method here:
+// https://tc39.es/proposal-record-tuple/cookbook/index.html
+// Here's a non-performant, but working solution:
 const parseQueryStringAsRecord = (search) => {
-  // Unfortunately, the Record(obj) conversion function is not recursive
-  // so here's a non-performant recursive solution:
   return JSON.parseImmutable(
     JSON.stringify(qs.parse(search)),
   );
@@ -493,7 +495,7 @@ const useQueryStringRecord = () => {
 };
 ```
 
-Now, if the user updates the `displayMode`, the `filter` will preserve its identity, and not trigger any useless re-fetch.
+Now, if the user updates the `displayMode`, the `filters` object will preserve its identity, and not trigger any useless re-fetch.
 
 ### Deeply equal JS transformations
 
@@ -507,9 +509,11 @@ const AllUsers = [
 
 const Parent = () => {
   const userIdsToHide = useUserIdsToHide();
+
   const users = AllUsers.filter(
     (user) => !userIdsToHide.includes(user.id),
   );
+
   return <UserList users={users} />;
 };
 
@@ -524,7 +528,7 @@ const UserList = React.memo(({ users }) => (
 
 Every time the `Parent` component re-renders, the `UserList` component re-render as well, because `filter` will always return a **new array instance**.
 
-This is the case even if `userIdsToHide` is empty! In such case, the filter operation does not actually filter anything, it just **creates new useless array instances**, opting out of our `React.memo` optimisations.
+This is the case even if `userIdsToHide` is empty, and `AllUsers` identity being stable! In such case, the filter operation does not actually filter anything, it just **creates new useless array instances**, opting out of our `React.memo` optimisations.
 
 These kind of transformations are very common in React codebase, with operators such as `map` or `filter`, in components, reducers, selectors, Redux...
 
@@ -542,15 +546,15 @@ AllUsers === filteredUsers;
 // true
 ```
 
-### Explicit API surface for object identities
+### Explicit API surface
 
 Let's consider this TypeScript component:
 
-```tsx
+```jsx
 const UsersPageContent = ({
   usersFilters,
 }: {
-  usersFilters: UsersFilters;
+  usersFilters: UsersFilters,
 }) => {
   const [users, setUsers] = useState([]);
 
@@ -567,15 +571,15 @@ This code may or may not create an infinite loop, as we have seen already, depen
 
 The following will lead to an infinite loop, but TypeScript has no way to prevent this:
 
-```tsx
+```jsx
 <UsersPageContent
   usersFilters={{ nameFilter, ageFilter, companyFilter }}
 />
 ```
 
-Now, with Records & Tuples, we should be able to tell TypeScript to expect a Record for the filter prop:
+With Records & Tuples, we can tell TypeScript to expect a Record:
 
-```tsx
+```jsx
 const UsersPageContent = ({
   usersFilters,
 }: {
@@ -587,7 +591,7 @@ const UsersPageContent = ({
 
 And TypeScript compilation will fail for:
 
-```tsx
+```jsx
 <UsersPageContent
   usersFilters={{ nameFilter, ageFilter, companyFilter }}
 />
@@ -595,21 +599,23 @@ And TypeScript compilation will fail for:
 
 While TypeScript would accept:
 
-```tsx
+```jsx
 <UsersPageContent
   usersFilters={#{ nameFilter, ageFilter, companyFilter }}
 />
 ```
 
-With Records & Tuples, we have been able to prevent an infinite loop at compile time. Want
+With Records & Tuples, we can prevent this infinite loop at **compile time**.
 
-We have an explicit way to tell the compiler that our implementation is object-identity sensitive.
+We have an **explicit** way to tell the compiler that our **implementation is object-identity sensitive**.
+
+**Note**: `readonly` would not solve this: it only prevents mutation, but does not guarantee a stable identity.
 
 ### Serialization guarantee
 
-If you are an architect, you may want to ensure that people don't put unserializable things in global app state. This is important if you plan to send the state to the backend, or persist it locally in `localStorage` (or `AsyncStorage` for React-Native users).
+You may want to ensure that developers on your team don't put unserializable things in global app state. This is important if you plan to send the state to the backend, or persist it locally in `localStorage` (or `AsyncStorage` for React-Native users).
 
-To ensure that, you just need to ensure that the root object is record. This will guarantee that all the nested attributes are also records, tuples, or primitives, and thus always serializable.
+To ensure that, you just need to ensure that the root object is a record. This will guarantee that all the nested attributes are also records, tuples, or primitives.
 
 Here's an example integration with Redux, to ensure the Redux store keeps being serializable over time:
 
@@ -618,7 +624,8 @@ if (process.env.NODE_ENV === 'development') {
   ReduxStore.subscribe(() => {
     if (typeof ReduxStore.getState() !== 'record') {
       throw new Error(
-        "Don't put non-serializable things in the Redux store!!!",
+        "Don't put non-serializable things in the Redux store! " +
+          'The root Redux state must be a record!',
       );
     }
   });
@@ -627,7 +634,7 @@ if (process.env.NODE_ENV === 'development') {
 
 ### CSS-in-JS performances
 
-Let's consider some CSS-in-JS from a popular lib, using the css prop with object styles:
+Let's consider some CSS-in-JS from a popular lib, using the css prop:
 
 ```jsx
 const Component = () => (
@@ -644,7 +651,7 @@ const Component = () => (
 Your CSS-in-JS library receives a new CSS object on every re-render.
 
 On first render, it will hash this object as a unique class name, and insert the CSS.
-The style object has a different identity for each re-render, and the CSS-in-JS library have to hash it again and again.
+The style object has a different identity for each re-render, and the CSS-in-JS library have to **hash it again and again**.
 
 ```jsx
 const insertedClassNames = new Set();
@@ -677,7 +684,7 @@ const Component = () => (
 );
 ```
 
-Records & Tuples can be used as [Map keys](https://github.com/tc39/proposal-record-tuple#usage-in-mapsetweakmapweakset), which could make the implementation of your CSS-in-JS faster:
+Records & Tuples can be used as [Map keys](https://github.com/tc39/proposal-record-tuple#usage-in-mapsetweakmapweakset). This could make the implementation of your CSS-in-JS library faster:
 
 ```jsx
 const insertedStyleRecords = new Map();
@@ -714,11 +721,11 @@ const Component = () => (
 
 # Conclusion
 
-Many React issues are related to object identities.
+Many React performance and behavior issues are related to object identities.
 
-**Records & Tuples** will ensure that identities are **"more stable"** out of the box, by providing some kind of **"automatic memoization"**.
+**Records & Tuples** will ensure that object identities are **"more stable"** out of the box, by providing some kind of **"automatic memoization"**, and help us solve these React problems more easily.
 
-Also, TypeScript will permit to express better that your API / Component expect stable identities.
+TypeScript will permit to express better that your API surface is **object-identity sensitive**.
 
 I hope you are now as much excited as I am by this proposal!
 
@@ -728,6 +735,6 @@ Thank you for reading!
 
 If you like it, spread the word with a [Retweet]()
 
-Browser code demos, or correct my post typos [on the blog repo](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-04-21-using-expo-and-gatsby-together)
+Browser code demos, or correct my post typos [on the blog repo](https://github.com/slorber/sebastienlorber.com/tree/master/content/posts/2020-07-31-records-and-tuples-for-react-developers)
 
 For more content like this, subscribe to [my mailing list](https://mailchi.mp/4ea4df0b54f7/sebastienlorber) and follow me on [Twitter](https://twitter.com/sebastienlorber).
