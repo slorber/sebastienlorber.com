@@ -278,7 +278,7 @@ const Parent = () => {
   return (
     <ExpensiveChild
       // someData props object is created "on the fly"
-      someData={{ attribute1: 'abc', attr2: 'def' }}
+      someData={{ attr1: 'abc', attr2: 'def' }}
     />
   );
 };
@@ -315,7 +315,7 @@ All these issues can be solved with memoization:
 
 ```jsx
 const someData = useMemo(
-  () => ({ attribute1: 'abc', attr2: 'def' }),
+  () => ({ attr1: 'abc', attr2: 'def' }),
   [],
 );
 
@@ -334,7 +334,7 @@ const contextValue = useMemo(
 With Records & Tuples, it is **idiomatic to write performant code**:
 
 ```jsx
-<ExpensiveChild someData={#{ attribute1: 'abc', attr2: 'def' }} />;
+<ExpensiveChild someData={#{ attr1: 'abc', attr2: 'def' }} />;
 ```
 
 ```jsx
