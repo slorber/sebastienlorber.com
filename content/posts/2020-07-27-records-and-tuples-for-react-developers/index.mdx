@@ -16,15 +16,15 @@ A whole category of React bugs are related to **unstable object identities**:
 - **Behavior**: can trigger useless effect re-executions, and lead to infinite loops
 - **API surface**: we don't have a way to express when a stable object identity matters
 
-In this article, I want to show you how **Records & Tuples** can solve these problems, with **pragmatic examples**, found in **real world React code-bases**.
+I will explain the basics of **Records & Tuples**, and how they can solve **real world React issues**.
 
 ---
 
 # Records & Tuples 101
 
-This article is about Records & Tuples **for React**. I'll only cover the basics here.
+This article is about Records & Tuples **<u>for React</u>**. I'll only cover the basics here.
 
-They looks like regular Objects and Arrays, with a **#** prefix.
+They look like regular **Objects and Arrays**, with a **#** prefix.
 
 ```jsx
 const record = #{a: 1, b: 2};
@@ -73,12 +73,19 @@ They can only contain other records and tuples, or primitive values.
 
 ```jsx
 const record = #{
-  a: 1,
+  a: {
+    regular: 'object',
+  },
   b: new Date(),
-  c: new MyClass()
+  c: new MyClass(),
+  d: function () {
+    alert('forbidden');
+  },
 };
 // throws TypeError
 ```
+
+**Note**: you can add such values to a Record by using [references](https://github.com/tc39/proposal-record-tuple#could-i-box-a-pointer-to-an-object-and-put-that-in-a-record-or-tuple).
 
 Want more? Read the [proposal](https://github.com/tc39/proposal-record-tuple) directly, or this [article](https://2ality.com/2020/05/records-tuples-first-look.html) from Axel Rauschmayer.
 
@@ -87,83 +94,97 @@ Want more? Read the [proposal](https://github.com/tc39/proposal-record-tuple) di
 # Records & Tuples for React
 
 React developers are now used to **immutability**.
+
 Every time you update some piece of state in an immutable way, you create **new object identities**.
 
-But this immutability model has introduced a whole new class of bugs, and performance issues in React applications.
-Sometimes, a component works correctly and in a performant way, only under the assumption that props preserve identities as most as they can over time.
+Unfortunately, this immutability model has introduced a whole new class of bugs, and performance issues in React applications.
+Sometimes, a component works correctly and in a performant way, **only under the assumption that props preserve identities** as most as they can over time.
 
-I like to think about Records & Tuples as a convenient **way to make object identities more "stable"**.
+I like to think about Records & Tuples as a convenient way to **make object identities more "stable"**.
 
 Let's see how this proposal will impact your React code with practical use cases.
 
 ### Immutability
 
-Enforcing immutability can be achieved with `Object.freeze()` applied recursively.
+Enforcing immutability can be achieved with recursive `Object.freeze()` calls.
 
 But in practice, we often use the immutability model without enforcing it too strictly, as it's not convenient to apply `Object.freeze()` after each update. Yet, mutating the React state directly is a common mistake for new React developers.
 
-The Records & Tuples proposal will enforce immutability, and prevent state mutation mistakes:
+The Records & Tuples proposal will **enforce immutability**, and prevent common state mutation mistakes:
 
 ```jsx
-const Hello = ({profile}) => {
+const Hello = ({ profile }) => {
+  // prop mutation: throws TypeError
+  profile.name = 'Sebastien updated';
 
-   // prop mutation: throws TypeError
-   profile.name = "Sebastien updated" // throws TypeError
-
-   return <p>Hello {profile.name}</p>;
-}
+  return <p>Hello {profile.name}</p>;
+};
 
 function App() {
-   const [profile, setProfile] = React.useState(#{ name: "Sebastien" });
+  const [profile, setProfile] = React.useState(#{
+    name: 'Sebastien',
+  });
 
-   // state mutation: throws TypeError
-   profile.name = "Sebastien updated" // throws TypeError
+  useEffect(() => {
+    // state mutation: throws TypeError
+    profile.name = 'Sebastien updated';
+  }, []);
 
-   return <Hello profile={profile}/>
+  return <Hello profile={profile} />;
 }
 ```
 
 ### Immutable updates
 
-There are many ways to perform immutable state updates in React: vanilla JS, Lodash's set, ImmerJS, ImmutableJS (check [my article](https://dev.to/sebastienlorber/insight-3-use-immerjs-over-lodash-set-immutablejs-or-plain-js-36bl).
+There are [many ways](https://dev.to/sebastienlorber/insight-3-use-immerjs-over-lodash-set-immutablejs-or-plain-js-36bl) to perform immutable state updates in React: vanilla JS, Lodash set, ImmerJS, ImmutableJS...
 
-I think it's safe to say that [ImmerJS](https://github.com/immerjs/immer) has won this battle, due to its simplicity and interoperability with regular JS code.
+So far, [ImmerJS](https://github.com/immerjs/immer) has won this battle, due to its simplicity, and interoperability with regular JS code.
 
-Michael Weststrate (author of ImmerJS), has [highlighted](https://twitter.com/mweststrate/status/1263482177934819329) that Records & Tuples can be updated deeply without requiring a third-party library like ImmerJS:
+Michael Weststrate himself has [highlighted](https://twitter.com/mweststrate/status/1263482177934819329) that Records & Tuples can be updated deeply natively, and ImmerJS may become unneeded:
 
 ```jsx
 const initialState = #{
-    counters: #[
-        #{ name: "Counter 1", value: 1 },
-        #{ name: "Counter 2", value: 0 },
-        #{ name: "Counter 3", value: 123 },
-    ],
-    metadata: #{
-        lastUpdate: 1584382969000,
-    },
+  counters: #[
+    #{ name: "Counter 1", value: 1 },
+    #{ name: "Counter 2", value: 0 },
+    #{ name: "Counter 3", value: 123 },
+  ],
+  metadata: #{
+    lastUpdate: 1584382969000,
+  },
 };
 
-const updatedState = #{
-    ...initialState,
-    counters[0].value: 2,
-    counters[1].value: 1,
-    metadata.lastUpdate: 1584383011300,
+// Update with ImmerJS:
+const updatedStateImmer = Immer.produce(initialState,draft => {
+  draft.counters[0].value: 2,
+  draft.counters[1].value: 1,
+  draft.metadata.lastUpdate: 1584383011300,
+})
+
+// Update with vanilla JS:
+const updatedStateNative = #{
+  ...initialState,
+  counters[0].value: 2,
+  counters[1].value: 1,
+  metadata.lastUpdate: 1584383011300,
 };
 ```
 
-This is part of a [separate proposal](https://github.com/tc39/proposal-deep-path-properties-for-record), currently at stage 1.
+This is part of a [separate proposal](https://github.com/tc39/proposal-deep-path-properties-for-record).
 
 ### useMemo
 
-In addition to memoizing expensive computations, `useMemo()` is also useful to avoid creating new object identities, that might trigger useless computations, re-renders, or effects executions deeper in the tree.
+In addition to memoizing expensive computations, `useMemo()` is also useful to **avoid creating new object identities**, that might **trigger useless computations, re-renders, or effects executions deeper in the tree**.
 
-I will illustrate this with a common use-case: you have an UI with multiple filters, and want to fetch some data from the backend.
+Let's consider the following use-case: you have an UI with multiple filters, and want to fetch some data from the backend.
 
 Existing React code-bases might contain code such as:
 
 ```jsx
-// Don't change apiFilters object identity, unless one of the filter changes
-// Not doing this is likely to trigger a new fetch on each render
+// Don't change apiFilters object identity,
+// unless one of the filter changes
+// Not doing this is likely to trigger a new fetch
+// on each render
 const apiFilters = useMemo(
   () => ({ userFilter, companyFilter }),
   [userFilter, companyFilter],
@@ -172,7 +193,7 @@ const apiFilters = useMemo(
 const { apiData, loading } = useApiData(apiFilters);
 ```
 
-With Records & Tuples, this becomes simply:
+With Records & Tuples, this simply becomes:
 
 ```jsx
 const {apiData,loading} = useApiData(#{ userFilter, companyFilter })
@@ -180,7 +201,7 @@ const {apiData,loading} = useApiData(#{ userFilter, companyFilter })
 
 ### useEffect
 
-Let's continue with our api filters use-case.
+Let's continue with our api filters use-case:
 
 ```jsx
 const apiFilters = { userFilter, companyFilter };
@@ -190,14 +211,12 @@ useEffect(() => {
 }, [apiFilters]);
 ```
 
-This code has a mistake: the identity of the `apiFilters` object changes everytime this component re-renders, the effect gets re-executed.
+Unfortunately, the fetch effect gets **re-executed**, because the identity of the `apiFilters` object changes every time this component re-renders. `setApiDataInState` will trigger a re-render, and you will end up with an infinite fetch/render loop.
 
-If you are unlucky, `setApiDataInState` will actually trigger a re-render, and you will end up with an infinite fetch/render loop.
+This mistake is so common across React developers that there are thousand of Google search results for **[useEffect + "infinite loop"](https://www.google.com/search?q=useEffect+%2B+%22infinite+loop%22)**.
+Kent C Dodds even created [a tool](https://github.com/kentcdodds/stop-runaway-react-effects) such infinite loops in development.
 
-This mistake is so common across React developers that there are thousand of Google search results for [useEffect + "infinite loop"](https://www.google.com/search?q=useEffect+%2B+%22infinite+loop%22).
-Kent C Dodds even created [a tool](https://github.com/kentcdodds/stop-runaway-react-effects) to break this kind of infinite loop in development.
-
-A common solution is to create the final `apiFilters` directly in the effect's callback:
+Very common solution: create `apiFilters` directly in the effect's callback:
 
 ```jsx
 useEffect(() => {
@@ -206,12 +225,13 @@ useEffect(() => {
 }, [userFilter, companyFilter]);
 ```
 
-More creative (and not very performant), this one uses JSON parse/stringify ([source](https://twitter.com/acutmore/status/1256533631914426369)) :
+Another creative solution (not very performant, found on [Twitter](https://twitter.com/acutmore/status/1256533631914426369)):
 
 ```jsx
-const apiFilters = { userFilter, companyFilter };
-
-const apiFiltersString = JSON.stringify(apiFilters);
+const apiFiltersString = JSON.stringify({
+  userFilter,
+  companyFilter,
+});
 
 useEffect(() => {
   fetchApiData(JSON.parse(apiFiltersString)).then(
@@ -224,14 +244,19 @@ The one I like the most:
 
 ```jsx
 // We already saw this somewhere, right? :p
-const apiFilters = useMemo(() => ({ userFilter, companyFilter }),[userFilter, companyFilter];
+const apiFilters = useMemo(
+  () => ({ userFilter, companyFilter }),
+  [userFilter, companyFilter],
+);
 
 useEffect(() => {
   fetchApiData(apiFilters).then(setApiDataInState);
 }, [apiFilters]);
 ```
 
-There are probably many fancy ways to solve this problem, but they tend to all become annoying, as the number of filters increase, and they are much less idiomatic to their Records & Tuples counterpart:
+There are many fancy ways to solve this problem, but they all tend to **become annoying**, as the number of filters increase.
+
+They are much **more verbose and less idiomatic** than their Records & Tuples counterpart:
 
 ```jsx
 const apiFilters = #{ userFilter, companyFilter };
@@ -245,11 +270,11 @@ useEffect(() => {
 
 Preserving object identities in props is also very useful for React performances.
 
+Another very common performance mistake: create new objects identities in render.
+
 ```jsx
 const Parent = () => {
-  // will trigger re-renders
-  useRenderEverySeconds();
-
+  useRerenderEverySeconds();
   return (
     <ExpensiveChild
       // someData props object is created "on the fly"
@@ -263,35 +288,38 @@ const ExpensiveChild = React.memo(({ someData }) => {
 });
 ```
 
-Another very common mistake is to create new objects in the render method.
 Most of the time, this is not a problem, and React is fast enough.
 
-But sometimes you are looking to optimize your app, and this new object creating makes the `React.memo()` useless. Worst, it actually makes your application a little bit slower (as it now have to run a shallow equality check).
+But sometimes you are looking to optimize your app, and this new object creation makes the `React.memo()` useless. Worst, it actually **makes your application a little bit slower** (as it now has to run an additional shallow equality check, always returning false).
 
-One pattern I see very often in client code-bases, is to do so on context providers:
+Another pattern I often see in client code-bases:
 
 ```jsx
-<MyAppContext.Provider
-  value={{ currentUser, currentCompany }}
-/>
+const currentUser = { name: 'Sebastien' };
+const currentCompany = { name: 'Lambda Scale' };
+
+const AppProvider = () => {
+  useRerenderEverySeconds();
+
+  return (
+    <MyAppContext.Provider
+      value={{ currentUser, currentCompany }}
+    />
+  );
+};
 ```
 
-Despite the fact that `currentUser` or `currentCompany` never gets updated, your context value changes every time this provider re-renders, which trigger re-renders of all subscribers.
+Despite the fact that `currentUser` or `currentCompany` **never gets updated**, your context value changes every time this provider re-renders, which trigger re-renders of all context subscribers.
 
 All these issues can be solved with memoization:
 
 ```jsx
-const Parent = () => {
-  // will trigger re-renders
-  useRenderEverySeconds();
+const someData = useMemo(
+  () => ({ attribute1: 'abc', attr2: 'def' }),
+  [],
+);
 
-  const someData = useMemo(
-    () => ({ attribute1: 'abc', attr2: 'def' }),
-    [],
-  );
-
-  return <ExpensiveChild someData={someData} />;
-};
+<ExpensiveChild someData={someData} />;
 ```
 
 ```jsx
@@ -303,33 +331,23 @@ const contextValue = useMemo(
 <MyAppContext.Provider value={contextValue} />;
 ```
 
-The current state of React is that it is way too easy to opt-out of your own optimisations.
-
-With Records & Tuples, it becomes idiomatic to write performant code:
+With Records & Tuples, it is **idiomatic to write performant code**:
 
 ```jsx
-const Parent = () => {
-  // will trigger re-renders
-  useRenderEverySeconds();
-
-  return <ExpensiveChild someData={#{ attribute1: 'abc', attr2: 'def' }} />;
-};
+<ExpensiveChild someData={#{ attribute1: 'abc', attr2: 'def' }} />;
 ```
 
 ```jsx
-
 <MyAppContext.Provider value={#{ currentUser, currentCompany }} />;
 ```
 
 ### Fetching and re-fetching
 
-You can fetch data in many ways in React: `useEffect`, HOC, Render props, Redux, SWR, React-Query, Apollo, Relay, Urql, ...
+There are many ways to fetch data in React: `useEffect`, HOC, Render props, Redux, SWR, React-Query, Apollo, Relay, Urql, ...
 
-They all share something in common: at some point you hit your backend with a request, and generally get some JSON data as a result.
+Most often, we hit the backend with a request, and get some JSON data back.
 
-By chance, JSON is compatible with Records & Tuples. There's a [JSON.parseImmutable](https://github.com/tc39/proposal-record-tuple#jsonparseimmutable) function, and you can convert an object to a record with `Record(obj)`, so you should be able to convert any backend response to a Record.
-
-To illustrate this section, I will use [react-async-hook](https://github.com/slorber/react-async-hook), my own very simple fetching library, but all this applies to other libraries as well.
+To illustrate this section, I will use [react-async-hook](https://github.com/slorber/react-async-hook), my own very simple fetching library, but this applies to other libraries as well.
 
 Let's consider a classic async function to get some API data:
 
@@ -342,7 +360,7 @@ const fetchUserAndCompany = async () => {
 };
 ```
 
-Now let's consider an app that fetch the data, and tries to ensure this data is stays "fresh" over time:
+This app fetches the data, and ensure this data stays "fresh" (non-stale) over time:
 
 ```jsx
 const App = ({ id }) => {
@@ -377,32 +395,43 @@ const Company = React.memo(({ company }) => {
 });
 ```
 
-There is a problem: you have used `React.memo` for performance reasons, but every time the re-fetch happens, you end up with a new JS object, with a new identity, and everything re-renders.
+Problem: you have used `React.memo` for performance reasons, but every time the re-fetch happens, you end up with a new JS object, with a **new identity**, and **everything re-renders**, despite the fetched data being the **same as before** (deeply equal payloads).
 
-Let's convert the fetch function to return a Record instead:
+Let's imagine this scenario:
+
+- you use the "Stale-While-Revalidate" pattern (show cached/stale data first, then refresh data in the background)
+- your page is complex, render intensive, with lots of backend data being displayed
+
+You navigate to a page, that is already expensive to render the first time (with cached data). One second later, the refreshed data comes back. Despite being deeply equal to the cached data, everything re-renders again. Without [Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) and time slicing, some users may even notice **their UI freezing** for a few hundred milliseconds.
+
+Now, let's convert the fetch function to return a Record instead:
 
 ```jsx
 const fetchUserAndCompany = async () => {
   const response = await fetch(
     `https://myBackend.com/userAndCompany`,
   );
-  return Record(await response.json());
+  return JSON.parseImmutable(await response.text());
 };
 ```
 
-With Records & Tuples, if you re-fetch and the backend returns the exact same response, you don't re-render anything at all!
+By chance, JSON is compatible with Records & Tuples, and you should be able to convert any backend response to a Record, with [JSON.parseImmutable](https://github.com/tc39/proposal-record-tuple#jsonparseimmutable).
 
-Also, if only one part of the response has changed, the other nested objects of the response will still keep their identity. This means that if only `user.name` changed, the `User` component will re-render, but not the `Company` component!
+**Note**: it is likely that a new `response.immutableJson()` function will be added, according to [Robin Ricard](https://twitter.com/r_ricard).
 
-I let you imagine the performance impact of all this, considering re-fetching and patterns like "Stale-While-Revalidate" are becoming increasingly popular, and provided out of the box by libraries such as SWR, React-Query, Apollo, Relay...
+With Records & Tuples, if the backend returns the same data, you **don't re-render anything** at all!
+
+Also, if only one part of the response has changed, the other nested objects of the response will still **keep their identity**. This means that if only `user.name` changed, the `User` component will re-render, but not the `Company` component!
+
+I let you imagine the performance impact of all this, considering patterns like "Stale-While-Revalidate" are becoming increasingly popular, and provided out of the box by libraries such as SWR, React-Query, Apollo, Relay...
 
 ## Reading query strings
 
-If you create a search UI in React, you probably know it's a good practice to preserve the state of the filters in the querystring. This makes it possible for the user to can copy/paste the link to someone else, refresh the page, or bookmark it.
+In search UIs, it's a good practice to **preserve the state of filters in the querystring**. The user can then copy/paste the link to someone else, refresh the page, or bookmark it.
 
-If you have 1 or 2 filters, that's simple, but as soon as your search UI becomes complex (10+ filters, ability to compose queries with AND/OR logic...), you'd better use a library to parse/stringify your filters.
+If you have 1 or 2 filters, that's simple, but as soon as your search UI becomes complex (10+ filters, ability to compose queries with AND/OR logic...), you'd better use a good abstraction to manage your querystring.
 
-I personally like [qs](https://github.com/ljharb/qs), as it's one of the few libraries that is able to handle nested filter objects.
+I personally like [qs](https://github.com/ljharb/qs): it's one of the few libraries that handle nested objects.
 
 ```jsx
 const queryStringObject = {
@@ -423,7 +452,8 @@ You can integrate the querystring parsing in a hook.
 
 ```jsx
 const useQueryStringObject = () => {
-  const { search } = useLocation(); // Provided by your routing library
+  // Provided by your routing library, like React-Router
+  const { search } = useLocation();
   return useMemo(() => qs.parse(search), [search]);
 };
 ```
@@ -434,27 +464,36 @@ Now, imagine that deeper in the tree you have:
 const { filters } = useQueryStringObject();
 
 useEffect(() => {
-  fetchUsers(filters);
+  fetchUsers(filters).then(setUsers);
 }, [filters]);
 ```
 
 This is a bit nasty here, but the same problem happens again and again.
 
-Despite the usage of `useMemo()` to try to preserve `queryStringObject`, you will end up again with unwanted fetches.
+Despite the usage of `useMemo()` to try to preserve `queryStringObject` identity, you will end up with unwanted `fetchUsers` calls.
 
-When the user will update the `displayMode` (that should change the rendering logic, not trigger a refetch), the querystring will change, leading to the querystring being parsed again, leading to a new object identity for the `filter` attribute, leading to the unwanted `useEffect` execution.
+When the user will update the `displayMode` (that should only change the rendering logic, not trigger a re-fetch), the querystring will change, leading to the querystring being parsed again, leading to a new object identity for the `filter` attribute, leading to the unwanted `useEffect` execution.
 
 Again, Records & Tuples would prevent such things to happen.
 
-````
 ```jsx
+const parseQueryStringAsRecord = (search) => {
+  // Unfortunately, the Record(obj) conversion function is not recursive
+  // so here's a non-performant recursive solution:
+  return JSON.parseImmutable(
+    JSON.stringify(qs.parse(search)),
+  );
+};
+
 const useQueryStringRecord = () => {
   const { search } = useLocation();
-  return useMemo(() => Record(qs.parse(search)), [search]);
+  return useMemo(() => parseQueryStringAsRecord(search), [
+    search,
+  ]);
 };
-````
+```
 
-Now, if the user updates the `displayMode`, the `filter` will still preserve its identity, and will not trigger an useless fetch.
+Now, if the user updates the `displayMode`, the `filter` will preserve its identity, and not trigger any useless re-fetch.
 
 ### Deeply equal JS transformations
 
@@ -483,13 +522,13 @@ const UserList = React.memo(({ users }) => (
 ));
 ```
 
-Every time the `Parent` component re-renders, the `UserList` component re-render as well, because `filter` will always return a new array instance.
+Every time the `Parent` component re-renders, the `UserList` component re-render as well, because `filter` will always return a **new array instance**.
 
-This is the case even if `userIdsToHide` is empty! In such case, filter operation does not actually filter anything, it just creates useless array instances, opting out of our `React.memo` optimisations.
+This is the case even if `userIdsToHide` is empty! In such case, the filter operation does not actually filter anything, it just **creates new useless array instances**, opting out of our `React.memo` optimisations.
 
-These kind of transformations are very common in React codebase, with operators sur as `map` or `filter`, in components, reducers, selectors, Redux...
+These kind of transformations are very common in React codebase, with operators such as `map` or `filter`, in components, reducers, selectors, Redux...
 
-Again, we can solve this by using memoization, but it's much more idiomatic to just use Records & Tuples:
+Memoization can solve this, but it's more idiomatic with Records & Tuples:
 
 ```jsx
 const AllUsers = #[
@@ -501,26 +540,6 @@ const filteredUsers = AllUsers.filter(() => true);
 
 AllUsers === filteredUsers;
 // true
-```
-
-### Serialization guarantee
-
-If you are an architect and use Redux, you might want to ensure that people don't put unserializable things in the global state. This is particularly important if you plan to send the state to the backend, or persist it locally in `localStorage` (or `AsyncStorage` for ReactNative users).
-
-To ensure that, you just need to ensure that the root objects are records. This will guarantee that all the nested attributes are also records, and thus always serializable.
-
-Here's an example integration with Redux. This ensure your whole Redux store keeps being serializable over time:
-
-```jsx
-if (process.env.NODE_ENV === 'development') {
-  ReduxStore.subscribe(() => {
-    if (typeof ReduxStore.getState() !== 'record') {
-      throw new Error(
-        "Don't put non-serializable things in the Redux store!!!",
-      );
-    }
-  });
-}
 ```
 
 ### Explicit API surface for object identities
@@ -564,7 +583,9 @@ const UsersPageContent = ({
 }) => {};
 ```
 
-And TypeScript will be able to show an error for:
+**Note**: the `#UsersFilters` is invented: we don't know yet what will be the TypeScript syntax.
+
+And TypeScript compilation will fail for:
 
 ```tsx
 <UsersPageContent
@@ -583,6 +604,26 @@ While TypeScript would accept:
 With Records & Tuples, we have been able to prevent an infinite loop at compile time. Want
 
 We have an explicit way to tell the compiler that our implementation is object-identity sensitive.
+
+### Serialization guarantee
+
+If you are an architect, you may want to ensure that people don't put unserializable things in global app state. This is important if you plan to send the state to the backend, or persist it locally in `localStorage` (or `AsyncStorage` for React-Native users).
+
+To ensure that, you just need to ensure that the root object is record. This will guarantee that all the nested attributes are also records, tuples, or primitives, and thus always serializable.
+
+Here's an example integration with Redux, to ensure the Redux store keeps being serializable over time:
+
+```jsx
+if (process.env.NODE_ENV === 'development') {
+  ReduxStore.subscribe(() => {
+    if (typeof ReduxStore.getState() !== 'record') {
+      throw new Error(
+        "Don't put non-serializable things in the Redux store!!!",
+      );
+    }
+  });
+}
+```
 
 ### CSS-in-JS performances
 
@@ -655,9 +696,9 @@ function handleStyleRecord(styleRecord) {
 }
 ```
 
-A record will likely be more expensive to create than the equivalent JS objects, but I think it's safe to say it will be faster than creating the equivalent object, and then hashing it to a className.
+We don't know yet about Records & Tuples [performances](https://github.com/tc39/proposal-record-tuple#what-are-the-performance-expectations-of-these-data-structures) (this will depend on browser vendor implementations), but I think it's safe to say it will be faster than creating the equivalent object, and then hashing it to a className.
 
-Note: some CSS-in-JS library with a good babel plugin might be able to transform static style objects as constants at compilation time, but they will have a hard time doing so with dynamic styles.
+**Note**: some CSS-in-JS library with a good babel plugin might be able to transform static style objects as constants at compilation time, but they will have a hard time doing so with dynamic styles.
 
 ```jsx
 const staticStyleObject = { backgroundColor: 'hotpink' };
@@ -673,13 +714,13 @@ const Component = () => (
 
 # Conclusion
 
-Many React performance and behavior issues are currently related to object identities
+Many React issues are related to object identities.
 
-**Records & Tuples** will ensure that identities are "more stable" out of the box, by providing some kind of **"automatic memoization"**.
+**Records & Tuples** will ensure that identities are **"more stable"** out of the box, by providing some kind of **"automatic memoization"**.
 
 Also, TypeScript will permit to express better that your API / Component expect stable identities.
 
-I hope you are now as much excited by this proposal than I am.
+I hope you are now as much excited as I am by this proposal!
 
 Thank you for reading!
 
