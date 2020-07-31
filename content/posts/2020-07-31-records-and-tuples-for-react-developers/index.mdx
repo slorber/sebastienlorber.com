@@ -4,13 +4,12 @@ slug: records-and-tuples-for-react
 author: Sébastien Lorber
 hero: ./images/hero.png
 date: 2020-07-31
-excerpt: ...or how this JS proposal will impact your React codebase.
-secret: true
+excerpt: ...or how it will solve many React performance and behavior issues.
 ---
 
-Records & Tuples is a very interesting [proposal](https://github.com/tc39/proposal-record-tuple) for the JavaScript language, that just reached [stage 2](https://twitter.com/robpalmer2/status/1286040041089904640) at TC39.
+**Records & Tuples**, a very interesting [proposal](https://github.com/tc39/proposal-record-tuple) for the JavaScript language, has just reached **[stage 2](https://twitter.com/robpalmer2/status/1286040041089904640)** at **TC39**.
 
-A whole category of React bugs are related to **unstable object identities**:
+A whole category of **React bugs** are related to **unstable object identities**:
 
 - **Performance**: can trigger re-renders that could be avoided
 - **Behavior**: can trigger useless effect re-executions, and lead to infinite loops
@@ -49,7 +48,7 @@ record.b = 3;
 
 They can be seen as **"compound primitives"**, and can be compared by value.
 
-**VERY IMPORTANT**: two deeply equal records will **ALWAYS** have the same identity.
+**VERY IMPORTANT**: two deeply equal records will **ALWAYS** return `true` with `===`.
 
 ```jsx
 {a: 1, b: [3, 4]} === {a: 1, b: [3, 4]}
@@ -85,7 +84,7 @@ const record = #{
 // throws TypeError
 ```
 
-**Note**: you can add such values to a Record by using [references](https://github.com/tc39/proposal-record-tuple#could-i-box-a-pointer-to-an-object-and-put-that-in-a-record-or-tuple).
+**Note**: you could somehow add such mutable values to a Record by using Symbols as WeakMap keys ([separate proposal](https://github.com/tc39/proposal-symbols-as-weakmap-keys)), and [reference](https://github.com/tc39/proposal-record-tuple#could-i-box-a-pointer-to-an-object-and-put-that-in-a-record-or-tuple) the symbols in records.
 
 Want more? Read the [proposal](https://github.com/tc39/proposal-record-tuple) directly, or this [article](https://2ality.com/2020/05/records-tuples-first-look.html) from Axel Rauschmayer.
 
@@ -102,7 +101,9 @@ Sometimes, a component works correctly and in a performant way, **only under the
 
 I like to think about Records & Tuples as a convenient way to **make object identities more "stable"**.
 
-Let's see how this proposal will impact your React code with practical use cases.
+Let's see how this proposal will **impact your React code** with practical use cases.
+
+**Note**: there is a [Records & Tuples playground](https://rickbutton.github.io/record-tuple-playground/#eyJjb250ZW50IjoiaW1wb3J0IFJlYWN0IGZyb20gXCJodHRwczovL2Nkbi5za3lwYWNrLmRldi9yZWFjdFwiO1xuaW1wb3J0IFJlYWN0RE9NIGZyb20gXCJodHRwczovL2Nkbi5za3lwYWNrLmRldi9yZWFjdC1kb21cIjtcblxuXG5jb25zdCBIZWxsbyA9ICh7dXNlcn0pID0+IHtcbiAgcmV0dXJuIDxwPkhlbGxvIHt1c2VyLm5hbWV9PC9wPlxufTtcblxuY29uc3QgdXNlciA9ICN7bmFtZTogXCJTZWJhc3RpZW5cIn1cblxuUmVhY3RET00ucmVuZGVyKFxuICAgIDxIZWxsbyB1c2VyPXt1c2VyfS8+LFxuICAgIGRvY3VtZW50LmJvZHksXG4pO1xuXG4iLCJzeW50YXgiOiJoYXNoIiwiZG9tTW9kZSI6dHJ1ZX0=), that can run React.
 
 ### Immutability
 
@@ -138,9 +139,34 @@ function App() {
 
 There are [many ways](https://dev.to/sebastienlorber/insight-3-use-immerjs-over-lodash-set-immutablejs-or-plain-js-36bl) to perform immutable state updates in React: vanilla JS, Lodash set, ImmerJS, ImmutableJS...
 
-So far, [ImmerJS](https://github.com/immerjs/immer) has won this battle, due to its simplicity, and interoperability with regular JS code.
+Records & Tuples support the same immutable update patterns that you use with Objects and Arrays:
 
-Michael Weststrate himself has [highlighted](https://twitter.com/mweststrate/status/1263482177934819329) that Records & Tuples can be updated deeply natively, and ImmerJS may become unneeded:
+```jsx
+const initialState = #{
+  user: #{
+    firstName: "Sebastien",
+    lastName: "Lorber"
+  }
+  company: #{
+    name: "Lambda Scale",
+  }
+};
+
+
+const updatedState = {
+  ...initialState,
+  company: {
+    ...initialState.company,
+    name: 'Freelance',
+  },
+};
+```
+
+So far, [ImmerJS](https://github.com/immerjs/immer) has won this battle, due to its simplicity to handle nested attributes, and interoperability with regular JS code.
+
+It is not clear how Immer could work with Records & Tuples yet, but it's something the proposal authors are exploring.
+
+Michael Weststrate himself has [highlighted](https://twitter.com/mweststrate/status/1263482177934819329) that a [separate but related proposal](https://github.com/tc39/proposal-deep-path-properties-for-record) could **make ImmerJS unnecessary for Records & Tuples**:
 
 ```jsx
 const initialState = #{
@@ -154,14 +180,9 @@ const initialState = #{
   },
 };
 
-// Update with ImmerJS:
-const updatedStateImmer = Immer.produce(initialState,draft => {
-  draft.counters[0].value: 2,
-  draft.counters[1].value: 1,
-  draft.metadata.lastUpdate: 1584383011300,
-})
 
-// Update with vanilla JS:
+// Vanilla JS updates
+// if deep-path-properties-for-record proposal land
 const updatedStateNative = #{
   ...initialState,
   counters[0].value: 2,
@@ -169,8 +190,6 @@ const updatedStateNative = #{
   metadata.lastUpdate: 1584383011300,
 };
 ```
-
-This is part of a [separate proposal](https://github.com/tc39/proposal-deep-path-properties-for-record).
 
 ### useMemo
 
@@ -214,7 +233,7 @@ useEffect(() => {
 Unfortunately, the fetch effect gets **re-executed**, because the identity of the `apiFilters` object changes every time this component re-renders. `setApiDataInState` will trigger a re-render, and you will end up with an infinite fetch/render loop.
 
 This mistake is so common across React developers that there are thousand of Google search results for **[useEffect + "infinite loop"](https://www.google.com/search?q=useEffect+%2B+%22infinite+loop%22)**.
-Kent C Dodds even created [a tool](https://github.com/kentcdodds/stop-runaway-react-effects) such infinite loops in development.
+Kent C Dodds even created [a tool](https://github.com/kentcdodds/stop-runaway-react-effects) to break such infinite loops in development.
 
 Very common solution: create `apiFilters` directly in the effect's callback:
 
@@ -417,7 +436,7 @@ const fetchUserAndCompany = async () => {
 
 By chance, JSON is compatible with Records & Tuples, and you should be able to convert any backend response to a Record, with [JSON.parseImmutable](https://github.com/tc39/proposal-record-tuple#jsonparseimmutable).
 
-**Note**: it is likely that a new `response.immutableJson()` function will be added, according to [Robin Ricard](https://twitter.com/r_ricard).
+**Note**: [Robin Ricard](https://twitter.com/r_ricard), one of the proposal authors, is pushing for a new **`response.immutableJson()`** function.
 
 With Records & Tuples, if the backend returns the same data, you **don't re-render anything** at all!
 
@@ -569,11 +588,11 @@ const UsersPageContent = ({
 
 This code may or may not create an infinite loop, as we have seen already, depending on how stable the usersFilters prop is. This creates an implicit API contract that should be documented and clearly understood by the implementor of the parent component, and despite using TypeScript, this is not reflected in the type-system.
 
-The following will lead to an infinite loop, but TypeScript has no way to prevent this:
+The following will lead to an infinite loop, but TypeScript has no way to prevent it:
 
 ```jsx
 <UsersPageContent
-  usersFilters={{ nameFilter, ageFilter, companyFilter }}
+  usersFilters={{ nameFilter, ageFilter }}
 />
 ```
 
@@ -583,17 +602,26 @@ With Records & Tuples, we can tell TypeScript to expect a Record:
 const UsersPageContent = ({
   usersFilters,
 }: {
-  usersFilters: #UsersFilters;
-}) => {};
+  usersFilters: #{nameFilter: string, ageFilter: string}
+}) => {
+  const [users, setUsers] = useState([]);
+
+  // poor-man's fetch
+  useEffect(() => {
+    fetchUsers(usersFilters).then(setUsers);
+  }, [usersFilters]);
+
+  return <Users users={users} />;
+};
 ```
 
-**Note**: the `#UsersFilters` is invented: we don't know yet what will be the TypeScript syntax.
+**Note**: the `#{nameFilter: string, ageFilter: string}` is my own invention: we don't know yet what will be the TypeScript syntax.
 
-And TypeScript compilation will fail for:
+TypeScript compilation will fail for:
 
 ```jsx
 <UsersPageContent
-  usersFilters={{ nameFilter, ageFilter, companyFilter }}
+  usersFilters={{ nameFilter, ageFilter }}
 />
 ```
 
@@ -601,7 +629,7 @@ While TypeScript would accept:
 
 ```jsx
 <UsersPageContent
-  usersFilters={#{ nameFilter, ageFilter, companyFilter }}
+  usersFilters={#{ nameFilter, ageFilter }}
 />
 ```
 
@@ -615,7 +643,7 @@ We have an **explicit** way to tell the compiler that our **implementation is ob
 
 You may want to ensure that developers on your team don't put unserializable things in global app state. This is important if you plan to send the state to the backend, or persist it locally in `localStorage` (or `AsyncStorage` for React-Native users).
 
-To ensure that, you just need to ensure that the root object is a record. This will guarantee that all the nested attributes are also records, tuples, or primitives.
+To ensure that, you just need to ensure that the root object is a record. This will guarantee that all the nested attributes are also primitives, including nested records and tuples.
 
 Here's an example integration with Redux, to ensure the Redux store keeps being serializable over time:
 
@@ -631,6 +659,8 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 ```
+
+**Note**: this is not a perfect guarantee, because `Symbol` can be put in a Record, and is not serializable.
 
 ### CSS-in-JS performances
 
@@ -705,7 +735,7 @@ function handleStyleRecord(styleRecord) {
 
 We don't know yet about Records & Tuples [performances](https://github.com/tc39/proposal-record-tuple#what-are-the-performance-expectations-of-these-data-structures) (this will depend on browser vendor implementations), but I think it's safe to say it will be faster than creating the equivalent object, and then hashing it to a className.
 
-**Note**: some CSS-in-JS library with a good babel plugin might be able to transform static style objects as constants at compilation time, but they will have a hard time doing so with dynamic styles.
+**Note**: some CSS-in-JS library with a good Babel plugin might be able to transform static style objects as constants at compilation time, but they will have a hard time doing so with dynamic styles.
 
 ```jsx
 const staticStyleObject = { backgroundColor: 'hotpink' };
@@ -727,11 +757,11 @@ Many React performance and behavior issues are related to object identities.
 
 TypeScript will permit to express better that your API surface is **object-identity sensitive**.
 
-I hope you are now as much excited as I am by this proposal!
+I hope you are now as excited as I am by this proposal!
 
 Thank you for reading!
 
-Thanks [Robin Ricard](https://twitter.com/r_ricard), [https://twitter.com/rickbutton](Rick Button), [Daniel Ehrenberg](https://twitter.com/littledan) for this great proposal, and reviewing my article.
+Thanks [Robin Ricard](https://twitter.com/r_ricard), [https://twitter.com/rickbutton](Rick Button), [Daniel Ehrenberg](https://twitter.com/littledan), [Nicolò Ribaudo](https://twitter.com/NicoloRibaudo), [Rob Palmer](https://twitter.com/robpalmer2) for their work on this awesome proposal, and for reviewing my article.
 
 ---
 
