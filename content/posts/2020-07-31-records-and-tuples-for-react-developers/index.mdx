@@ -602,6 +602,67 @@ AllUsers === filteredUsers;
 // true
 ```
 
+### Records as React key
+
+Let's imagine you have a list of items to render:
+
+```jsx
+const list = [
+  { country: 'FR', localPhoneNumber: '111111' },
+  { country: 'FR', localPhoneNumber: '222222' },
+  { country: 'US', localPhoneNumber: '111111' },
+];
+```
+
+What key would you use?
+
+Considering both the `country` and `localPhoneNumber` are not **independently unique** in the list, you have 2 possible choices.
+
+**Array index key**:
+
+```jsx
+<>
+  {list.map((item, index) => (
+    <Item key={`poormans_key_${index}`} item={item} />
+  ))}
+</>
+```
+
+This always works, but is far from ideal, particularly if the objects in the list are reordered.
+
+**Composite key**:
+
+```jsx
+<>
+  {list.map((item) => (
+    <Item
+      key={`${item.country}_${item.localPhoneNumber}`}
+      item={item}
+    />
+  ))}
+</>
+```
+
+This solution handle better the list re-orderings, but is only possible if we know for sure that the couple / tuple is unique.
+
+In such case, wouldn't it be **more convenient** to use **Records as the key** directly?
+
+```jsx
+const list = #[
+  #{ country: 'FR', localPhoneNumber: '111111' },
+  #{ country: 'FR', localPhoneNumber: '222222' },
+  #{ country: 'US', localPhoneNumber: '111111' },
+];
+
+<>
+  {list.map((item) => (
+    <Item key={item} item={item} />
+  ))}
+</>
+```
+
+This was [suggested](https://twitter.com/barklund/status/1289273309889064960) by [Morten Barklund](https://twitter.com/barklund).
+
 ### Explicit API surface
 
 Let's consider this TypeScript component:
