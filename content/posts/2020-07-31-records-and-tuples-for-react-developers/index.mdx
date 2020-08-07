@@ -4,16 +4,20 @@ slug: records-and-tuples-for-react
 author: Sébastien Lorber
 hero: ./images/hero.png
 date: 2020-07-31
-excerpt: ...or how it will solve many React performance and behavior issues.
+excerpt: ...and how they are much more than immutable data structures
 ---
 
-**Records & Tuples**, a very interesting [proposal](https://github.com/tc39/proposal-record-tuple) for the JavaScript language, has just reached **[stage 2](https://twitter.com/robpalmer2/status/1286040041089904640)** at **TC39**.
+**Records & Tuples**, a very interesting **[proposal](https://github.com/tc39/proposal-record-tuple)**, has just reached **[stage 2](https://twitter.com/robpalmer2/status/1286040041089904640)** at **TC39**.
+
+They bring **deeply immutable data structures** to JavaScript.
+
+But don't overlook their **equality properties**, that are <u>**VERY**</u> interesting for **React**.
 
 A whole category of **React bugs** are related to **unstable object identities**:
 
-- **Performance**: can trigger re-renders that could be avoided
-- **Behavior**: can trigger useless effect re-executions, and lead to infinite loops
-- **API surface**: we don't have a way to express when a stable object identity matters
+- **Performance**: re-renders that could be avoided
+- **Behavior**: useless effect re-executions, infinite loops
+- **API surface**: unability to express when a stable object identity matters
 
 I will explain the basics of **Records & Tuples**, and how they can solve **real world React issues**.
 
@@ -28,13 +32,20 @@ They look like regular **Objects and Arrays**, with a **#** prefix.
 ```jsx
 const record = #{a: 1, b: 2};
 
+record.a;
+// 1
+
 const updatedRecord = #{...record, b: 3};
 // #{a: 1, b: 3};
 
-const tuple = #[1, 2, 3, 4];
+
+const tuple = #[1, 5, 2, 3, 4];
+
+tuple[1];
+// 5
 
 const filteredTuple = tuple.filter(num => num > 2)
-// #[3, 4];
+// #[5, 3, 4];
 ```
 
 They are **deeply immutable** by default.
@@ -58,6 +69,10 @@ They can be seen as **"compound primitives"**, and can be compared by value.
 // with records => true
 ```
 
+We can somehow consider that the identity of a Record is its actual value, like any regular JS primitive.
+
+This property has **deep implications for React**, as we will see.
+
 They are interoperable with JSON:
 
 ```jsx
@@ -71,20 +86,32 @@ JSON.stringify(record);
 They can only contain other records and tuples, or primitive values.
 
 ```jsx
-const record = #{
+const record1 = #{
   a: {
-    regular: 'object',
+    regular: 'object'
   },
+};
+// throws TypeError, because a record can't contain an object
+
+const record2 = #{
   b: new Date(),
+};
+// throws TypeError, because a record can't contain a Date
+
+const record3 = #{
   c: new MyClass(),
+};
+// throws TypeError, because a record can't contain a class
+
+const record4 = #{
   d: function () {
     alert('forbidden');
   },
 };
-// throws TypeError
+// throws TypeError, because a record can't contain a function
 ```
 
-**Note**: you could somehow add such mutable values to a Record by using Symbols as WeakMap keys ([separate proposal](https://github.com/tc39/proposal-symbols-as-weakmap-keys)), and [reference](https://github.com/tc39/proposal-record-tuple#could-i-box-a-pointer-to-an-object-and-put-that-in-a-record-or-tuple) the symbols in records.
+**Note**: you may be able to add such mutable values to a Record, by using Symbols as WeakMap keys ([separate proposal](https://github.com/tc39/proposal-symbols-as-weakmap-keys)), and [reference](https://github.com/tc39/proposal-record-tuple#could-i-box-a-pointer-to-an-object-and-put-that-in-a-record-or-tuple) the symbols in records.
 
 Want more? Read the [proposal](https://github.com/tc39/proposal-record-tuple) directly, or this [article](https://2ality.com/2020/05/records-tuples-first-look.html) from Axel Rauschmayer.
 
@@ -126,10 +153,8 @@ function App() {
     name: 'Sebastien',
   });
 
-  useEffect(() => {
-    // state mutation: throws TypeError
-    profile.name = 'Sebastien updated';
-  }, []);
+  // state mutation: throws TypeError
+  profile.name = 'Sebastien updated';
 
   return <Hello profile={profile} />;
 }
@@ -139,7 +164,7 @@ function App() {
 
 There are [many ways](https://dev.to/sebastienlorber/insight-3-use-immerjs-over-lodash-set-immutablejs-or-plain-js-36bl) to perform immutable state updates in React: vanilla JS, Lodash set, ImmerJS, ImmutableJS...
 
-Records & Tuples support the same immutable update patterns that you use with Objects and Arrays:
+Records & Tuples support the same kind of immutable update patterns that you use with ES6 Objects and Arrays:
 
 ```jsx
 const initialState = #{
@@ -162,7 +187,7 @@ const updatedState = {
 };
 ```
 
-So far, [ImmerJS](https://github.com/immerjs/immer) has won this battle, due to its simplicity to handle nested attributes, and interoperability with regular JS code.
+So far, [ImmerJS](https://github.com/immerjs/immer) has won the immutable updates battle, due to its simplicity to handle nested attributes, and interoperability with regular JS code.
 
 It is not clear how Immer could work with Records & Tuples yet, but it's something the proposal authors are exploring.
 
@@ -180,10 +205,9 @@ const initialState = #{
   },
 };
 
-
 // Vanilla JS updates
-// if deep-path-properties-for-record proposal land
-const updatedStateNative = #{
+// using deep-path-properties-for-record proposal
+const updatedState = #{
   ...initialState,
   counters[0].value: 2,
   counters[1].value: 1,
@@ -233,7 +257,8 @@ useEffect(() => {
 Unfortunately, the fetch effect gets **re-executed**, because the identity of the `apiFilters` object changes every time this component re-renders. `setApiDataInState` will trigger a re-render, and you will end up with an infinite fetch/render loop.
 
 This mistake is so common across React developers that there are thousand of Google search results for **[useEffect + "infinite loop"](https://www.google.com/search?q=useEffect+%2B+%22infinite+loop%22)**.
-Kent C Dodds even created [a tool](https://github.com/kentcdodds/stop-runaway-react-effects) to break such infinite loops in development.
+
+[Kent C Dodds](https://twitter.com/kentcdodds) even created a [tool](https://github.com/kentcdodds/stop-runaway-react-effects) to break infinite loops in development.
 
 Very common solution: create `apiFilters` directly in the effect's callback:
 
@@ -274,6 +299,8 @@ useEffect(() => {
 ```
 
 There are many fancy ways to solve this problem, but they all tend to **become annoying**, as the number of filters increase.
+
+[use-deep-compare-effect](https://github.com/kentcdodds/use-deep-compare-effect) (from [Kent C Dodds](https://twitter.com/kentcdodds)) is likely the less annoying, but running deep equality on every re-render has a cost I'd prefer not pay.
 
 They are much **more verbose and less idiomatic** than their Records & Tuples counterpart:
 
@@ -322,6 +349,7 @@ const AppProvider = () => {
 
   return (
     <MyAppContext.Provider
+      // the value prop object is created "on the fly"
       value={{ currentUser, currentCompany }}
     />
   );
@@ -465,9 +493,13 @@ const queryString = qs.stringify(queryStringObject);
 const queryStringObject2 = qs.parse(queryString);
 
 assert.deepEqual(queryStringObject, queryStringObject2);
+
+assert(queryStringObject !== queryStringObject2);
 ```
 
-You can integrate the querystring parsing in a hook.
+`queryStringObject` and `queryStringObject2` are deeply equal, but they have not the same identity anymore, because `qs.parse` creates new objects.
+
+You can integrate the querystring parsing in a hook, and "stabilize" the querystring object with `useMemo()`, or a lib such as [`use-memo-value`](https://github.com/discord/use-memo-value).
 
 ```jsx
 const useQueryStringObject = () => {
@@ -489,20 +521,23 @@ useEffect(() => {
 
 This is a bit nasty here, but the same problem happens again and again.
 
-Despite the usage of `useMemo()` to try to preserve `queryStringObject` identity, you will end up with unwanted `fetchUsers` calls.
+Despite the usage of `useMemo()`, as an attempt to preserve `queryStringObject` identity, you will end up with unwanted `fetchUsers` calls.
 
 When the user will update the `displayMode` (that should only change the rendering logic, not trigger a re-fetch), the querystring will change, leading to the querystring being parsed again, leading to a new object identity for the `filter` attribute, leading to the unwanted `useEffect` execution.
 
 Again, Records & Tuples would prevent such things to happen.
 
 ```jsx
-// Unfortunately, the Record(obj) conversion function is not recursive
-// there's a recursive conversion method here:
-// https://tc39.es/proposal-record-tuple/cookbook/index.html
-// Here's a non-performant, but working solution:
+// This is a non-performant, but working solution.
+// Lib authors should provide a method such as qs.parseRecord(search)
 const parseQueryStringAsRecord = (search) => {
+  const queryStringObject = qs.parse(search);
+
+  // Note: the Record(obj) conversion function is not recursive
+  // There's a recursive conversion method here:
+  // https://tc39.es/proposal-record-tuple/cookbook/index.html
   return JSON.parseImmutable(
-    JSON.stringify(qs.parse(search)),
+    JSON.stringify(queryStringObject),
   );
 };
 
@@ -514,7 +549,9 @@ const useQueryStringRecord = () => {
 };
 ```
 
-Now, if the user updates the `displayMode`, the `filters` object will preserve its identity, and not trigger any useless re-fetch.
+Now, even if the user updates the `displayMode`, the `filters` object will preserve its identity, and not trigger any useless re-fetch.
+
+**Note**: if the Records & Tuples proposal is accepted, libraries such as `qs` will likely provide a `qs.parseRecord(search)` method.
 
 ### Deeply equal JS transformations
 
@@ -635,7 +672,7 @@ While TypeScript would accept:
 
 With Records & Tuples, we can prevent this infinite loop at **compile time**.
 
-We have an **explicit** way to tell the compiler that our **implementation is object-identity sensitive**.
+We have an **explicit** way to tell the compiler that our **implementation is object-identity sensitive** (or relies on by-value comparisons).
 
 **Note**: `readonly` would not solve this: it only prevents mutation, but does not guarantee a stable identity.
 
@@ -755,7 +792,7 @@ Many React performance and behavior issues are related to object identities.
 
 **Records & Tuples** will ensure that object identities are **"more stable"** out of the box, by providing some kind of **"automatic memoization"**, and help us solve these React problems more easily.
 
-TypeScript will permit to express better that your API surface is **object-identity sensitive**.
+Using TypeScript, we may be able to express better that your API surface is **object-identity sensitive**.
 
 I hope you are now as excited as I am by this proposal!
 
