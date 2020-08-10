@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@emotion/styled": "^10.0.27",
+    "@expo/metro-config": "^0.1.19",
     "@mdx-js/mdx": "^1.6.5",
     "@mdx-js/react": "^1.6.5",
     "@mdx-js/tag": "^0.20.3",
