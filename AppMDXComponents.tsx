@@ -234,7 +234,7 @@ const AppMDXComponents = {
     return <MDXText style={styles.strong}>{children}</MDXText>;
   },
   u: ({ children }) => {
-    return <MDXText textDecorationLine={'underline'}>{children}</MDXText>;
+    return <MDXText textDecorationLine="underline">{children}</MDXText>;
   },
   a: ({ href, children }) => {
     const webProps = { href, target: '_blank', rel: 'noopener' };
