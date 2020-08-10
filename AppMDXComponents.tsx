@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   pre: {},
   link: {
     textDecorationLine: 'underline',
-    fontWeight: "bold"
+    fontWeight: 'bold',
   },
   image: {
     width: 200,
@@ -233,15 +233,18 @@ const AppMDXComponents = {
   strong: ({ children }) => {
     return <MDXText style={styles.strong}>{children}</MDXText>;
   },
+  u: ({ children }) => {
+    return <MDXText textDecorationLine={'underline'}>{children}</MDXText>;
+  },
   a: ({ href, children }) => {
-    const webProps = {href, target: "_blank", rel: "noopener"};
+    const webProps = { href, target: '_blank', rel: 'noopener' };
     return (
       <MDXText
         {...webProps}
         accessibilityRole="link"
         onPress={() => {
-          if ( Platform.OS !== "web" ) {
-            openUrl(href)
+          if (Platform.OS !== 'web') {
+            openUrl(href);
           }
         }}
         style={[
