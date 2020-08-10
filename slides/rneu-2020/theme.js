@@ -1,18 +1,19 @@
 const theme = {
+        backgroundColor: 'green',
         //space: [0, 16, 32, 64],
         colors: {
-                //primary: '#f00',
-                //secondary: '#00f',
+                primary: '#efefef',
+                secondary: '#ffaf8f',
                 //backgroundColor: 'green',
         },
         fontSizes: {
                 pre: '40px',
                 code: '40px',
-                h1: '64px',
-                h2: '54px',
-                h3: '44px',
-                h4: '32px',
-                text: '28px',
+                h1: '68px',
+                h2: '56px',
+                h3: '46px',
+                h4: '38px',
+                text: '34px',
                 paragraph: '24px',
         },
 };
