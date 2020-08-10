@@ -1,5 +1,4 @@
-
-# Cross-platform: ReactNative, Jamstack, and beyond
+# Cross-platform: ReactNative, Jamstack, and beyond...
 
 <img
         src="./seb.jpeg"
@@ -19,7 +18,7 @@
 
 ---
 
-# Projet de blog
+# Blog project
 
 <img src="./logos/gatsby.png" style={{ position: 'absolute', top: 350, left: 500, width: 300 }} />
 
@@ -40,12 +39,21 @@
 
 ---
 
-# 2 ans plus tard...
+# 2 years later...
 
-<div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "space-around"}}>
-<img src="./novela.jpg" style={{ width: 500, alignSelf: 'center' }} />
-
-<img src="./first-blog.png" style={{ width: 500, alignSelf: 'center' }} />
+<div
+        style={{
+                display: 'flex',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+        }}
+>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <img src="./logos/gatsby.png" style={{ width: 500, marginBottom: 30 }} />
+                <img src="./novela.jpg" style={{ width: 500, alignSelf: 'center' }} />
+        </div>
+        <img src="./first-blog.png" style={{ width: 500, alignSelf: 'center' }} />
 </div>
 
 ---
@@ -58,9 +66,9 @@
         }}
 />
 
-- React-Native et Expo dans un site statique?
-- Markdown et MDX dans une app React-Native?
-- Partage de code et contenu cross-platform possible?
+- React-Native / Expo on a static website?
+- Markdown / MDX in a app React-Native?
+- Cross-platform interactive content?
 
 ---
 
@@ -79,7 +87,7 @@
                         textAlign: 'center',
                 }}
         >
-                Partie 1
+                Part 1
         </h1>
         <div
                 style={{
@@ -87,7 +95,7 @@
                         textAlign: 'center',
                 }}
         >
-                Gatsby + React-Native-Web
+                Gatsby
         </div>
 </div>
 
@@ -95,24 +103,24 @@
 
 ### Gatsby
 
-- générateur de site statique
+- Static site generator
 - React
 - SPA
-- couche data GraphQL
-- build incrémental
-- intégrations variées (dont MDX)
+- GraphQL data layer
+- incremetal build
+- MDX
 
 ---
 
 ### MDX
 
-- composants React dans Markdown
-- VueJS (beta)
+- React in Markdown
+- WIP: Vue, Svelte
 
 ```mdx
-# Hello, _world_!
+# Hello world!
 
-Je peux ajouter des composants React dans mon contenu Markdown:
+I can import and use React components:
 
 import MyComponent from './myComponent';
 
@@ -121,48 +129,16 @@ import MyComponent from './myComponent';
 
 ---
 
-### React-Native
-
-- vues natives pilotées par du JS
-- iOS, Android
-- Web: plusieurs solutions...
-- bientôt Windows et MacOS
-
----
-
-### React-Native
-
-- CSS-in-JS (inline ou api StyleSheet)
-- pas de cascade, pas de selecteurs
-- flexbox (direction column)
-
-```jsx
-import { View, Text } from 'react-native';
-
-const MyComponent = () => (
-        <View style={{ flexDirection: 'row', backgroundColor: '#FFFFFF' }}>
-                <View style={{ flex: 0, width: 100 }}>
-                        <MyIcon />
-                </View>
-                <View style={{ flex: 1 }}>
-                        <Text>Hello!</Text>
-                </View>
-        </View>
-);
-```
-
----
-
 ### React-Native-Web
 
-- CSS-in-JS pour le web, utilisant les APIs React-Native
+- ReactNative -> ReactDOM
 - babel-plugin-react-native-web
 
 ```jsx
 import { View, Text } from 'react-native';
 ```
 
-devient
+becomes
 
 ```jsx
 import { View, Text } from 'react-native-web';
@@ -172,16 +148,18 @@ import { View, Text } from 'react-native-web';
 
 ### React-Native-Web
 
-Implémentation simpliste:
-
 ```jsx
 export const View = (props) => (
         <div
                 {...props}
                 style={{
-                        flexDirection: 'column', // Override possible
+                        // override possible
+                        flexDirection: 'column',
+
                         ...props.style,
-                        display: 'flex', // Override impossible, RN est toujours display flex!
+
+                        // override not possible
+                        display: 'flex',
                 }}
         />
 );
@@ -193,16 +171,16 @@ export const Text = (props) => <span {...props} />;
 
 ### Gatsby + React-Native-Web
 
-Intégration SSR / SSG nécessaire pour Gatsby
+Server-side rendering
 
 ```jsx
-// RNW part
 AppRegistry.registerComponent('App', () => App);
 const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps });
 
-// Render the React element
+// Render the app
 const html = ReactDOMServer.renderToString(element);
-// Extract the critical CSS that was used
+
+// Extract critical CSS
 const css = ReactDOMServer.renderToStaticMarkup(getStyleElement());
 
 const document = `<!DOCTYPE html>
@@ -218,10 +196,36 @@ const document = `<!DOCTYPE html>
 
 ### Gatsby + React-Native-Web
 
+```jsx
+import React from 'react';
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import Link from 'gatsby-link';
+
+const styles = StyleSheet.create({
+        // ...
+});
+
+const IndexPage = () => (
+        <View style={styles.box}>
+                <Text style={styles.text}>Hi this is React-Native-Web rendered by Gatsby</Text>
+
+                <TouchableOpacity style={styles.button} onPress={() => alert('it works')}>
+                        <Text style={styles.buttonText}>Button</Text>
+                </TouchableOpacity>
+
+                <Link to="/page-2/">Go to page 2</Link>
+        </View>
+);
+```
+
+---
+
+### Gatsby + React-Native-Web
+
 <img
-        src="./v1.jpeg"
+        src="./demos/v1.gif"
         style={{
-                width: 800,
+                width: 900,
                 alignSelf: 'center',
         }}
 />
@@ -233,7 +237,7 @@ const document = `<!DOCTYPE html>
 ```jsx
 import { TouchableOpacity, Text } from 'react-native';
 
-export const MyTestButton = () => (
+export const MyRNButton = () => (
         <TouchableOpacity
                 onPress={() => alert('onPress')}
                 style={{
@@ -247,8 +251,8 @@ export const MyTestButton = () => (
 );
 ```
 
-- APIs React-Native uniquement
-- Composant cross-platform (web + mobile)
+- ReactNative only
+- Cross-platform
 
 ---
 
@@ -258,141 +262,72 @@ export const MyTestButton = () => (
 import React from 'react';
 import { Link } from 'gatsby';
 import { View, Text } from 'react-native';
-import { MyTestButton } from 'MyTestButton';
+import { MyRNButton } from './components';
 
-export const MyGatsbyPage = () => (
+const MyGatsbyPage = () => (
         <div>
                 <h1>Gatsby page title</h1>
                 <View>
                         <Text>Some RN text</Text>
                 </View>
-                <MyTestButton />
+                <MyRNButton />
                 <Link to="/nextGatsbyPage">Next</Link>
         </div>
 );
 ```
 
-- React-Native: Text, View, MyTestButton
-- React-DOM: h1, div, Link
-- web uniquement
+- ReactNative + ReactDOM
+- Not cross-platform
 
 ---
 
 ### Gatsby + React-Native-Web + MDX
 
 ```mdx
-# Implementing a button in React-Native
+# Blog title
 
-Hey, this blog post will show you how you can implement **a button** in React-Native
+blabla this is a MDX blog post using an embedded RN button:
 
-We will build this button:
+import { MyRNButton } from './components';
 
-import { MyTestButton } from './MyTestButton';
-
-<MyTestButton />
+<MyRNButton onPress={() => alert("pressed")}>
+      Click me
+</MyRNButton/>
 ```
 
----
+```jsx
+import React from 'react';
+import MyMDXComponent from './myMDXFile.mdx';
 
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Demo
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                Gatsby + React-Native-Web + MDX
-        </div>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
-                        sebastienlorber.com/using-expo-in-gatsby
-                </a>
-        </div>
-</div>
+const MyGatsbyPage = () => <MyMDXComponent />;
+```
 
 ---
 
 ### Gatsby + React-Native-Web + MDX
 
-Limites:
+<img
+        src="./demos/mdx.gif"
+        style={{
+                width: 900,
+                alignSelf: 'center',
+        }}
+/>
 
-- Pas d'extension .web.js
-- Pas de TS
-- Pas de transpilation des libs react-native
-- Pas de DefinePlugin pour `__DEV__`
+---
+
+### Limits
+
+- No .web.js extension
+- No TypeScript
+- No RN lib transpilation
+- No `__DEV__`
+- No Expo
 - ...
 
 ---
 
-<div
-        style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-        }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Partie 2
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                Gatsby + Expo + MDX
-        </div>
-</div>
-
----
-
 ### Expo
-
-- React-Native: lean core
-
-* Expo: extension de React-Native
-
-- APIs supplémentaires (camera, battery, video, audio, file system...)
-
-* Support web (partiel)
-
----
-
-### Expo
-
-- DX React-Native optimale
-
-* Client Expo: React-Native sans XCode / Android studio
-
-- Client Expo: télécharchez le!
 
 <img
         src="./logos/expo.png"
@@ -402,11 +337,17 @@ Limites:
         }}
 />
 
+- Best React-Native DX
+- React-Native: lean core
+- Expo: "extend" React-Native core
+- More APIs: video, audio, file system...
+- Partial web support
+
 ---
 
 ### Gatsby + Expo
 
-Package [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config)
+- [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config)
 
 ```jsx
 import { withUnimodules } from '@expo/webpack-config/addons';
@@ -414,20 +355,23 @@ import { withUnimodules } from '@expo/webpack-config/addons';
 export const onCreateWebpackConfig = ({ actions, getConfig }) => {
         const gatsbyConfig = getConfig();
 
-        const gatsbyExpoConfig = withUnimodules(gatsbyConfig);
+        const gatsbyConfigWithExpo = withUnimodules(gatsbyConfig);
 
-        actions.replaceWebpackConfig(gatsbyExpoConfig);
+        actions.replaceWebpackConfig(gatsbyConfigWithExpo);
 };
 ```
+
+- Gatsby, NextJS, Create-React-App, Electron...
+- Thank you [Evan Bacon](https://twitter.com/Baconbrix)
 
 ---
 
 ### Gatsby + Expo + MDX
 
 ```mdx
-# A React-Native Camera in my blog post
+# A React-Native video in my blog post
 
-Hey, look at my Expo camera:
+Hey, look at my Expo video:
 
 import { Video } from 'expo-av';
 
@@ -438,48 +382,21 @@ import { Video } from 'expo-av';
         resizeMode="cover"
         shouldPlay={true}
         isLooping={true}
-        style={{ width: 360, height: 600 }}
+        style={{ width: 280 }}
 />
 ```
 
 ---
 
-<div
+### Gatsby + Expo + MDX
+
+<img
+        src="./demos/expo-av.gif"
         style={{
-                flex: 1,
-                flexDirection: 'column',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                width: 900,
+                alignSelf: 'center',
         }}
->
-        <h1
-                style={{
-                        fontSize: 150,
-                        textAlign: 'center',
-                }}
-        >
-                Demo
-        </h1>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                Gatsby + Expo + MDX
-        </div>
-        <div
-                style={{
-                        fontSize: 60,
-                        textAlign: 'center',
-                }}
-        >
-                <a href="https://sebastienlorber.com/using-expo-in-gatsby" target="_blank">
-                        sebastienlorber.com/using-expo-in-gatsby
-                </a>
-        </div>
-</div>
+/>
 
 ---
 
@@ -498,7 +415,7 @@ import { Video } from 'expo-av';
                         textAlign: 'center',
                 }}
         >
-                Partie 3
+                Part 2
         </h1>
         <div
                 style={{
@@ -506,7 +423,7 @@ import { Video } from 'expo-av';
                         textAlign: 'center',
                 }}
         >
-                React-Native + MDX
+                Back to mobile
         </div>
 </div>
 
@@ -514,7 +431,7 @@ import { Video } from 'expo-av';
 
 ### React-Native + MDX
 
-Step 1: fichier source:
+Step 1: source file:
 
 ```mdx
 # title
@@ -530,7 +447,7 @@ import { MyComponent } from './components';
 
 ### React-Native + MDX
 
-Step 2: MDX -> JSX (compilateur MDX)
+Step 2: MDX -> JSX (MDX compiler)
 
 ```jsx
 import { MyComponent } from './components';
@@ -567,15 +484,15 @@ export const MDXComponent = React.createElement('div', {
 
 ### React-Native + MDX
 
-Problème:
+Problems:
 
-- div, h1, p...
-- React-DOM: ne tourne pas sur React-Native
+- React-DOM: div, h1, p...
+- Can't run on React-Native
 
 Solution:
 
-- Pragma JSX de MDX
-- [MDXProvider](https://mdxjs.com/advanced/components#mdxprovider): overrider les composants React-DOM
+- JSX Pragma
+- [MDXProvider](https://mdxjs.com/advanced/components#mdxprovider): override React-DOM components
 
 ---
 
@@ -602,7 +519,7 @@ export const MDXComponent = () => (
 
 ### JSX Pragma
 
-Après transpilation babel
+After Babel
 
 ```jsx
 import { jsx } from '@mdx-js/react';
@@ -627,22 +544,22 @@ import React from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { View, Text, Linking } from 'react-native';
 
-const components = {
-        div: (props) => <View>{props.children}</View>,
-        p: (props) => <Text>{props.children}</Text>,
-        a: (props) => (
-                <Text accessibilityRole="link" onPress={() => Linking.openUrl(props.href)}>
-                        {props.children}
-                </View>
-        ),
-};
+const Div = (props) => <View>{props.children}</View>;
 
-export const MyReactNativeMDXProvider = ({ children }) => (
-        <MDXProvider components={components}>{children}</MDXProvider>
+const P = (props) => <Text>{props.children}</Text>;
+
+const A = (props) => (
+        <Text accessibilityRole="link" onPress={() => Linking.openUrl(props.href)}>
+                {props.children}
+        </View>
+);
+
+export const ReactNativeMDXProvider = ({ children }) => (
+        <MDXProvider components={{ div: Div, p: P, a: A }}>{children}</MDXProvider>
 );
 ```
 
-Override les composants DOM (a, div, p) par des implémentations React-Native
+Override DOM components by React-Native implementations
 
 ---
 
@@ -663,12 +580,12 @@ export const MDXComponent = jsx('div', {
 ```
 
 ```jsx
-import { MDXComponent as MyBlogPostMDX } from './my-super-mdx-blog-post-transpiled';
+import { MDXComponent as MyBlogPostMDX } from './my-blog-post';
 
-const MyBlogPost = () => (
-        <MyReactNativeMDXProvider>
+const App = () => (
+        <ReactNativeMDXProvider>
                 <MyBlogPostMDX />
-        </MyReactNativeMDXProvider>
+        </ReactNativeMDXProvider>
 );
 ```
 

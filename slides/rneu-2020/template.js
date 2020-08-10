@@ -16,9 +16,7 @@ const template = () => (
                 >
                         @sebastienlorber
                 </Box>
-                <Box>
-                        <Progress />
-                </Box>
+                <Box>{/*<Progress />*/}</Box>
                 <Box
                         style={{
                                 paddingRight: 10,
