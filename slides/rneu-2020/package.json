@@ -1,0 +1,10 @@
+{
+        "scripts": {
+                "start": "spectacle --src gatsby-expo.mdx --theme theme.js --template template.js",
+                "build": "rm -rf dist && spectacle --src gatsby-expo.mdx --theme theme.js --template template.js --action build && cp -R logos dist/logos && cp -R demos dist/demos && cp -R brains dist/brains && cp *.png *.jpg *.jpeg *.webp dist && serve dist"
+        },
+        "dependencies": {
+                "serve": "^11.3.2",
+                "spectacle-cli": "^0.6.2"
+        }
+}

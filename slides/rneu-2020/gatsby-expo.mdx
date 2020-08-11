@@ -139,13 +139,13 @@ Twitter, Uber, Flipkart, Expo, The Times, MLS, ReactNativeDirectory...
 - React-Native -> ReactDOM
 - babel-plugin-react-native-web
 
-```jsx
+```jsx language=jsx
 import { View, Text } from 'react-native';
 ```
 
 becomes
 
-```jsx
+```jsx language=jsx
 import { View, Text } from 'react-native-web';
 ```
 
@@ -153,7 +153,7 @@ import { View, Text } from 'react-native-web';
 
 ### React-Native-Web
 
-```jsx
+```jsx language=jsx
 export const View = (props) => (
         <div
                 {...props}
@@ -178,7 +178,7 @@ export const Text = (props) => <span {...props} />;
 
 Server-side rendering
 
-```jsx
+```jsx language=jsx
 AppRegistry.registerComponent('App', () => App);
 const { element, getStyleElement } = AppRegistry.getApplication('App', { initialProps });
 
@@ -201,7 +201,7 @@ const document = `<!DOCTYPE html>
 
 ### Gatsby + React-Native-Web
 
-```jsx
+```jsx language=jsx
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import Link from 'gatsby-link';
@@ -239,7 +239,7 @@ const IndexPage = () => (
 
 ### Gatsby + React-Native-Web
 
-```jsx
+```jsx language=jsx
 import { TouchableOpacity, Text } from 'react-native';
 
 export const MyRNButton = () => (
@@ -263,7 +263,7 @@ export const MyRNButton = () => (
 
 ### Gatsby + React-Native-Web
 
-```jsx
+```jsx language=jsx
 import React from 'react';
 import { Link } from 'gatsby';
 import { View, Text } from 'react-native';
@@ -291,7 +291,7 @@ const MyGatsbyPage = () => (
 - React in Markdown
 - WIP: Vue, Svelte...
 
-```mdx
+```mdx language=jsx
 # Hello world!
 
 I can import and use React components:
@@ -305,7 +305,7 @@ import MyComponent from './myComponent';
 
 ### Gatsby + React-Native-Web + MDX
 
-```mdx
+```mdx language=jsx
 # Blog title
 
 blabla this is a MDX blog post using an embedded RN button:
@@ -317,7 +317,7 @@ import { MyRNButton } from './components';
 </MyRNButton/>
 ```
 
-```jsx
+```jsx language=jsx
 import React from 'react';
 import MyMDXComponent from './myMDXFile.mdx';
 
@@ -378,7 +378,7 @@ Need more Webpack config!
 
 - [@expo/webpack-config](https://www.npmjs.com/package/@expo/webpack-config)
 
-```jsx
+```jsx language=jsx
 import { withUnimodules } from '@expo/webpack-config/addons';
 
 export const onCreateWebpackConfig = ({ actions, getConfig }) => {
@@ -397,7 +397,7 @@ export const onCreateWebpackConfig = ({ actions, getConfig }) => {
 
 ### Gatsby + Expo + MDX
 
-```mdx
+```mdx language=jsx
 # A React-Native video in my blog post
 
 Hey, look at my Expo video:
@@ -503,7 +503,7 @@ import { Video } from 'expo-av';
 
 Step 1: source file
 
-```mdx
+```mdx language=jsx
 # title
 
 some text
@@ -519,7 +519,7 @@ import { MyComponent } from './components';
 
 Step 2: MDX -> JSX (MDX compiler)
 
-```jsx
+```jsx language=jsx
 import { MyComponent } from './components';
 
 export const MDXComponent = () => (
@@ -537,7 +537,7 @@ export const MDXComponent = () => (
 
 Step 3: JSX -> JS ([babel-plugin-transform-react-jsx](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx))
 
-```jsx
+```jsx language=jsx
 import React from 'react';
 import { MyComponent } from './components';
 
@@ -570,7 +570,7 @@ Solution:
 
 Comment: replace `React.createElement()`
 
-```jsx
+```jsx language=jsx
 /** @jsx jsx */
 import { jsx } from '@mdx-js/react';
 
@@ -592,7 +592,7 @@ export const MDXComponent = () => (
 
 After Babel
 
-```jsx
+```jsx language=jsx
 import { jsx } from '@mdx-js/react';
 import React from 'react';
 import { MyComponent } from './components';
@@ -610,7 +610,7 @@ export const MDXComponent = jsx('div', {
 
 ### MDXProvider
 
-```jsx
+```jsx language=jsx
 import React from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { View, Text, Linking } from 'react-native';
@@ -636,7 +636,7 @@ Override DOM components by React-Native implementations
 
 ### MDXProvider + JSX Pragma
 
-```jsx
+```jsx language=jsx
 import { jsx } from '@mdx-js/react';
 import React from 'react';
 import { MyComponent } from './components';
@@ -650,7 +650,7 @@ export const MDXComponent = jsx('div', {
 });
 ```
 
-```jsx
+```jsx language=jsx
 import { MDXComponent } from './my-blog-post';
 
 const App = () => (
@@ -710,7 +710,7 @@ const App = () => (
         }}
 />
 
-```jsx
+```jsx language=jsx
 <img
         {...{
                 // BAD! we want => src: require('./myImage.png'),
@@ -720,7 +720,7 @@ const App = () => (
 />
 ```
 
-```jsx
+```jsx language=jsx
 // hacky solution, TODO use Remark
 const imageSrcToRequire = (jsx) => {
         const regexp = /"src": ?("(\\"|[^"])*\.(jpg|jpeg|png)")/g;
@@ -743,7 +743,7 @@ const imageSrcToRequire = (jsx) => {
 
 ---
 
-```jsx
+```jsx language=jsx
 import React from 'react';
 import { ScrollView, Image, Text } from 'react-native';
 import { MDXComponent, frontMatter } from './my-blog-post';
@@ -777,7 +777,7 @@ const App = () => (
 
 Step 1: compile MDX -> JSX
 
-```jsx
+```jsx language=jsx
 // in: ./content/posts/my-super-post.mdx
 // out: ./content/posts/my-super-post.mdx.jsx
 function toJSXFile(mdxFile) {
@@ -795,7 +795,7 @@ const jsxFiles = glob.sync('./content/**/*.mdx').map(toJSXFile);
 
 ---
 
-```jsx
+```jsx language=jsx
 const fs = require('fs');
 const mdx = require('@mdx-js/mdx');
 const glob = require('glob');
@@ -825,7 +825,7 @@ const toJSXString = (mdxString) => {
 
 Step 2: generate list of blog posts
 
-```jsx
+```jsx language=jsx
 // export default [
 //   require("./content/posts/my-super-post.mdx.jsx"),
 //   require("./content/posts/another-post.mdx.jsx")
@@ -841,25 +841,25 @@ fs.writeFileSync(
 
 Step 3: create mobile app entry
 
-```jsx
+```jsx language=jsx
 const AppNavigator = () => (
-        <Stack.Navigator>
-                <Stack.Screen name="BlogPostList" component={BlogPostListScreen} />
-                <Stack.Screen
-                        name="BlogPost"
-                        component={BlogPostScreen}
-                        options={({ route }) => ({
-                                title: route.params.blogPost.frontmatter.title,
-                        })}
-                />
-        </Stack.Navigator>
+        <NavigationContainer>
+                <Stack.Navigator>
+                        <Stack.Screen name="BlogPostList" component={BlogPostListScreen} />
+                        <Stack.Screen
+                                name="BlogPost"
+                                component={BlogPostScreen}
+                                options={({ route }) => ({
+                                        title: route.params.blogPost.frontmatter.title,
+                                })}
+                        />
+                </Stack.Navigator>
+        </NavigationContainer>
 );
 
 const App = () => (
         <ReactNativeMDXProvider>
-                <NavigationContainer>
-                        <AppNavigator />
-                </NavigationContainer>
+                <AppNavigator />
         </ReactNativeMDXProvider>
 );
 ```
@@ -868,7 +868,7 @@ const App = () => (
 
 Step 4: BlogPostList screen
 
-```jsx
+```jsx language=jsx
 // generated file
 import BlogPostList from './blogPostList';
 
@@ -894,7 +894,7 @@ const BlogPostListScreen = () => {
 
 Step 5: BlogPost screen
 
-```jsx
+```jsx language=jsx
 const BlogPostScreen = ({ blogPost }) => {
         const { MDXComponent, frontmatter } = blogPost;
         const navigation = useNavigation();
@@ -945,7 +945,7 @@ const BlogPostScreen = ({ blogPost }) => {
 
 # CI Automation
 
-```json
+```json language=json
 {
         "scripts": {
                 "expo:publish": "yarn compileMdx && expo publish",
@@ -969,13 +969,21 @@ const BlogPostScreen = ({ blogPost }) => {
 On commit:
 
 - Deploy Gatsby on Netlify
-- Publish Expo on branch release channel
 
-...quite nice, but...
+- Publish Expo
+
+2 platforms... nice, but...
+
+---
+
+# CI Automation
+
+- React-Navigation 5 web support?
 
 - `expo build:web` ?
-- React-Navigation web support?
+
 - 🧐 🤓 🤭
+
 
 ---
 
@@ -983,7 +991,7 @@ On commit:
 
 3 platforms: web, mobile, mobile web
 
-```json
+```json language=json
 {
         "scripts": {
                 "netlify:web": "gatsby build",
