@@ -16,7 +16,10 @@ rm -rf dist && spectacle --src gatsby-expo.mdx --theme theme.js --template templ
 # IMPORTANT
 
 - publish demo for iOS!
+- check app QRcode issue
 - /RNEU2020 page
+- slo.im redirection
+- check links
 
 
 # Org
@@ -39,8 +42,3 @@ rm -rf dist && spectacle --src gatsby-expo.mdx --theme theme.js --template templ
 
 - Twitter / RNW cases
 
-
-# challenges
-
-- require(image), metro/webpack etc
-- <p><span>X</span></p> vs <Text><View>X</View></Text> etc

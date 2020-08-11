@@ -1,0 +1,13 @@
+{
+  "name": "slo.im",
+  "version": "1.0.0",
+  "author": "slorber",
+  "license": "MIT",
+  "homepage": "https://sebastienlorber.com",
+  "scripts": {
+    "shorten": "netlify-shortener"
+  },
+  "dependencies": {
+    "netlify-shortener": "^2.3.0"
+  }
+}
