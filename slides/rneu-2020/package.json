@@ -1,7 +1,8 @@
 {
         "scripts": {
                 "start": "spectacle --src gatsby-expo.mdx --theme theme.js --template template.js",
-                "build": "rm -rf dist && spectacle --src gatsby-expo.mdx --theme theme.js --template template.js --action build && cp -R logos dist/logos && cp -R demos dist/demos && cp -R brains dist/brains && cp *.png *.jpg *.jpeg *.webp dist && serve dist"
+                "build": "rm -rf dist && spectacle --src gatsby-expo.mdx --theme theme.js --template template.js --action build && cp -R logos dist/logos && cp -R demos dist/demos && cp -R brain dist/brain && cp *.png *.jpg *.jpeg *.webp dist",
+                "serve": "serve dist"
         },
         "dependencies": {
                 "serve": "^11.3.2",
