@@ -18,6 +18,17 @@ exports.createPages = ({ graphql, actions }) => {
   });
 
   createRedirect({
+    fromPath: '/RNEU2020',
+    toPath: '/talk-reactnative-jamstack-and-beyond',
+    isPermanent: false,
+  });
+  createRedirect({
+    fromPath: '/rneu2020',
+    toPath: '/talk-reactnative-jamstack-and-beyond',
+    isPermanent: false,
+  });
+
+  createRedirect({
     fromPath: '/app',
     toPath: 'https://expo.io/@slorber/sebastien-lorber',
     isPermanent: false,

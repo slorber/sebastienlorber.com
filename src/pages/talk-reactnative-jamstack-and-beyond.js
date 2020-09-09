@@ -1,5 +1,5 @@
 import React from 'react';
-import MDXComp from './RNEU2020MDXComp.mdx';
+import MDXComp from './talk-reactnative-jamstack-and-beyond-comp.mdx';
 
 export default function Page() {
   return (
