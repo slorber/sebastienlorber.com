@@ -6,14 +6,41 @@ exports.createPages = ({ graphql, actions }) => {
     isPermanent: false,
   });
   createRedirect({
-    fromPath: '/sponsor',
-    toPath: 'https://gist.github.com/slorber/4015b388edbe9743048fe98d12604326',
+    fromPath: '/chat',
+    toPath: 'https://discord.gg/FC8zkr',
+    isPermanent: false,
+  });
+
+  createRedirect({
+    fromPath: '/twitter',
+    toPath: 'https://twitter.com/sebastienlorber',
+    isPermanent: false,
+  });
+  createRedirect({
+    fromPath: '/dev',
+    toPath: 'https://dev.to/sebastienlorber',
+    isPermanent: false,
+  });
+  createRedirect({
+    fromPath: '/hashnode',
+    toPath: 'https://sebastienlorber.hashnode.dev',
+    isPermanent: false,
+  });
+  createRedirect({
+    fromPath: '/github',
+    toPath: 'https://github.com/slorber',
     isPermanent: false,
   });
   createRedirect({
     fromPath: '/linkedin',
     toPath:
       'https://www.linkedin.com/in/sebastienlorber/detail/recent-activity/shares/',
+    isPermanent: false,
+  });
+
+  createRedirect({
+    fromPath: '/sponsor',
+    toPath: 'https://gist.github.com/slorber/4015b388edbe9743048fe98d12604326',
     isPermanent: false,
   });
 
