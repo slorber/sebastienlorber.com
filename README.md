@@ -7,13 +7,13 @@
 <img src="https://raw.githubusercontent.com/narative/gatsby-theme-novela-example/master/assets/gatsby-theme-novela-hero.jpg" alt="gatsby-novela-theme hero image" />
 </a>
 
-<br/>
+
 
 # Gatsby Starter Novela
 
 With minimal styling and maximum features — including multiple homepage layouts, built-in social sharing and dark mode — Novela makes it easy to start publishing beautiful articles and stories with Gatsby.
 
-Novela is built by the team at [Narative](https://www.narative.co), and built for everyone that loves the web.
+Novela is built by the team at [Narative](https://www.narative.co), and built for everyone that loves the web.This is an amazing website for everyone who loves code.
 
 <div>
 <a href="https://novela.narative.co" target="_blank">
@@ -27,7 +27,7 @@ Novela is built by the team at [Narative](https://www.narative.co), and built fo
 </a>
 </div>
 
-# Using Gatsby Starter Novela
+# Gatsby Starter Novela
 
 This guide will take you through setting up Novela with Gatsby Starter Novela.
 
@@ -49,7 +49,7 @@ cd novela-site
 yarn
 ```
 
-### Step 2: Develop & Build
+### Step 2: Develop & Build your Website
 
 Once installed or cloned locally and all packages are installed you can begin developing your site.
 
@@ -61,6 +61,6 @@ yarn dev
 yarn build
 ```
 
-### Help
-
+### Help & Queries
+Get in touch 
 For more information visit the [Theme repository](https://github.com/narative/gatsby-theme-novela)
