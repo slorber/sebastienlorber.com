@@ -7,7 +7,7 @@ exports.createPages = ({ graphql, actions }) => {
   });
   createRedirect({
     fromPath: '/chat',
-    toPath: 'https://discord.gg/FC8zkr',
+    toPath: 'https://discord.gg/7vwy5fa',
     isPermanent: false,
   });
 
