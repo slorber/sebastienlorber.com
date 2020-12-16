@@ -9,6 +9,10 @@ spectacle --src gatsby-expo.mdx --theme theme.js --template template.js
 ```
 
 ```
+spectacle --src gatsby-expo-fr.mdx --theme theme.js --template template.js
+```
+
+```
 rm -rf dist && spectacle --src gatsby-expo.mdx --theme theme.js --template template.js --action build && cp -R logos dist/logos && cp *.png *.jpg *.jpeg *.webp dist && serve dist
 ```
 
