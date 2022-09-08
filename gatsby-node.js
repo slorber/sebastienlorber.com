@@ -2,12 +2,12 @@ exports.createPages = ({ graphql, actions }) => {
   const { createRedirect } = actions;
   createRedirect({
     fromPath: '/newsletter',
-    toPath: 'https://www.getrevue.co/profile/sebastien-lorber',
+    toPath: 'https://thisweekinreact.com',
     isPermanent: false,
   });
   createRedirect({
     fromPath: '/chat',
-    toPath: 'https://discord.gg/7vwy5fa',
+    toPath: 'https://thisweekinreact.com/discord',
     isPermanent: false,
   });
 
@@ -23,7 +23,7 @@ exports.createPages = ({ graphql, actions }) => {
   });
   createRedirect({
     fromPath: '/hashnode',
-    toPath: 'https://sebastienlorber.hashnode.dev',
+    toPath: 'https://daily.sebastienlorber.com/',
     isPermanent: false,
   });
   createRedirect({
@@ -40,7 +40,7 @@ exports.createPages = ({ graphql, actions }) => {
 
   createRedirect({
     fromPath: '/sponsor',
-    toPath: 'https://gist.github.com/slorber/4015b388edbe9743048fe98d12604326',
+    toPath: 'https://thisweekinreact.com/sponsor',
     isPermanent: false,
   });
 
