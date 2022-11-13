@@ -7,6 +7,8 @@ import Headings from '@components/Headings';
 import styled from '@emotion/styled';
 import mediaqueries from '@styles/media';
 
+import SubscribeForm from "./../../../../components/SubscribeForm"
+
 const Subscription: React.FunctionComponent<{}> = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -43,13 +45,16 @@ const Subscription: React.FunctionComponent<{}> = () => {
       <SubscriptionContainer>
         <Content>
           <Headings.h3>
-            Join my email list
+            Join <a href="https://thisweekinreact.com" style={{color: "inherit"}}>This Week In React</a> - Stay up-to-date now!
           </Headings.h3>
           <Text>
-            I blog about the wide React ecosystem (React, ReactNative, Expo,
-            React-Navigation, Apollo, GraphQL, Gatsby, Typescript, Node...), and
-            try to focus on uncovered subjects.
+            A weekly newsletter with all the cutting-edge React and React-Native news. Perfect for experienced developers. Stop scrolling on Twitter and receive everything directly in your inbox!
           </Text>
+          <SubscribeForm/>
+          <a href="https://thisweekinreact.com">
+            <img src="/TWIR_POST.png" style={{maxWidth: "100%"}}/>
+          </a>
+          {/*
           <Form onSubmit={handleSubmit} hasError={error}>
             <Input
               placeholder="your@email.com"
@@ -69,6 +74,7 @@ const Subscription: React.FunctionComponent<{}> = () => {
             </Button>
             {error && <Error dangerouslySetInnerHTML={{ __html: error }} />}
           </Form>
+          */}
         </Content>
       </SubscriptionContainer>
     </Section>

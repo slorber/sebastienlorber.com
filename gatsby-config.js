@@ -45,13 +45,14 @@ module.exports = {
         contentPosts: 'content/posts',
         contentAuthors: 'content/authors',
         basePath: '/',
-        mailchimp: true,
+        // mailchimp: true,
         sources: {
           local: true,
           contentful: false,
         },
       },
     },
+    /*
     {
       resolve: 'gatsby-plugin-mailchimp',
       options: {
@@ -59,6 +60,7 @@ module.exports = {
           'https://gmail.us4.list-manage.com/subscribe/post?u=5150dccbaa8d2e62d2aa5a921&amp;id=adf9b01764',
       },
     },
+     */
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
