@@ -19,7 +19,7 @@ export function SubscribeFormAside({children}) {
       </div>
 
       <a target="_blank" href="https://thisweekinreact.com">
-        <img src="/TWIR_POST.png"/>
+        <img src="/TWIR_AD.png"/>
       </a>
     </aside>
   )
