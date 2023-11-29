@@ -52,7 +52,7 @@ const Subscription: React.FunctionComponent<{}> = () => {
           </Text>
           <SubscribeForm/>
           <a href="https://thisweekinreact.com">
-            <img src="/TWIR_POST.png" style={{maxWidth: "100%"}}/>
+            <img src="/TWIR_AD.png" style={{maxWidth: "100%"}}/>
           </a>
           {/*
           <Form onSubmit={handleSubmit} hasError={error}>
